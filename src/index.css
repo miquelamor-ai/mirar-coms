@@ -94,6 +94,14 @@ body {
   box-shadow: var(--shadow-premium);
 }
 
+.premium-card h3 {
+  font-size: 2.2rem;
+}
+
+.premium-card p {
+  font-size: 1.2rem;
+}
+
 .mirada-number {
   font-size: 5rem;
   opacity: 0.15;
@@ -103,12 +111,13 @@ body {
 }
 
 .mirada-title {
-  font-size: 3.5rem;
+  font-size: 4.5rem;
   margin-bottom: 0.5rem;
+  line-height: 1.1;
 }
 
 .mirada-subtitle {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-style: italic;
   color: var(--text-secondary);
 }
