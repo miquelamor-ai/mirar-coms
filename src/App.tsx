@@ -15,6 +15,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [isVotingOpen, setIsVotingOpen] = useState(false);
+  const [contributions, setContributions] = useState<any[]>([]);
 
   // Determinar mode des de la URL (?mode=presenter)
   useEffect(() => {
@@ -59,6 +60,38 @@ export default function App() {
 
     fetchAndSubscribe();
   }, []);
+
+  // Gestió d'aportacions (Només per al presentador)
+  useEffect(() => {
+    if (!isPresenter) return;
+
+    const fetchContributions = async () => {
+      const { data } = await supabase
+        .from('coms_contributions')
+        .select('*')
+        .eq('slide_id', comsData[currentSlideIndex].id)
+        .order('created_at', { ascending: false });
+
+      if (data) setContributions(data);
+    };
+
+    fetchContributions();
+
+    const channel = supabase
+      .channel('contributions_sync')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'coms_contributions', filter: `slide_id=eq.${comsData[currentSlideIndex].id}` },
+        (payload) => {
+          setContributions(prev => [payload.new, ...prev]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isPresenter, currentSlideIndex]);
 
   const updateSlide = async (index: number) => {
     if (!isPresenter) return;
@@ -233,6 +266,28 @@ export default function App() {
             )}
           </div>
         ))}
+
+        {/* Tauler d'Aportacions del Presentador (Secció final lliure) */}
+        {isPresenter && contributions.length > 0 && (
+          <section className="fade-in" style={{ marginTop: '4rem' }}>
+            <div className="flex items-center gap-3" style={{ marginBottom: '2rem' }}>
+              <Send className="text-info" size={24} />
+              <h3 className="serif text-3xl">Bústia d'Aportacions de la Sala</h3>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+              {contributions.map((idea) => (
+                <div key={idea.id} className="premium-card" style={{ padding: '1.5rem', marginBottom: 0, borderLeft: '4px solid var(--accent-blue)' }}>
+                  <p style={{ fontSize: '1.1rem', fontStyle: 'italic', color: 'var(--text-primary)' }}>
+                    "{idea.content}"
+                  </p>
+                  <div style={{ marginTop: '1rem', fontSize: '0.7rem', color: 'var(--text-secondary)', textAlign: 'right' }}>
+                    {new Date(idea.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
 
       {/* Navegació i Controls de Presentador */}
