@@ -802,15 +802,17 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      {/* Navigation */}
-      <div className="nav-overlay">
-        <button className="nav-arrow-float" onClick={() => updateSlide(currentIndex - 1)} disabled={currentIndex === 0}>
-          <ChevronLeft size={24} />
-        </button>
-        <button className="nav-arrow-float" onClick={() => updateSlide(currentIndex + 1)} disabled={currentIndex === allSlides.length - 1}>
-          <ChevronRight size={24} />
-        </button>
-      </div>
+      {/* Navigation — only visible to presenter */}
+      {isPresenter && (
+        <div className="nav-overlay">
+          <button className="nav-arrow-float" onClick={() => updateSlide(currentIndex - 1)} disabled={currentIndex === 0}>
+            <ChevronLeft size={24} />
+          </button>
+          <button className="nav-arrow-float" onClick={() => updateSlide(currentIndex + 1)} disabled={currentIndex === allSlides.length - 1}>
+            <ChevronRight size={24} />
+          </button>
+        </div>
+      )}
 
       {/* QR Modal */}
       {showQr && (
