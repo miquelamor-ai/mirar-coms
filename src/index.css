@@ -122,6 +122,7 @@ body {
   flex-direction: column;
   justify-content: center;
   padding: 2.5rem 3rem;
+  overflow-x: hidden;
   overflow-y: auto;
   min-height: 0;
   scrollbar-width: thin;
@@ -945,10 +946,10 @@ body {
   padding: 0.22rem 0.65rem; border-radius: 100px; flex-shrink: 0;
 }
 
-/* Item rows — single line: [num] [title flex:1] [bar] [pct] */
+/* Item rows — [num] [title · bar · pct] all packed left */
 .ds-item-row {
-  display: flex; align-items: center; gap: 0.65rem;
-  padding: 0.4rem 0;
+  display: flex; align-items: center; gap: 0.55rem;
+  padding: 0.32rem 0;
   border-bottom: 1px solid var(--border-light);
 }
 .ds-block:last-child .ds-item-row:last-child { border-bottom: none; }
@@ -957,17 +958,19 @@ body {
   letter-spacing: 0.05em; color: var(--text-dim);
   flex-shrink: 0; width: 2.8rem;
 }
-.ds-item-body { flex: 1; min-width: 0; }
+.ds-item-body {
+  flex: 1; min-width: 0;
+  display: flex; align-items: center; gap: 0.5rem;
+}
 .ds-item-title {
-  font-size: clamp(0.82rem, 1.1vw, 0.93rem); font-weight: 400;
+  flex: 0 1 auto;
+  max-width: 52%;
+  font-size: clamp(0.82rem, 1.1vw, 0.92rem); font-weight: 400;
   color: var(--text); line-height: 1;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.ds-item-right {
-  display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;
-}
 .ds-bar-track {
-  width: 96px; flex: none;
+  width: 90px; flex: none;
   height: 5px; background: var(--border-light);
   border-radius: 3px; overflow: hidden; display: flex;
 }
@@ -975,7 +978,7 @@ body {
 .ds-bar-no  { height: 100%; background: #e74c3c; }
 .ds-item-pct {
   font-family: var(--font-display); font-size: 0.78rem; font-weight: 700;
-  width: 2.5rem; text-align: right;
+  flex-shrink: 0;
 }
 
 /* ── QR MODAL ─────────────────────────────────────────────────────────────── */

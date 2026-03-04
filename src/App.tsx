@@ -580,8 +580,6 @@ function DashboardSlide() {
                     <span className="ds-item-num">{numLabel(item)}</span>
                     <div className="ds-item-body">
                       <span className="ds-item-title">{item.title}</span>
-                    </div>
-                    <div className="ds-item-right">
                       <div className="ds-bar-track">
                         <motion.div className="ds-bar-yes"
                           initial={{ width: 0 }} animate={{ width: `${item.yesPct}%` }}
