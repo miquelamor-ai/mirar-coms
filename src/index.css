@@ -236,3 +236,113 @@ body {
 .text-center {
   text-align: center;
 }
+
+.justify-center {
+  justify-content: center;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+/* Buttons */
+.btn-primary,
+.btn-secondary {
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  font-size: 0.9rem;
+}
+
+.btn-primary {
+  background: var(--accent-blue);
+  color: white;
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: #f0f0f0;
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+}
+
+.btn-secondary:hover {
+  background: #e8e8e8;
+  border-color: #ccc;
+}
+
+.btn-secondary:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Specific Colors for Status */
+.text-success {
+  color: #27ae60;
+}
+
+.text-info {
+  color: #3498db;
+}
+
+.text-warning {
+  color: #f1c40f;
+}
+
+.text-purple {
+  color: #9b59b6;
+}
+
+.text-danger {
+  color: #e74c3c;
+}
+
+.bg-success {
+  background-color: #27ae60;
+}
+
+.bg-danger {
+  background-color: #e74c3c;
+}
+
+/* Charts */
+.chart-container {
+  padding: 1.5rem 0;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 1.5rem;
+}
+
+.chart-bar-bg {
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.chart-bar-fill {
+  height: 100%;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.proposals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}

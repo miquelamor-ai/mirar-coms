@@ -3,14 +3,18 @@ import { supabase } from './lib/supabase';
 import { comsData } from './data/comsContent';
 import {
   ChevronRight, ChevronLeft, Check, HelpCircle, X,
-  Rocket, FlaskConical, Construction, Brain, Ban, Send
+  Rocket, FlaskConical, Construction, Brain, Ban, Send,
+  BarChart2, EyeOff
 } from 'lucide-react';
+import { LiveChart } from './components/LiveChart';
 
 export default function App() {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isPresenter, setIsPresenter] = useState(false);
   const [newIdea, setNewIdea] = useState('');
   const [loading, setLoading] = useState(true);
+  const [showResults, setShowResults] = useState(false);
+  const [isVotingOpen, setIsVotingOpen] = useState(false);
 
   // Determinar mode des de la URL (?mode=presenter)
   useEffect(() => {
@@ -30,6 +34,7 @@ export default function App() {
       if (data) {
         const slideIndex = comsData.findIndex(m => m.id === data.current_slide_id);
         if (slideIndex !== -1) setCurrentSlideIndex(slideIndex);
+        setIsVotingOpen(data.is_voting_open);
       }
       setLoading(false);
 
@@ -42,6 +47,7 @@ export default function App() {
           (payload) => {
             const slideIndex = comsData.findIndex(m => m.id === payload.new.current_slide_id);
             if (slideIndex !== -1) setCurrentSlideIndex(slideIndex);
+            setIsVotingOpen(payload.new.is_voting_open);
           }
         )
         .subscribe();
@@ -59,7 +65,20 @@ export default function App() {
     const newSlideId = comsData[index].id;
     await supabase
       .from('coms_session_state')
-      .update({ current_slide_id: newSlideId, updated_at: new Date().toISOString() })
+      .update({
+        current_slide_id: newSlideId,
+        is_voting_open: false, // Reset voting when changing slide
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', 1);
+    setShowResults(false);
+  };
+
+  const toggleVoting = async () => {
+    if (!isPresenter) return;
+    await supabase
+      .from('coms_session_state')
+      .update({ is_voting_open: !isVotingOpen })
       .eq('id', 1);
   };
 
@@ -125,11 +144,11 @@ export default function App() {
               </div>
             </div>
 
-            {/* Interacció per a l'audiència */}
-            {!isPresenter && section.interactive && (
+            {/* Contingut d'interacció o resultats */}
+            {section.interactive && (
               <div style={{ paddingTop: '2rem', borderTop: '1px solid #f0f0f0' }}>
 
-                {/* Mode Propostes (ENDAVANT) */}
+                {/* 1. Bloc de PROPOSTES (Mirada ENDAVANT) */}
                 {section.proposals ? (
                   <div className="proposals-list" style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
                     {section.proposals.map((prop) => (
@@ -138,66 +157,85 @@ export default function App() {
                           <span>{prop.icon}</span>
                           <span>{prop.title}</span>
                         </div>
-                        <div className="interaction-grid">
-                          <button onClick={() => handleVote('activar', prop.id)} className="vote-btn" title="Activar immediatament">
-                            <Rocket style={{ color: '#27ae60' }} />
-                            <span>Activar</span>
-                          </button>
-                          <button onClick={() => handleVote('pilotar', prop.id)} className="vote-btn">
-                            <FlaskConical style={{ color: '#3498db' }} />
-                            <span>Pilotar</span>
-                          </button>
-                          <button onClick={() => handleVote('preparar', prop.id)} className="vote-btn">
-                            <Construction style={{ color: '#f1c40f' }} />
-                            <span>Preparar</span>
-                          </button>
-                          <button onClick={() => handleVote('reflexionar', prop.id)} className="vote-btn">
-                            <Brain style={{ color: '#9b59b6' }} />
-                            <span>Repensar</span>
-                          </button>
-                          <button onClick={() => handleVote('desestimar', prop.id)} className="vote-btn">
-                            <Ban style={{ color: '#e74c3c' }} />
-                            <span>No</span>
-                          </button>
-                        </div>
+
+                        {isPresenter ? (
+                          showResults && <LiveChart slideId={currentMirada.id} proposalId={prop.id} type="decision" />
+                        ) : (
+                          isVotingOpen ? (
+                            <div className="interaction-grid">
+                              <button onClick={() => handleVote('activar', prop.id)} className="vote-btn">
+                                <Rocket style={{ color: '#27ae60' }} />
+                                <span>Activar</span>
+                              </button>
+                              <button onClick={() => handleVote('pilotar', prop.id)} className="vote-btn">
+                                <FlaskConical style={{ color: '#3498db' }} />
+                                <span>Pilotar</span>
+                              </button>
+                              <button onClick={() => handleVote('preparar', prop.id)} className="vote-btn">
+                                <Construction style={{ color: '#f1c40f' }} />
+                                <span>Preparar</span>
+                              </button>
+                              <button onClick={() => handleVote('reflexionar', prop.id)} className="vote-btn">
+                                <Brain style={{ color: '#9b59b6' }} />
+                                <span>Repensar</span>
+                              </button>
+                              <button onClick={() => handleVote('desestimar', prop.id)} className="vote-btn">
+                                <Ban style={{ color: '#e74c3c' }} />
+                                <span>No</span>
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="text-center py-4 bg-gray-50 rounded-lg text-sm text-gray-400 italic">Votacions tancades pel presentador</div>
+                          )
+                        )}
                       </div>
                     ))}
                   </div>
                 ) : (
-                  /* Mode Validació (FORA/DINS) */
-                  <div className="flex justify-between gap-4">
-                    <button onClick={() => handleVote('confirmar')} className="btn-secondary flex-1 flex" style={{ justifyContent: 'center', gap: '8px' }}>
-                      <Check size={20} /> Confirmar
-                    </button>
-                    <button onClick={() => handleVote('dubtar')} className="btn-secondary flex-1 flex" style={{ justifyContent: 'center', gap: '8px' }}>
-                      <HelpCircle size={20} /> Dubtar
-                    </button>
-                    <button onClick={() => handleVote('denegar')} className="btn-secondary flex-1 flex" style={{ justifyContent: 'center', gap: '8px' }}>
-                      <X size={20} /> Denegar
+                  /* 2. Bloc de VALIDACIÓ (Mirada FORA / DINS) */
+                  isPresenter ? (
+                    showResults && <LiveChart slideId={currentMirada.id} type="validation" />
+                  ) : (
+                    isVotingOpen ? (
+                      <div className="flex justify-between gap-4">
+                        <button onClick={() => handleVote('confirmar')} className="btn-secondary flex-1 flex" style={{ justifyContent: 'center', gap: '8px' }}>
+                          <Check size={20} /> Confirmar
+                        </button>
+                        <button onClick={() => handleVote('dubtar')} className="btn-secondary flex-1 flex" style={{ justifyContent: 'center', gap: '8px' }}>
+                          <HelpCircle size={20} /> Dubtar
+                        </button>
+                        <button onClick={() => handleVote('denegar')} className="btn-secondary flex-1 flex" style={{ justifyContent: 'center', gap: '8px' }}>
+                          <X size={20} /> Denegar
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="text-center py-4 bg-gray-50 rounded-lg text-sm text-gray-400 italic">Espai de reflexió (votacions tancades)</div>
+                    )
+                  )
+                )}
+
+                {/* Bústia d'aportacions (només audiència) */}
+                {!isPresenter && (
+                  <div className="idea-input-group">
+                    <input
+                      type="text"
+                      className="idea-input"
+                      placeholder="Tens una aportació nova?"
+                      value={newIdea}
+                      onChange={(e) => setNewIdea(e.target.value)}
+                    />
+                    <button onClick={submitIdea} className="btn-primary" style={{ padding: '0 1.5rem', display: 'flex', alignItems: 'center' }}>
+                      <Send size={20} />
                     </button>
                   </div>
                 )}
-
-                {/* Bústia d'aportacions */}
-                <div className="idea-input-group">
-                  <input
-                    type="text"
-                    className="idea-input"
-                    placeholder="Tens una aportació nova?"
-                    value={newIdea}
-                    onChange={(e) => setNewIdea(e.target.value)}
-                  />
-                  <button onClick={submitIdea} className="btn-primary" style={{ padding: '0 1.5rem', display: 'flex', alignItems: 'center' }}>
-                    <Send size={20} />
-                  </button>
-                </div>
               </div>
             )}
           </div>
         ))}
       </main>
 
-      {/* Navegació de Presentador */}
+      {/* Navegació i Controls de Presentador */}
       {isPresenter && (
         <footer className="site-footer">
           <div className="max-w-4xl mx-auto flex justify-between items-center">
@@ -205,35 +243,57 @@ export default function App() {
               className="btn-secondary"
               onClick={() => updateSlide(currentSlideIndex - 1)}
               disabled={currentSlideIndex === 0}
-              style={{ borderRadius: '50%', padding: '1rem', display: 'flex' }}
+              style={{ borderRadius: '50%', padding: '0.8rem', display: 'flex' }}
             >
-              <ChevronLeft size={32} />
+              <ChevronLeft size={28} />
             </button>
-            <div className="flex gap-4">
-              {comsData.map((_, i) => (
-                <div
-                  key={i}
-                  style={{
-                    width: '12px', height: '12px', borderRadius: '50%',
-                    backgroundColor: i === currentSlideIndex ? 'var(--accent-blue)' : '#e0e0e0',
-                    transition: 'all 0.3s'
-                  }}
-                />
-              ))}
+
+            <div className="flex gap-6 items-center">
+              <button
+                onClick={toggleVoting}
+                className="btn-primary flex items-center gap-2"
+                style={{ backgroundColor: isVotingOpen ? '#e74c3c' : '#27ae60', padding: '0.6rem 1.2rem', fontSize: '0.8rem' }}
+              >
+                {isVotingOpen ? <X size={16} /> : <Rocket size={16} />}
+                {isVotingOpen ? 'Tancar Votacions' : 'Obrir Votacions'}
+              </button>
+
+              <button
+                onClick={() => setShowResults(!showResults)}
+                className="btn-secondary flex items-center gap-2"
+                style={{ padding: '0.6rem 1.2rem', fontSize: '0.8rem' }}
+              >
+                {showResults ? <EyeOff size={16} /> : <BarChart2 size={16} />}
+                {showResults ? 'Amagar Resultats' : 'Veure Resultats en Viu'}
+              </button>
+
+              <div className="flex gap-2">
+                {comsData.map((_, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      width: '10px', height: '10px', borderRadius: '50%',
+                      backgroundColor: i === currentSlideIndex ? 'var(--accent-blue)' : '#e0e0e0',
+                      transition: 'all 0.3s'
+                    }}
+                  />
+                ))}
+              </div>
             </div>
+
             <button
               className="btn-secondary"
               onClick={() => updateSlide(currentSlideIndex + 1)}
               disabled={currentSlideIndex === comsData.length - 1}
-              style={{ borderRadius: '50%', padding: '1rem', display: 'flex' }}
+              style={{ borderRadius: '50%', padding: '0.8rem', display: 'flex' }}
             >
-              <ChevronRight size={32} />
+              <ChevronRight size={28} />
             </button>
           </div>
         </footer>
       )}
 
-      {/* Indicador de progrés per a l'audiència */}
+      {/* Progrés per a l'audiència */}
       {!isPresenter && (
         <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: '4px', background: '#f0f0f0' }}>
           <div style={{
