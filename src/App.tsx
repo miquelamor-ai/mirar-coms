@@ -501,7 +501,7 @@ function DashboardSlide() {
                   </div>
                   <div style={{ height: '4px', background: 'rgba(255,255,255,0.15)', borderRadius: '2px', overflow: 'hidden' }}>
                     <motion.div style={{ height: '100%', background: 'rgba(255,255,255,0.75)', borderRadius: '2px' }}
-                      initial={{ width: 0 }} animate={{ width: `${yesPct}%` }} transition={{ duration: 0.6, delay: idx * 0.04 }} />
+                      initial={{ width: 0 }} animate={{ width: `${yesPct}%` }} transition={{ duration: 0.6, delay: item.itemIdx * 0.04 }} />
                   </div>
                 </div>
               );
@@ -528,9 +528,9 @@ function DashboardSlide() {
                 </div>
                 <div className="dash-bar-track">
                   <motion.div className="dash-bar dash-bar--yes" title={`${yes} coincideixen`}
-                    initial={{ width: 0 }} animate={{ width: `${yesPct}%` }} transition={{ duration: 0.6, delay: idx * 0.05 }} />
+                    initial={{ width: 0 }} animate={{ width: `${yesPct}%` }} transition={{ duration: 0.6, delay: item.itemIdx * 0.05 }} />
                   <motion.div className="dash-bar dash-bar--no" title={`${no} no coincideixen`}
-                    initial={{ width: 0 }} animate={{ width: `${noPct}%` }} transition={{ duration: 0.6, delay: idx * 0.05 + 0.1 }} />
+                    initial={{ width: 0 }} animate={{ width: `${noPct}%` }} transition={{ duration: 0.6, delay: item.itemIdx * 0.05 + 0.1 }} />
                 </div>
                 <div className="dash-counts">
                   <span className="dash-yes">{yes} coincideixen</span>
