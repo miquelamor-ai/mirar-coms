@@ -571,25 +571,32 @@ function DashboardSlide() {
                 )}
               </div>
 
-              {blockItems.map((item, ii) => (
-                <motion.div key={item.id} className="ds-item-row"
-                  initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: (bi * 3 + ii) * 0.04 }}>
-                  <span className="ds-item-num">{numLabel(item)}</span>
-                  <span className="ds-item-title">{item.title}</span>
-                  <div className="ds-bar-track">
-                    <motion.div className="ds-bar-yes"
-                      initial={{ width: 0 }} animate={{ width: `${item.yesPct}%` }}
-                      transition={{ duration: 0.6, delay: (bi * 3 + ii) * 0.05 }} />
-                    <motion.div className="ds-bar-no"
-                      initial={{ width: 0 }} animate={{ width: `${item.total > 0 ? 100 - item.yesPct : 0}%` }}
-                      transition={{ duration: 0.6, delay: (bi * 3 + ii) * 0.05 + 0.1 }} />
-                  </div>
-                  <span className="ds-item-pct" style={{ color: item.total > 0 ? (item.yesPct >= 50 ? '#1a7a42' : '#c0392b') : 'var(--text-dim)' }}>
-                    {item.total > 0 ? `${item.yesPct}%` : '—'}
-                  </span>
-                </motion.div>
-              ))}
+              {blockItems.map((item, ii) => {
+                const pctColor = item.total > 0 ? (item.yesPct >= 50 ? '#1a7a42' : '#c0392b') : 'var(--text-dim)';
+                return (
+                  <motion.div key={item.id} className="ds-item-row"
+                    initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: (bi * 3 + ii) * 0.04 }}>
+                    <span className="ds-item-num">{numLabel(item)}</span>
+                    <div className="ds-item-body">
+                      <div className="ds-item-titlerow">
+                        <span className="ds-item-title">{item.title}</span>
+                        <span className="ds-item-pct" style={{ color: pctColor }}>
+                          {item.total > 0 ? `${item.yesPct}%` : '—'}
+                        </span>
+                      </div>
+                      <div className="ds-bar-track">
+                        <motion.div className="ds-bar-yes"
+                          initial={{ width: 0 }} animate={{ width: `${item.yesPct}%` }}
+                          transition={{ duration: 0.7, delay: (bi * 3 + ii) * 0.05, ease: [0.22, 1, 0.36, 1] }} />
+                        <motion.div className="ds-bar-no"
+                          initial={{ width: 0 }} animate={{ width: `${item.total > 0 ? 100 - item.yesPct : 0}%` }}
+                          transition={{ duration: 0.7, delay: (bi * 3 + ii) * 0.05 + 0.08, ease: [0.22, 1, 0.36, 1] }} />
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           );
         })}

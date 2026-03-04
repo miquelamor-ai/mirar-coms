@@ -914,57 +914,65 @@ body {
 .ds-top-title { font-size: 0.75rem; color: rgba(255,255,255,0.82); flex: 1; line-height: 1.3; }
 .ds-top-pct { font-size: 0.78rem; font-weight: 700; color: #fff; flex-shrink: 0; }
 
-/* Right grouped panel */
 /* Right panel wrapper */
-.ds-right { overflow-y: auto; padding: 1rem 1.75rem; display: flex; flex-direction: column; gap: 0; }
+.ds-right {
+  overflow-y: auto;
+  padding: 0 2rem 4rem;
+  display: flex; flex-direction: column; gap: 0;
+}
 
 /* Block section header — colored band, clearly bigger than items */
 .ds-block-header {
   display: flex; align-items: center; gap: 0.65rem;
-  padding: 0.6rem 0.85rem;
-  margin: 1.1rem -1.75rem 0.5rem;
+  padding: 0.65rem 2rem;
+  margin: 1.5rem -2rem 0.35rem;
   border-left-width: 3px; border-left-style: solid;
 }
+.ds-block-header:first-child { margin-top: 1rem; }
 .ds-block-num {
-  font-family: var(--font-display); font-size: 0.65rem; font-weight: 900;
-  letter-spacing: 0.14em; flex-shrink: 0; opacity: 0.7;
+  font-family: var(--font-display); font-size: 0.62rem; font-weight: 900;
+  letter-spacing: 0.14em; flex-shrink: 0; opacity: 0.6;
 }
 .ds-block-title {
-  font-size: clamp(0.92rem, 1.3vw, 1.05rem); font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.04em;
+  font-size: clamp(0.95rem, 1.3vw, 1.08rem); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
   flex: 1; color: var(--text);
 }
 .ds-block-badge {
   font-size: 0.7rem; font-weight: 700;
-  padding: 0.2rem 0.6rem; border-radius: 100px; flex-shrink: 0;
+  padding: 0.22rem 0.65rem; border-radius: 100px; flex-shrink: 0;
 }
 
-/* Item rows — flat, single line: num · title · bar · % */
+/* Item rows — 2-line: [num] [title · %] / [full-width bar] */
 .ds-item-row {
-  display: grid;
-  grid-template-columns: 2.8rem 1fr 6rem 2.6rem;
-  align-items: center; gap: 0.6rem;
-  padding: 0.3rem 0;
+  display: flex; align-items: flex-start; gap: 0.65rem;
+  padding: 0.55rem 0;
   border-bottom: 1px solid var(--border-light);
 }
 .ds-item-num {
-  font-family: var(--font-display); font-size: 0.62rem; font-weight: 600;
+  font-family: var(--font-display); font-size: 0.6rem; font-weight: 600;
   letter-spacing: 0.06em; color: var(--text-dim);
+  flex-shrink: 0; width: 2.6rem; padding-top: 1px;
+}
+.ds-item-body { flex: 1; min-width: 0; }
+.ds-item-titlerow {
+  display: flex; justify-content: space-between;
+  align-items: baseline; gap: 0.5rem; margin-bottom: 0.3rem;
 }
 .ds-item-title {
-  font-size: clamp(0.75rem, 1vw, 0.84rem); font-weight: 400;
-  line-height: 1.25; color: var(--text);
+  font-size: clamp(0.77rem, 1.05vw, 0.87rem); font-weight: 400;
+  line-height: 1.25; color: var(--text); flex: 1;
+}
+.ds-item-pct {
+  font-family: var(--font-display); font-size: 0.8rem; font-weight: 700;
+  flex-shrink: 0;
 }
 .ds-bar-track {
-  height: 7px; background: var(--border-light);
+  height: 8px; background: var(--border-light);
   border-radius: 4px; overflow: hidden; display: flex;
 }
 .ds-bar-yes { height: 100%; background: #27ae60; }
 .ds-bar-no  { height: 100%; background: #e74c3c; }
-.ds-item-pct {
-  font-family: var(--font-display); font-size: 0.75rem; font-weight: 700;
-  text-align: right; flex-shrink: 0;
-}
 
 /* ── QR MODAL ─────────────────────────────────────────────────────────────── */
 .qr-overlay {
