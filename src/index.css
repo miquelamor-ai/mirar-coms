@@ -265,12 +265,12 @@ body {
 /* compact intro text shown on left panel during reveal steps */
 .intro-text-compact {
   font-family: var(--font-body);
-  font-size: clamp(0.82rem, 1.1vw, 0.95rem);
+  font-size: clamp(1.1rem, 1.4vw, 1.35rem);
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.85);
   line-height: 1.6;
-  margin-top: 1.5rem;
-  max-width: 260px;
+  margin-top: 2.5rem;
+  max-width: 320px;
 }
 
 /* ── PROGRESSIVE REVEAL ──────────────────────────────────────────────────── */

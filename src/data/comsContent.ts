@@ -90,7 +90,7 @@ export const comsData: Mirada[] = [
         blocks: [
             {
                 id: 'fora-a',
-                title: 'L\'avaluació de l\'impacte (Thomas Guskey)',
+                title: 'Avaluació d\'impacte',
                 summary: 'L\'èxit de la formació no es mesura per la satisfacció immediata sinó per la transferència real a l\'aula i l\'impacte en l\'alumnat.',
                 keyPoints: [
                     'Nivell 1 (satisfacció): mesura insuficient de l\'èxit formatiu',
@@ -102,8 +102,8 @@ export const comsData: Mirada[] = [
             },
             {
                 id: 'fora-b',
-                title: 'La transferència a l\'aula (Grossman & Salas)',
-                summary: 'La formació és un cicle viu en tres moments. El clima de suport al centre i la immediació de l\'aplicació en determinen l\'èxit.',
+                title: 'Transferència a l\'aula',
+                summary: 'La formació es un cicle viu en tres moments. El clima de suport al centre i la immediació de l\'aplicació en determinen l\'èxit.',
                 keyPoints: [
                     'ABANS: creació d\'expectatives i compromís previ',
                     'DURANT: experiència activa i pràctica col·laborativa',
@@ -114,7 +114,7 @@ export const comsData: Mirada[] = [
             },
             {
                 id: 'fora-c',
-                title: 'Capital professional (Fullan & Hargreaves)',
+                title: 'Capital professional',
                 summary: 'L\'aprenentatge com a procés col·lectiu que enforteix la musculatura de la institució a través de tres capitals interdependents.',
                 keyPoints: [
                     'Capital humà: el talent i la competència individual de cada educador',
@@ -126,7 +126,7 @@ export const comsData: Mirada[] = [
             },
             {
                 id: 'fora-d',
-                title: 'El marc dels 6 COMS (arquitectura FJE)',
+                title: 'Marc dels 6 COMS',
                 summary: 'Les sis decisions estructurals que configuren el nostre sistema d\'aprenentatge: Temps, Metodologia, Rols, Tipologia, Recursos i Impacte.',
                 keyPoints: [
                     'No són qüestions logístiques: són actes pedagògics i d\'identitat institucional',
