@@ -150,12 +150,12 @@ export const comsData: Mirada[] = [
         blocks: [
             {
                 id: 'dins-a',
-                title: 'Limitacions del model de formació aïllada',
+                title: 'Limitacions del model',
                 summary: 'Les accions formatives de 15h fragmentades no garanteixen un desenvolupament competencial progressiu ni la integració del coneixement en la pràctica.',
                 items: [
                     {
                         id: 'dins-a1',
-                        title: 'Insuficiència per al canvi profund',
+                        title: 'Formació aïllada',
                         content: 'Els "tallers únics" sense continuïtat no permeten que el coneixement s\'integri en la memòria a llarg termini ni que es transformi en pràctica d\'aula.',
                         keyPoints: [
                             'Formació fragmentada en "dosis" que arriba però no arrela',
@@ -166,7 +166,7 @@ export const comsData: Mirada[] = [
                     },
                     {
                         id: 'dins-a2',
-                        title: 'Necessitat de transició metafòrica',
+                        title: 'Del concert a fil musical',
                         content: 'Cal passar d\'una formació entesa com un "concert" puntual a un "fil musical": presència constant i sostinguda que acompanya la pràctica quotidiana.',
                         keyPoints: [
                             'Del "concert": acte puntual i intens amb ponents externs',
@@ -179,12 +179,12 @@ export const comsData: Mirada[] = [
             },
             {
                 id: 'dins-b',
-                title: 'El fenomen de la "trampa de les receptes"',
+                title: 'El fenòmen de les receptes',
                 summary: 'La tensió entre la demanda de solucions pràctiques immediates i la necessitat de comprensió pedagògica profunda que empoderi el docent.',
                 items: [
                     {
                         id: 'dins-b1',
-                        title: 'Origen en el bloqueig emocional',
+                        title: 'Bloqueig emocional',
                         content: 'La demanda de "receptes" d\'aplicació immediata sovint amaga una situació d\'angoixa i bloqueig davant la complexitat real de l\'aula.',
                         keyPoints: [
                             'L\'angoixa emocional docent genera demanda de receptes tècniques',
@@ -195,7 +195,7 @@ export const comsData: Mirada[] = [
                     },
                     {
                         id: 'dins-b2',
-                        title: 'Procediment vs. vivència',
+                        title: 'Receptes vs transformació',
                         content: 'Si la formació només aborda l\'aspecte tècnic i descuida la vivència i les creences, el coneixement esdevé un "castell a l\'aire" sense fonaments.',
                         keyPoints: [
                             'Els docents arriben a la formació "amb el cap, sense el cos"',
@@ -206,7 +206,7 @@ export const comsData: Mirada[] = [
                     },
                     {
                         id: 'dins-b3',
-                        title: 'El risc del modelatge superficial',
+                        title: 'Modelatge superficial',
                         content: 'El docent pot limitar-se a copiar un model de bones pràctiques sense haver-lo integrat ni sentir-se empoderat per traduir-lo al seu propi context.',
                         keyPoints: [
                             'Els exemples il·luminen, però no s\'han de copiar literalment',
@@ -219,7 +219,7 @@ export const comsData: Mirada[] = [
             },
             {
                 id: 'dins-c',
-                title: 'Desequilibri en la transferència: el dèficit del "després"',
+                title: 'Desequilibri en la transferència',
                 summary: 'Una distribució ineficient de l\'energia institucional: massa esforç en la logística del "durant" i abandó total del "després", que és la fase crítica.',
                 items: [
                     {
@@ -235,7 +235,7 @@ export const comsData: Mirada[] = [
                     },
                     {
                         id: 'dins-c2',
-                        title: 'Seguiment vs. avaluació burocràtica',
+                        title: 'Seguiment com a tràmit',
                         content: 'Les accions de seguiment post-formatiu es viuen com un tràmit o fiscalització, no com acompanyament real. Sense suport organitzatiu, la formació és "paper mullat".',
                         keyPoints: [
                             'Seguiment viscut com a tràmit per "calmar la consciència"',
@@ -248,7 +248,7 @@ export const comsData: Mirada[] = [
             },
             {
                 id: 'dins-d',
-                title: 'Governança, fragmentació i suport institucional',
+                title: 'Governança i suport',
                 summary: 'L\'èxit de la formació està condicionat per l\'entorn organitzatiu. Sense estructures clares de lideratge pedagògic, l\'aprenentatge no cala en la cultura del centre.',
                 items: [
                     {
@@ -264,7 +264,7 @@ export const comsData: Mirada[] = [
                     },
                     {
                         id: 'dins-d2',
-                        title: 'El "tot o res" del suport organitzatiu',
+                        title: 'Suport organitzatiu',
                         content: 'El suport organitzatiu (Nivell 3 de Guskey) és el factor crític: si la direcció no prioritza i protegeix el temps de qualitat per a la formació, l\'impacte és nul.',
                         keyPoints: [
                             'Factor binari: amb suport real, transforma; sense suport, no arriba',
