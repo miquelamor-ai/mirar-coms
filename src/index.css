@@ -434,8 +434,8 @@ body {
 
 .block-item-num {
   display: block;
-  font-family: var(--font-display); font-size: 0.85rem; font-weight: 700;
-  letter-spacing: 0.08em; opacity: 0.8; margin-bottom: 0.25rem;
+  font-family: var(--font-display); font-size: 1rem; font-weight: 700;
+  letter-spacing: 0.07em; opacity: 0.8; margin-bottom: 0.25rem;
 }
 .block-item-title {
   font-family: var(--font-display);
@@ -817,10 +817,10 @@ body {
   background: var(--surface);
   border: 1px solid var(--border-light); border-radius: var(--r);
 }
-.voting-item-header { display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.55rem; }
+.voting-item-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.55rem; }
 .voting-item-num {
-  font-family: var(--font-display); font-size: 0.85rem; font-weight: 700;
-  letter-spacing: 0.08em; opacity: 0.85; flex-shrink: 0; margin-top: 2px;
+  font-family: var(--font-display); font-size: 1.05rem; font-weight: 700;
+  letter-spacing: 0.06em; opacity: 0.85; flex-shrink: 0;
 }
 .voting-item-title {
   font-family: var(--font-body); font-size: clamp(0.8rem, 1.2vw, 0.92rem);
@@ -930,12 +930,13 @@ body {
 }
 .ds-block-header:first-child { margin-top: 1rem; }
 .ds-block-num {
-  font-family: var(--font-display); font-size: 0.62rem; font-weight: 900;
+  font-family: var(--font-display); font-size: 0.82rem; font-weight: 900;
   letter-spacing: 0.14em; flex-shrink: 0; opacity: 0.6;
 }
 .ds-block-title {
-  font-size: clamp(0.95rem, 1.3vw, 1.08rem); font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.05em;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 1.5vw, 1.22rem); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em;
   flex: 1; color: var(--text);
 }
 .ds-block-badge {
@@ -950,9 +951,9 @@ body {
   border-bottom: 1px solid var(--border-light);
 }
 .ds-item-num {
-  font-family: var(--font-display); font-size: 0.6rem; font-weight: 600;
+  font-family: var(--font-display); font-size: 0.82rem; font-weight: 700;
   letter-spacing: 0.06em; color: var(--text-dim);
-  flex-shrink: 0; width: 2.6rem; padding-top: 1px;
+  flex-shrink: 0; width: 2.8rem; padding-top: 1px;
 }
 .ds-item-body { flex: 1; min-width: 0; }
 .ds-item-titlerow {
