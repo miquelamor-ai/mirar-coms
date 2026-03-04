@@ -945,29 +945,29 @@ body {
   padding: 0.22rem 0.65rem; border-radius: 100px; flex-shrink: 0;
 }
 
-/* Item rows — 2-line: [num] [title · %] / [full-width bar] */
+/* Item rows — single line: [num] [title flex:1] [bar] [pct] */
 .ds-item-row {
-  display: flex; align-items: flex-start; gap: 0.65rem;
-  padding: 0.55rem 0;
+  display: flex; align-items: center; gap: 0.65rem;
+  padding: 0.4rem 0;
   border-bottom: 1px solid var(--border-light);
 }
+.ds-block:last-child .ds-item-row:last-child { border-bottom: none; }
 .ds-item-num {
-  font-family: var(--font-display); font-size: 0.82rem; font-weight: 700;
-  letter-spacing: 0.06em; color: var(--text-dim);
-  flex-shrink: 0; width: 2.8rem; padding-top: 1px;
+  font-family: var(--font-display); font-size: 0.8rem; font-weight: 700;
+  letter-spacing: 0.05em; color: var(--text-dim);
+  flex-shrink: 0; width: 2.8rem;
 }
 .ds-item-body { flex: 1; min-width: 0; }
 .ds-item-title {
-  display: block;
-  font-size: clamp(0.77rem, 1.05vw, 0.87rem); font-weight: 400;
-  line-height: 1.25; color: var(--text);
-  margin-bottom: 0.22rem;
+  font-size: clamp(0.82rem, 1.1vw, 0.93rem); font-weight: 400;
+  color: var(--text); line-height: 1;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.ds-item-barrow {
-  display: flex; align-items: center; gap: 0.4rem;
+.ds-item-right {
+  display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;
 }
 .ds-bar-track {
-  width: 130px; flex: none;
+  width: 96px; flex: none;
   height: 5px; background: var(--border-light);
   border-radius: 3px; overflow: hidden; display: flex;
 }
@@ -975,6 +975,7 @@ body {
 .ds-bar-no  { height: 100%; background: #e74c3c; }
 .ds-item-pct {
   font-family: var(--font-display); font-size: 0.78rem; font-weight: 700;
+  width: 2.5rem; text-align: right;
 }
 
 /* ── QR MODAL ─────────────────────────────────────────────────────────────── */
