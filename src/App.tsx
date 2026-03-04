@@ -133,12 +133,12 @@ function IntroSlide({ slide }: { slide: FlatSlide }) {
   return (
     <>
       <div className="panel-left intro-panel" style={{ background: color }}>
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.35 }} className="intro-left-content">
+        <div className="intro-left-content">
           <div className="mirada-num">{mirada.number}</div>
           <h1 className="mirada-ttl">{mirada.title}</h1>
           <p className="mirada-sub">{mirada.subtitle}</p>
           <p className="intro-text-compact">{mirada.intro}</p>
-        </motion.div>
+        </div>
       </div>
       <div className="panel-right reveal-right">
         <div className="reveal-chips-list">
@@ -775,6 +775,8 @@ export default function App() {
               // Stable key within same section type → left panel stays mounted, only right panel animates internally
               if (slide.type === 'block') return `${slide.mirada.id}:blocks`;
               if (slide.type === 'item') return `${slide.mirada.id}:items:${slide.block?.id}`;
+              // Stable key for reveal steps (>0) within same mirada — only right panel animates
+              if (slide.type === 'mirada-intro' && (slide.introStep ?? 0) > 0) return `${slide.mirada.id}:intro:reveal`;
               return slide.slideKey;
             })()}
             className="slide-area" style={{ width: '100%' }}
