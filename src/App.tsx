@@ -579,19 +579,19 @@ function DashboardSlide() {
                     transition={{ delay: (bi * 3 + ii) * 0.04 }}>
                     <span className="ds-item-num">{numLabel(item)}</span>
                     <div className="ds-item-body">
-                      <div className="ds-item-titlerow">
-                        <span className="ds-item-title">{item.title}</span>
+                      <span className="ds-item-title">{item.title}</span>
+                      <div className="ds-item-barrow">
+                        <div className="ds-bar-track">
+                          <motion.div className="ds-bar-yes"
+                            initial={{ width: 0 }} animate={{ width: `${item.yesPct}%` }}
+                            transition={{ duration: 0.7, delay: (bi * 3 + ii) * 0.05, ease: [0.22, 1, 0.36, 1] }} />
+                          <motion.div className="ds-bar-no"
+                            initial={{ width: 0 }} animate={{ width: `${item.total > 0 ? 100 - item.yesPct : 0}%` }}
+                            transition={{ duration: 0.7, delay: (bi * 3 + ii) * 0.05 + 0.08, ease: [0.22, 1, 0.36, 1] }} />
+                        </div>
                         <span className="ds-item-pct" style={{ color: pctColor }}>
                           {item.total > 0 ? `${item.yesPct}%` : '—'}
                         </span>
-                      </div>
-                      <div className="ds-bar-track">
-                        <motion.div className="ds-bar-yes"
-                          initial={{ width: 0 }} animate={{ width: `${item.yesPct}%` }}
-                          transition={{ duration: 0.7, delay: (bi * 3 + ii) * 0.05, ease: [0.22, 1, 0.36, 1] }} />
-                        <motion.div className="ds-bar-no"
-                          initial={{ width: 0 }} animate={{ width: `${item.total > 0 ? 100 - item.yesPct : 0}%` }}
-                          transition={{ duration: 0.7, delay: (bi * 3 + ii) * 0.05 + 0.08, ease: [0.22, 1, 0.36, 1] }} />
                       </div>
                     </div>
                   </motion.div>
