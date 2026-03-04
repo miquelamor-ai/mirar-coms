@@ -4,14 +4,14 @@ import { comsData, type Mirada, type Block, type Item } from './data/comsContent
 import {
   ChevronRight, ChevronLeft, Check, HelpCircle, X,
   Rocket, FlaskConical, Construction, Brain, Ban, Send,
-  BarChart2, EyeOff, QrCode
+  BarChart2, EyeOff, QrCode, RotateCcw, Trash2
 } from 'lucide-react';
 import { LiveChart } from './components/LiveChart';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // ─── FLAT SLIDE STRUCTURE ─────────────────────────────────────────────────────
 
-type SlideType = 'mirada-intro' | 'block' | 'item' | 'dashboard';
+type SlideType = 'mirada-intro' | 'block' | 'item' | 'dashboard' | 'endavant-vote-intro';
 
 interface FlatSlide {
   type: SlideType;
@@ -52,11 +52,19 @@ function buildSlides(): FlatSlide[] {
         mirada, block, blockIndex: bi, itemIndex: -1,
         totalBlocks: mirada.blocks.length, totalItems: block.items.length,
       }));
-      // Dashboard after mirada-dins
-      if (mirada.id === 'mirada-dins') {
+      // After blocks: vote-intro + dashboard for mirada-endavant, only dashboard for mirada-dins
+      if (mirada.id === 'mirada-endavant') {
+        result.push({
+          type: 'endavant-vote-intro',
+          slideKey: 'mirada-endavant:vote-intro',
+          mirada, blockIndex: -1, itemIndex: -1,
+          totalBlocks: 0, totalItems: 0,
+        });
+      }
+      if (mirada.id === 'mirada-dins' || mirada.id === 'mirada-endavant') {
         result.push({
           type: 'dashboard',
-          slideKey: 'mirada-dins:dashboard',
+          slideKey: `${mirada.id}:dashboard`,
           mirada, blockIndex: -1, itemIndex: -1,
           totalBlocks: 0, totalItems: 0,
         });
@@ -364,10 +372,11 @@ const ENDAVANT_OPTS = [
   { key: 'activar',     label: 'Activar',     color: '#27ae60' },
 ];
 
-function VotingPanel({ mirada, myVotes, onVote }: {
+function VotingPanel({ mirada, myVotes, onVote, onReset }: {
   mirada: Mirada;
   myVotes: Record<string, string>;
   onVote: (choice: string, itemId: string, sectionId: string) => void;
+  onReset: () => void;
 }) {
   const [comment, setComment] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -381,10 +390,15 @@ function VotingPanel({ mirada, myVotes, onVote }: {
     <div className="voting-panel">
       <div className="voting-header" style={{ borderColor: `${color}30` }}>
         <span className="voting-num" style={{ color }}>{mirada.number}</span>
-        <div>
+        <div style={{ flex: 1 }}>
           <h2 className="voting-title" style={{ color }}>{mirada.title}</h2>
           <p className="voting-subtitle">{mirada.subtitle}</p>
         </div>
+        {Object.keys(myVotes).length > 0 && (
+          <button className="vp-reset-btn" onClick={onReset} title="Esborrar tots els meus vots">
+            <RotateCcw size={13} /> Reset
+          </button>
+        )}
       </div>
 
       <div className="voting-items-list">
@@ -603,6 +617,241 @@ function DashboardSlide() {
   );
 }
 
+// ─── ENDAVANT VOTE INTRO ──────────────────────────────────────────────────
+
+const ENDAVANT_CAT_DESCS: Record<string, string> = {
+  desestimar:  'No es veu possibilitat ni a la llarga de ser factible.',
+  reflexionar: 'Cal dedicar més temps a parlar-ne i valorar la idoneïtat.',
+  preparar:    'Es necessita temps, recursos o formació per implementar-ho.',
+  pilotar:     'Es considera una prova per aprendre i poder escalar.',
+  activar:     'Es pot implementar immediatament.',
+};
+
+function EndavantVoteIntroSlide() {
+  const color = COLORS['mirada-endavant'];
+  return (
+    <>
+      <div className="panel-left intro-panel" style={{ background: color }}>
+        <motion.div
+          className="intro-left-content"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
+          <div className="mirada-num">03</div>
+          <h1 className="mirada-ttl">Mirada Endavant</h1>
+          <p className="mirada-sub">Ara voteu!</p>
+          <p className="intro-text-compact">
+            Escaneja el QR i puntua cada proposta amb la categoria que millor
+            reflecteixi la teva posició.
+          </p>
+        </motion.div>
+      </div>
+      <div className="panel-right evi-right">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.1 }}>
+          <p className="evi-header">Categories de votació</p>
+          <div className="evi-cats">
+            {ENDAVANT_OPTS.map((opt, i) => (
+              <motion.div key={opt.key} className="evi-cat-row"
+                initial={{ opacity: 0, x: 14 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.18 + i * 0.09, ease: [0.22, 1, 0.36, 1] }}>
+                <div className="evi-cat-left">
+                  <span className="evi-cat-dot" style={{ background: opt.color }} />
+                  <span className="evi-cat-name" style={{ color: opt.color }}>{opt.label}</span>
+                </div>
+                <p className="evi-cat-desc">{ENDAVANT_CAT_DESCS[opt.key]}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </>
+  );
+}
+
+// ─── DASHBOARD ENDAVANT ───────────────────────────────────────────────────
+
+type EndavantItemStat = {
+  id: string; title: string;
+  blockIdx: number; itemIdx: number;
+  blockTitle: string; blockLetter: string;
+  counts: Record<string, number>;
+  total: number;
+  winner: typeof ENDAVANT_OPTS[0] | null;
+};
+
+function DeItemRow({ item, numLabel, delay }: { item: EndavantItemStat; numLabel: string; delay: number }) {
+  return (
+    <motion.div className="de-item-row"
+      initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}
+      transition={{ delay }}>
+      <span className="ds-item-num">{numLabel}</span>
+      <div className="de-item-body">
+        <span className="de-item-title">{item.title}</span>
+        {item.total > 0 ? (
+          <>
+            <div className="de-stacked-bar">
+              {ENDAVANT_OPTS.map(opt => {
+                const pct = (item.counts[opt.key] / item.total) * 100;
+                return pct > 0 ? (
+                  <motion.div key={opt.key} className="de-stacked-seg"
+                    style={{ background: opt.color }}
+                    initial={{ width: 0 }} animate={{ width: `${pct}%` }}
+                    transition={{ duration: 0.6, delay: delay + 0.1, ease: [0.22, 1, 0.36, 1] }}
+                    title={`${opt.label}: ${Math.round(pct)}%`}
+                  />
+                ) : null;
+              })}
+            </div>
+            {item.winner && (
+              <span className="de-win-badge"
+                style={{ background: `${item.winner.color}18`, color: item.winner.color, borderColor: `${item.winner.color}40` }}>
+                {item.winner.label}
+              </span>
+            )}
+          </>
+        ) : (
+          <span className="de-no-votes">—</span>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+function DashboardEndavant() {
+  const [votes, setVotes] = useState<{ proposal_id: string; choice: string; session_id: string }[]>([]);
+  const [activeBlock, setActiveBlock] = useState<string>('all');
+  const endavant = comsData.find(m => m.id === 'mirada-endavant')!;
+  const color = COLORS['mirada-endavant'];
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchVotes = async () => {
+      const { data } = await supabase.from('coms_votes')
+        .select('proposal_id, choice, session_id').eq('slide_id', 'mirada-endavant');
+      if (mounted) setVotes(data || []);
+    };
+    fetchVotes();
+    const interval = setInterval(fetchVotes, 3000);
+    return () => { mounted = false; clearInterval(interval); };
+  }, []);
+
+  const allItems: EndavantItemStat[] = endavant.blocks.flatMap((b, bi) =>
+    b.items.map((item, ii) => {
+      const iv = votes.filter(v => v.proposal_id === item.id);
+      const counts: Record<string, number> = Object.fromEntries(
+        ENDAVANT_OPTS.map(o => [o.key, iv.filter(v => v.choice === o.key).length])
+      );
+      const total = Object.values(counts).reduce((s, c) => s + c, 0);
+      const winner = total > 0
+        ? ENDAVANT_OPTS.reduce((a, b) => counts[a.key] >= counts[b.key] ? a : b)
+        : null;
+      return { ...item, blockIdx: bi, itemIdx: ii, blockTitle: b.title, blockLetter: String.fromCharCode(65 + bi), counts, total, winner };
+    })
+  );
+
+  const participantCount = new Set(votes.map(v => v.session_id)).size;
+  const globalCounts: Record<string, number> = Object.fromEntries(
+    ENDAVANT_OPTS.map(o => [o.key, allItems.reduce((s, item) => s + item.counts[o.key], 0)])
+  );
+  const globalTotal = Object.values(globalCounts).reduce((s, c) => s + c, 0);
+  const filteredItems = activeBlock === 'all' ? allItems : allItems.filter(i => i.blockLetter === activeBlock);
+  const numLabel = (item: EndavantItemStat) => `${item.blockIdx + 1}.${String(item.itemIdx + 1).padStart(2, '0')}`;
+
+  return (
+    <>
+      <div className="panel-left intro-panel" style={{ background: color }}>
+        <div className="intro-left-content">
+          <div className="mirada-num">03</div>
+          <h1 className="mirada-ttl">Resultats</h1>
+          <p className="mirada-sub">Mirada Endavant · Decisions</p>
+          <div className="ds-stat-row">
+            <span className="ds-stat-big">{participantCount}</span>
+            <span className="ds-stat-label">participants</span>
+          </div>
+
+          {globalTotal > 0 && (
+            <div className="de-dist">
+              <p className="de-dist-label">Distribució global</p>
+              <div className="de-dist-bar">
+                {ENDAVANT_OPTS.map(opt => {
+                  const pct = (globalCounts[opt.key] / globalTotal) * 100;
+                  return pct > 0 ? (
+                    <motion.div key={opt.key} className="de-dist-seg"
+                      style={{ background: opt.color }}
+                      initial={{ width: 0 }} animate={{ width: `${pct}%` }}
+                      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                    />
+                  ) : null;
+                })}
+              </div>
+              <div className="de-dist-legend">
+                {ENDAVANT_OPTS.map(opt => (
+                  <div key={opt.key} className="de-legend-row">
+                    <span className="de-legend-dot" style={{ background: opt.color }} />
+                    <span className="de-legend-label">{opt.label}</span>
+                    <span className="de-legend-pct">
+                      {globalTotal > 0 ? `${Math.round((globalCounts[opt.key] / globalTotal) * 100)}%` : '—'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="panel-right de-right">
+        <div className="de-filters">
+          <button className={`de-filter-btn${activeBlock === 'all' ? ' active' : ''}`}
+            style={activeBlock === 'all' ? { borderColor: color, color } : {}}
+            onClick={() => setActiveBlock('all')}>
+            Tot
+          </button>
+          {endavant.blocks.map((b, bi) => {
+            const letter = String.fromCharCode(65 + bi);
+            return (
+              <button key={letter}
+                className={`de-filter-btn${activeBlock === letter ? ' active' : ''}`}
+                style={activeBlock === letter ? { borderColor: color, color } : {}}
+                onClick={() => setActiveBlock(letter)}
+                title={b.title}>
+                {letter}
+              </button>
+            );
+          })}
+        </div>
+
+        {activeBlock === 'all' ? (
+          endavant.blocks.map((block, bi) => {
+            const blockItems = allItems.filter(i => i.blockIdx === bi);
+            return (
+              <div key={block.id} className="ds-block">
+                <div className="ds-block-header" style={{ background: `${color}0f`, borderLeftColor: color }}>
+                  <span className="ds-block-num" style={{ color }}>{String(bi + 1).padStart(2, '0')}</span>
+                  <h3 className="ds-block-title">{block.title}</h3>
+                </div>
+                {blockItems.map((item, ii) => (
+                  <DeItemRow key={item.id} item={item} numLabel={numLabel(item)} delay={(bi * 3 + ii) * 0.04} />
+                ))}
+              </div>
+            );
+          })
+        ) : (
+          <div className="ds-block">
+            {filteredItems.map((item, ii) => (
+              <DeItemRow key={item.id} item={item} numLabel={numLabel(item)} delay={ii * 0.05} />
+            ))}
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 
 export default function App() {
@@ -738,15 +987,38 @@ export default function App() {
   };
 
   const handleVote = async (choice: string, itemId: string, sectionId: string) => {
-    const newVotes = { ...myVotes, [itemId]: choice };
+    const isToggleOff = myVotes[itemId] === choice;
+    const newVotes = { ...myVotes };
+    if (isToggleOff) delete newVotes[itemId]; else newVotes[itemId] = choice;
     setMyVotes(newVotes);
     localStorage.setItem(`coms_votes_${sessionId}`, JSON.stringify(newVotes));
     try {
-      await supabase.from('coms_votes').upsert({
-        session_id: sessionId, slide_id: sectionId, proposal_id: itemId, choice,
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'session_id,proposal_id' });
+      if (isToggleOff) {
+        await supabase.from('coms_votes').delete()
+          .eq('session_id', sessionId).eq('proposal_id', itemId);
+      } else {
+        await supabase.from('coms_votes').upsert({
+          session_id: sessionId, slide_id: sectionId, proposal_id: itemId, choice,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'session_id,proposal_id' });
+      }
     } catch (e) { /* votes already saved in localStorage */ }
+  };
+
+  const resetMyVotes = async () => {
+    setMyVotes({});
+    localStorage.removeItem(`coms_votes_${sessionId}`);
+    try {
+      await supabase.from('coms_votes').delete().eq('session_id', sessionId);
+    } catch (e) { /* ignore */ }
+  };
+
+  const resetAllVotes = async () => {
+    if (!window.confirm('Eliminar TOTS els vots i iniciar nova votació?')) return;
+    try {
+      await supabase.from('coms_votes').delete().neq('session_id', '');
+    } catch (e) { /* ignore */ }
+    resetMyVotes();
   };
 
   const submitIdea = async () => {
@@ -760,7 +1032,10 @@ export default function App() {
 
   const slide = allSlides[currentIndex];
   const color = COLORS[slide.mirada.id];
-  const isVotingSection = slide.mirada.id === 'mirada-dins' || slide.mirada.id === 'mirada-endavant';
+  const isVotingSection =
+    slide.mirada.id === 'mirada-dins' ||
+    slide.type === 'endavant-vote-intro' ||
+    (slide.type === 'dashboard' && slide.mirada.id === 'mirada-endavant');
   const audienceUrl = `${window.location.origin}${window.location.pathname}`;
 
   const breadcrumb = slide.mirada.title;
@@ -769,15 +1044,16 @@ export default function App() {
     <div className="app">
       {/* Header */}
       <header className="header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+        {/* Brand */}
+        <div className="header-brand">
           <span className="badge">FJE 2026–2029</span>
           <span className="header-title">COMS · Pla d'Aprenentatge</span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+        {/* Center: breadcrumb + section progress */}
+        <div className="header-center">
           <span className="header-breadcrumb" style={{ color }}>{breadcrumb}</span>
-
-          <div className="mirada-nav-dots" style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+          <div className="header-nav-dots">
             {comsData.map((m) => {
               const miradaSlides = allSlides.filter(s => s.mirada.id === m.id);
               const mColor = COLORS[m.id];
@@ -785,42 +1061,56 @@ export default function App() {
               const pct = currentInMirada >= 0 ? ((currentInMirada + 1) / miradaSlides.length) : 0;
               const isActive = slide.mirada.id === m.id;
               return (
-                <div key={m.id} style={{ display: 'flex', flexDirection: 'column', gap: '3px', alignItems: 'center' }}>
-                  <motion.div animate={{ background: isActive ? mColor : '#ddd', width: isActive ? '28px' : '14px', height: '5px', borderRadius: '3px' }} transition={{ duration: 0.3 }} />
+                <div key={m.id} className="nav-dot-col">
+                  <motion.div className="nav-dot-bar"
+                    animate={{ background: isActive ? mColor : 'var(--border)', width: isActive ? '26px' : '12px' }}
+                    transition={{ duration: 0.3 }} />
                   {isActive && (
-                    <div style={{ width: '28px', height: '2px', background: '#eee', borderRadius: '1px', overflow: 'hidden' }}>
-                      <motion.div style={{ height: '100%', background: mColor, borderRadius: '1px' }} animate={{ width: `${pct * 100}%` }} transition={{ duration: 0.4 }} />
+                    <div className="nav-dot-track">
+                      <motion.div className="nav-dot-fill"
+                        style={{ background: mColor }}
+                        animate={{ width: `${pct * 100}%` }}
+                        transition={{ duration: 0.4 }} />
                     </div>
                   )}
                 </div>
               );
             })}
           </div>
-
-          {isPresenter && (
-            <>
-              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="badge"
-                style={{ background: isVotingOpen ? '#c0392b' : '#1e8449', color: 'white', cursor: 'pointer', border: 'none' }}
-                onClick={toggleVoting}>
-                {isVotingOpen ? <><X size={10} style={{ marginRight: 4 }} /> TANCAR VOTS</> : <><Rocket size={10} style={{ marginRight: 4 }} /> OBRIR VOTS</>}
-              </motion.button>
-
-              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="badge"
-                style={{ background: 'var(--surface-alt)', border: '1px solid var(--border)', color: 'var(--text-muted)', cursor: 'pointer' }}
-                onClick={() => setShowResults(v => !v)}>
-                {showResults ? <><EyeOff size={10} style={{ marginRight: 4 }} /> AMAGAR</> : <><BarChart2 size={10} style={{ marginRight: 4 }} /> RESULTATS</>}
-              </motion.button>
-
-              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="badge"
-                style={{ background: 'var(--surface-alt)', border: '1px solid var(--border)', color: 'var(--text-muted)', cursor: 'pointer' }}
-                onClick={() => setShowQr(v => !v)}>
-                <QrCode size={10} style={{ marginRight: 4 }} /> QR
-              </motion.button>
-
-              <span className="badge" style={{ borderColor: 'rgba(201,146,42,0.4)', color: 'var(--gold)' }}>PRESENTADOR</span>
-            </>
-          )}
         </div>
+
+        {/* Right: presenter controls (or empty spacer for audience) */}
+        {isPresenter ? (
+          <div className="header-controls">
+            <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+              className={`ctrl-vote-btn${isVotingOpen ? ' ctrl-vote-btn--open' : ''}`}
+              onClick={toggleVoting}>
+              {isVotingOpen
+                ? <><X size={11} /> Tancar vots</>
+                : <><Rocket size={11} /> Obrir vots</>}
+            </motion.button>
+
+            <div className="ctrl-icon-group">
+              <button className={`ctrl-icon-btn${showResults ? ' active' : ''}`}
+                onClick={() => setShowResults(v => !v)}
+                title={showResults ? 'Amagar resultats' : 'Mostrar resultats'}>
+                {showResults ? <EyeOff size={13} /> : <BarChart2 size={13} />}
+              </button>
+              <button className={`ctrl-icon-btn${showQr ? ' active' : ''}`}
+                onClick={() => setShowQr(v => !v)} title="QR per participants">
+                <QrCode size={13} />
+              </button>
+              <button className="ctrl-icon-btn ctrl-icon-btn--danger"
+                onClick={resetAllVotes} title="Nova votació (esborra tots els vots)">
+                <Trash2 size={13} />
+              </button>
+            </div>
+
+            <span className="ctrl-counter">{currentIndex + 1}<span className="ctrl-counter-sep">/</span>{allSlides.length}</span>
+          </div>
+        ) : (
+          <div className="header-brand" style={{ visibility: 'hidden' }} aria-hidden />
+        )}
       </header>
 
       {/* Slide */}
@@ -841,12 +1131,17 @@ export default function App() {
 
             {/* Audience in voting sections → VotingPanel (stays even when presenter is at dashboard) */}
             {!isPresenter && isVotingSection ? (
-              <VotingPanel mirada={slide.mirada} myVotes={myVotes} onVote={handleVote} />
+              <VotingPanel mirada={slide.mirada} myVotes={myVotes} onVote={handleVote} onReset={resetMyVotes} />
             ) : (
               <>
                 {slide.type === 'mirada-intro' && <IntroSlide slide={slide} />}
                 {slide.type === 'block' && <BlockSlide slide={slide} />}
-                {slide.type === 'dashboard' && <DashboardSlide />}
+                {slide.type === 'endavant-vote-intro' && <EndavantVoteIntroSlide />}
+                {slide.type === 'dashboard' && (
+                  slide.mirada.id === 'mirada-dins'
+                    ? <DashboardSlide />
+                    : <DashboardEndavant />
+                )}
                 {slide.type === 'item' && (
                   <ItemSlide slide={slide} isPresenter={isPresenter} isVotingOpen={isVotingOpen}
                     showResults={showResults} contributions={contributions}
