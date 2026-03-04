@@ -51,12 +51,36 @@ body {
 
 .main-content {
   flex: 1;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   width: 100%;
-  padding: 4rem 2rem 8rem;
+  padding: 2rem 2rem 6rem;
   position: relative;
   z-index: 10;
+}
+
+/* --- Split Layout --- */
+.split-layout {
+  display: grid;
+  grid-template-columns: 450px 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .split-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .side-sticky {
+    position: static !important;
+  }
+}
+
+.side-sticky {
+  position: sticky;
+  top: 120px;
 }
 
 .site-footer {
@@ -83,20 +107,53 @@ body {
 }
 
 .premium-card {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border-light);
-  border-radius: 20px;
-  box-shadow: var(--shadow-soft);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 24px;
+  box-shadow:
+    0 4px 24px -1px rgba(0, 0, 0, 0.05),
+    0 10px 40px -10px rgba(0, 0, 0, 0.03);
   padding: 2.5rem;
-  margin-bottom: 2.5rem;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
+  margin-bottom: 2rem;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  position: relative;
+}
+
+.premium-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 24px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.05));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 .premium-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-premium);
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.08);
+  border-color: rgba(52, 152, 219, 0.3);
+}
+
+.card-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  background: white;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 1.5rem;
 }
 
 .premium-card h3 {

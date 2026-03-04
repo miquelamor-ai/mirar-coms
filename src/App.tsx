@@ -221,140 +221,157 @@ export default function App() {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
 
-            {/* Capçalera de Mirada */}
-            <section style={{ marginBottom: '4rem' }}>
-              <div className="mirada-number">{currentMirada.number}</div>
-              <h2 className="serif" style={{ fontSize: '3.5rem', marginBottom: '0.5rem', color: currentMirada.color }}>
-                {currentMirada.title}
-              </h2>
-              <p className="mirada-subtitle serif">{currentMirada.subtitle}</p>
-              <p style={{ fontSize: '1.2rem', marginTop: '1.5rem', color: 'var(--text-secondary)', maxWidth: '700px' }}>
-                {currentMirada.intro}
-              </p>
-            </section>
+            <div className="split-layout">
+              {/* Esquerra: Títol de la Mirada (Fix) */}
+              <div className="side-sticky">
+                <section style={{ marginBottom: '2rem' }}>
+                  <motion.div
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="mirada-number"
+                  >
+                    {currentMirada.number}
+                  </motion.div>
+                  <h2 className="serif" style={{ fontSize: '4.5rem', marginBottom: '1rem', color: currentMirada.color }}>
+                    {currentMirada.title}
+                  </h2>
+                  <p className="mirada-subtitle serif" style={{ fontSize: '1.8rem' }}>{currentMirada.subtitle}</p>
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    style={{ fontSize: '1.3rem', marginTop: '2rem', color: 'var(--text-secondary)', lineHeight: '1.4' }}
+                  >
+                    {currentMirada.intro}
+                  </motion.p>
+                </section>
+              </div>
 
-            {/* Seccions Interactives */}
-            {currentMirada.sections.map((section) => (
-              <div key={section.id} className="premium-card">
-                <div className="flex gap-6" style={{ marginBottom: section.interactive ? '2rem' : '0' }}>
-                  <span style={{ fontSize: '2.5rem' }}>{section.icon}</span>
-                  <div>
-                    <h3 className="serif text-2xl" style={{ marginBottom: '0.5rem' }}>{section.title}</h3>
-                    <p style={{ color: 'var(--text-secondary)' }}>{section.content}</p>
-                  </div>
-                </div>
+              {/* Dreta: Contingut i Interacció (Scroll) */}
+              <div className="main-scroll-area">
+                {currentMirada.sections.map((section) => (
+                  <motion.div
+                    key={section.id}
+                    className="premium-card"
+                    whileHover={{ y: -5 }}
+                  >
+                    <div className="card-icon-wrapper">
+                      {section.icon}
+                    </div>
 
-                {/* Contingut d'interacció o resultats */}
-                {section.interactive && (
-                  <div style={{ paddingTop: '2rem', borderTop: '1px solid #f0f0f0' }}>
+                    <h3 className="serif" style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>{section.title}</h3>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', marginBottom: section.interactive ? '2rem' : '0' }}>
+                      {section.content}
+                    </p>
 
-                    {/* 1. Bloc de PROPOSTES (Mirada ENDAVANT) */}
-                    {section.proposals ? (
-                      <div className="proposals-list" style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-                        {section.proposals.map((prop) => (
-                          <div key={prop.id} className="proposal-item">
-                            <div className="flex gap-2" style={{ marginBottom: '1rem', fontWeight: 600 }}>
-                              <span>{prop.icon}</span>
-                              <span>{prop.title}</span>
-                            </div>
+                    {/* Contingut d'interacció o resultats */}
+                    {section.interactive && (
+                      <div style={{ paddingTop: '2rem', borderTop: '1px solid #f0f0f0' }}>
 
-                            {isPresenter ? (
-                              showResults && <LiveChart slideId={currentMirada.id} proposalId={prop.id} type="decision" />
-                            ) : (
-                              isVotingOpen ? (
-                                <div className="interaction-grid">
-                                  <button onClick={() => handleVote('activar', prop.id)} className="vote-btn">
-                                    <Rocket style={{ color: '#27ae60' }} />
-                                    <span>Activar</span>
-                                  </button>
-                                  <button onClick={() => handleVote('pilotar', prop.id)} className="vote-btn">
-                                    <FlaskConical style={{ color: '#3498db' }} />
-                                    <span>Pilotar</span>
-                                  </button>
-                                  <button onClick={() => handleVote('preparar', prop.id)} className="vote-btn">
-                                    <Construction style={{ color: '#f1c40f' }} />
-                                    <span>Preparar</span>
-                                  </button>
-                                  <button onClick={() => handleVote('reflexionar', prop.id)} className="vote-btn">
-                                    <Brain style={{ color: '#9b59b6' }} />
-                                    <span>Repensar</span>
-                                  </button>
-                                  <button onClick={() => handleVote('desestimar', prop.id)} className="vote-btn">
-                                    <Ban style={{ color: '#e74c3c' }} />
-                                    <span>No</span>
-                                  </button>
+                        {/* 1. Bloc de PROPOSTES (Mirada ENDAVANT) */}
+                        {section.proposals ? (
+                          <div className="proposals-list" style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+                            {section.proposals.map((prop) => (
+                              <div key={prop.id} className="proposal-item">
+                                <div className="flex gap-2" style={{ marginBottom: '1rem', fontWeight: 600 }}>
+                                  <span>{prop.icon}</span>
+                                  <span>{prop.title}</span>
                                 </div>
-                              ) : (
-                                <div className="text-center py-4 bg-gray-50 rounded-lg text-sm text-gray-400 italic">Votacions tancades pel presentador</div>
-                              )
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      /* 2. Bloc de VALIDACIÓ (Mirada FORA / DINS) */
-                      isPresenter ? (
-                        showResults && <LiveChart slideId={currentMirada.id} type="validation" />
-                      ) : (
-                        isVotingOpen ? (
-                          <div className="flex justify-between gap-4">
-                            <button onClick={() => handleVote('confirmar')} className="btn-secondary flex-1 flex" style={{ justifyContent: 'center', gap: '8px' }}>
-                              <Check size={20} /> Confirmar
-                            </button>
-                            <button onClick={() => handleVote('dubtar')} className="btn-secondary flex-1 flex" style={{ justifyContent: 'center', gap: '8px' }}>
-                              <HelpCircle size={20} /> Dubtar
-                            </button>
-                            <button onClick={() => handleVote('denegar')} className="btn-secondary flex-1 flex" style={{ justifyContent: 'center', gap: '8px' }}>
-                              <X size={20} /> Denegar
-                            </button>
+
+                                {isPresenter ? (
+                                  showResults && <LiveChart slideId={currentMirada.id} proposalId={prop.id} type="decision" />
+                                ) : (
+                                  isVotingOpen ? (
+                                    <div className="interaction-grid">
+                                      <button onClick={() => handleVote('activar', prop.id)} className="vote-btn">
+                                        <Rocket style={{ color: '#27ae60' }} />
+                                        <span>Activar</span>
+                                      </button>
+                                      <button onClick={() => handleVote('pilotar', prop.id)} className="vote-btn">
+                                        <FlaskConical style={{ color: '#3498db' }} />
+                                        <span>Pilotar</span>
+                                      </button>
+                                      <button onClick={() => handleVote('preparar', prop.id)} className="vote-btn">
+                                        <Construction style={{ color: '#f1c40f' }} />
+                                        <span>Preparar</span>
+                                      </button>
+                                      <button onClick={() => handleVote('reflexionar', prop.id)} className="vote-btn">
+                                        <Brain style={{ color: '#9b59b6' }} />
+                                        <span>Repensar</span>
+                                      </button>
+                                      <button onClick={() => handleVote('desestimar', prop.id)} className="vote-btn">
+                                        <Ban style={{ color: '#e74c3c' }} />
+                                        <span>No</span>
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <div className="text-center py-4 bg-gray-50 rounded-lg text-sm text-gray-400 italic">Votacions tancades pel presentador</div>
+                                  )
+                                )}
+                              </div>
+                            ))}
                           </div>
                         ) : (
-                          <div className="text-center py-4 bg-gray-50 rounded-lg text-sm text-gray-400 italic">Espai de reflexió (votacions tancades)</div>
-                        )
-                      )
-                    )}
+                          /* 2. Bloc de VALIDACIÓ (Mirada FORA / DINS) */
+                          isPresenter ? (
+                            showResults && <LiveChart slideId={currentMirada.id} type="validation" />
+                          ) : (
+                            isVotingOpen ? (
+                              <div className="flex justify-between gap-4">
+                                <button onClick={() => handleVote('confirmar')} className="btn-secondary flex-1 flex" style={{ justifyContent: 'center', gap: '8px' }}>
+                                  <Check size={20} /> Confirmar
+                                </button>
+                                <button onClick={() => handleVote('dubtar')} className="btn-secondary flex-1 flex" style={{ justifyContent: 'center', gap: '8px' }}>
+                                  <HelpCircle size={20} /> Dubtar
+                                </button>
+                                <button onClick={() => handleVote('denegar')} className="btn-secondary flex-1 flex" style={{ justifyContent: 'center', gap: '8px' }}>
+                                  <X size={20} /> Denegar
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="text-center py-4 bg-gray-50 rounded-lg text-sm text-gray-400 italic">Espai de reflexió (votacions tancades)</div>
+                            )
+                          )
+                        )}
 
-                    {/* Bústia d'aportacions (només audiència) */}
-                    {!isPresenter && (
-                      <div className="idea-input-group">
-                        <input
-                          type="text"
-                          className="idea-input"
-                          placeholder="Tens una aportació nova?"
-                          value={newIdea}
-                          onChange={(e) => setNewIdea(e.target.value)}
-                        />
-                        <button onClick={submitIdea} className="btn-primary" style={{ padding: '0 1.5rem', display: 'flex', alignItems: 'center' }}>
-                          <Send size={20} />
-                        </button>
+                        {/* Bústia d'aportacions (només audiència) */}
+                        {!isPresenter && (
+                          <div className="idea-input-group">
+                            <input
+                              type="text"
+                              className="idea-input"
+                              placeholder="Tens una aportació nova?"
+                              value={newIdea}
+                              onChange={(e) => setNewIdea(e.target.value)}
+                            />
+                            <button onClick={submitIdea} className="btn-primary" style={{ padding: '0 1.5rem', display: 'flex', alignItems: 'center' }}>
+                              <Send size={20} />
+                            </button>
+                          </div>
+                        )}
                       </div>
                     )}
-                  </div>
+                  </motion.div>
+                ))}
+
+                {/* Tauler d'Aportacions (Dins de la columna de la dreta al final) */}
+                {isPresenter && contributions.length > 0 && (
+                  <section className="fade-in" style={{ marginTop: '3rem' }}>
+                    <div className="flex items-center gap-3" style={{ marginBottom: '1.5rem' }}>
+                      <Send className="text-info" size={24} />
+                      <h3 className="serif text-2xl" style={{ opacity: 0.7 }}>Bústia de la Sala</h3>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
+                      {contributions.map((idea) => (
+                        <div key={idea.id} className="premium-card" style={{ padding: '1.2rem', marginBottom: 0, borderLeft: '4px solid var(--accent-blue)' }}>
+                          <p style={{ fontSize: '1rem', fontStyle: 'italic' }}>"{idea.content}"</p>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
                 )}
               </div>
-            ))}
-
-            {/* Tauler d'Aportacions del Presentador (Secció final lliure) */}
-            {isPresenter && contributions.length > 0 && (
-              <section className="fade-in" style={{ marginTop: '4rem' }}>
-                <div className="flex items-center gap-3" style={{ marginBottom: '2rem' }}>
-                  <Send className="text-info" size={24} />
-                  <h3 className="serif text-3xl">Bústia d'Aportacions de la Sala</h3>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                  {contributions.map((idea) => (
-                    <div key={idea.id} className="premium-card" style={{ padding: '1.5rem', marginBottom: 0, borderLeft: '4px solid var(--accent-blue)' }}>
-                      <p style={{ fontSize: '1.1rem', fontStyle: 'italic', color: 'var(--text-primary)' }}>
-                        "{idea.content}"
-                      </p>
-                      <div style={{ marginTop: '1rem', fontSize: '0.7rem', color: 'var(--text-secondary)', textAlign: 'right' }}>
-                        {new Date(idea.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
+            </div>
           </motion.div>
         </AnimatePresence>
       </main>
