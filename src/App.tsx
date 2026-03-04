@@ -23,31 +23,40 @@ interface FlatSlide {
   itemIndex: number;
   totalBlocks: number;
   totalItems: number;
+  introStep?: number; // 0 = initial intro, 1+ = progressive chip reveal
 }
 
 function buildSlides(): FlatSlide[] {
-  return comsData.flatMap(mirada => [
-    {
-      type: 'mirada-intro' as SlideType,
-      slideKey: `${mirada.id}:intro`,
+  return comsData.flatMap(mirada => {
+    const introSlide: FlatSlide = {
+      type: 'mirada-intro', slideKey: `${mirada.id}:intro`,
       mirada, blockIndex: -1, itemIndex: -1,
-      totalBlocks: mirada.blocks.length, totalItems: 0
-    },
-    ...mirada.blocks.flatMap((block, bi) => [
-      {
+      totalBlocks: mirada.blocks.length, totalItems: 0, introStep: 0,
+    };
+
+    if (mirada.layout === 'reveal-only') {
+      return [
+        introSlide,
+        ...mirada.blocks.map((_, si) => ({
+          type: 'mirada-intro' as SlideType,
+          slideKey: `${mirada.id}:intro:s${si + 1}`,
+          mirada, blockIndex: -1, itemIndex: -1,
+          totalBlocks: mirada.blocks.length, totalItems: 0, introStep: si + 1,
+        })),
+      ];
+    }
+
+    // 'blocks-only': intro + block slides, no reveal steps, no item slides
+    return [
+      introSlide,
+      ...mirada.blocks.map((block, bi) => ({
         type: 'block' as SlideType,
         slideKey: `${mirada.id}:b${bi}`,
         mirada, block, blockIndex: bi, itemIndex: -1,
-        totalBlocks: mirada.blocks.length, totalItems: block.items.length
-      },
-      ...block.items.map((item, ii) => ({
-        type: 'item' as SlideType,
-        slideKey: `${mirada.id}:b${bi}:i${ii}`,
-        mirada, block, blockIndex: bi, item, itemIndex: ii,
-        totalBlocks: mirada.blocks.length, totalItems: block.items.length
-      }))
-    ])
-  ]);
+        totalBlocks: mirada.blocks.length, totalItems: block.items.length,
+      })),
+    ];
+  });
 }
 
 function normalizeKey(key: string): string {
@@ -57,76 +66,121 @@ function normalizeKey(key: string): string {
 const allSlides = buildSlides();
 
 const COLORS: Record<string, string> = {
-  'preamble':         '#8e44ad',
-  'mirada-fora':      '#3498db',
-  'mirada-dins':      '#e67e22',
-  'mirada-endavant':  '#27ae60'
+  'preamble': '#8e44ad',
+  'mirada-fora': '#3498db',
+  'mirada-dins': '#e67e22',
+  'mirada-endavant': '#27ae60'
 };
 
 // ─── MIRADA INTRO SLIDE ───────────────────────────────────────────────────────
 
 function IntroSlide({ slide }: { slide: FlatSlide }) {
   const { mirada } = slide;
+  const step = slide.introStep ?? 0;
   const color = COLORS[mirada.id];
+
+  // ── Step 0: initial intro ──────────────────────────────────────────────────
+  if (step === 0) {
+    return (
+      <>
+        <div className="panel-left intro-panel" style={{ background: color }}>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="intro-left-content"
+          >
+            <div className="mirada-num">{mirada.number}</div>
+            <h1 className="mirada-ttl">{mirada.title}</h1>
+            <p className="mirada-sub">{mirada.subtitle}</p>
+
+            <div className="intro-blocks-preview">
+              {mirada.blocks.map((b, i) => (
+                <motion.div
+                  key={b.id}
+                  className="intro-block-chip"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.35 + i * 0.07 }}
+                >
+                  {b.title}
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="panel-right intro-right">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.12 }}
+          >
+            <div className="intro-label" style={{ color }}>Introducció</div>
+            <blockquote className="intro-quote">{mirada.intro}</blockquote>
+
+            {mirada.illustration && (
+              <motion.div className="intro-illustration"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.25, duration: 0.6 }}
+              >
+                <img src={mirada.illustration} className="sketch-img" alt="" />
+              </motion.div>
+            )}
+
+            <div className="intro-items-count">
+              <p className="count-label">{mirada.blocks.length} apartats</p>
+            </div>
+          </motion.div>
+        </div>
+      </>
+    );
+  }
+
+  // ── Step 1+: progressive chip reveal ──────────────────────────────────────
+  const revealedBlocks = mirada.blocks.slice(0, step);
 
   return (
     <>
-      {/* Left: solid color */}
+      {/* Left: header + intro text compact */}
       <div className="panel-left intro-panel" style={{ background: color }}>
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.35 }}
           className="intro-left-content"
         >
           <div className="mirada-num">{mirada.number}</div>
           <h1 className="mirada-ttl">{mirada.title}</h1>
           <p className="mirada-sub">{mirada.subtitle}</p>
-
-          <div className="intro-blocks-preview">
-            {mirada.blocks.map((b, i) => (
-              <motion.div
-                key={b.id}
-                className="intro-block-chip"
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.35 + i * 0.07 }}
-              >
-                {b.title}
-              </motion.div>
-            ))}
-          </div>
+          <p className="intro-text-compact">{mirada.intro}</p>
         </motion.div>
       </div>
 
-      {/* Right: intro text + sketch background */}
-      <div className="panel-right intro-right" style={{ position: 'relative' }}>
-        <img
-          src="/sketch-coms.png"
-          aria-hidden
-          alt=""
-          className="intro-sketch"
-          style={{
-            position: 'absolute', inset: 0,
-            width: '100%', height: '100%',
-            objectFit: 'cover', objectPosition: 'center',
-            opacity: 0.13,
-            mixBlendMode: 'multiply',
-            pointerEvents: 'none',
-          }}
-        />
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.12 }}
-        >
-          <div className="intro-label" style={{ color }}>Introducció</div>
-          <blockquote className="intro-quote">{mirada.intro}</blockquote>
-
-          <div className="intro-items-count">
-            <p className="count-label">{mirada.blocks.length} apartats</p>
-          </div>
-        </motion.div>
+      {/* Right: revealed expanded chips */}
+      <div className="panel-right reveal-right">
+        <div className="reveal-chips-list">
+          {revealedBlocks.map((block, i) => {
+            const isNew = i === revealedBlocks.length - 1;
+            return (
+              <motion.div
+                key={block.id}
+                className="reveal-chip"
+                initial={isNew ? { opacity: 0, x: -28 } : { opacity: 1, x: 0 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={isNew
+                  ? { duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }
+                  : { duration: 0.18 }
+                }
+              >
+                <div className="reveal-chip-num" style={{ color }}>{String(i + 1).padStart(2, '0')}</div>
+                <h3 className="reveal-chip-title" style={{ color }}>{block.title}</h3>
+                <p className="reveal-chip-summary">{block.summary}</p>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </>
   );
@@ -181,6 +235,16 @@ function BlockSlide({ slide }: { slide: FlatSlide }) {
 
             <p className="block-summary">{block.summary}</p>
 
+            {block.illustration && (
+              <motion.div className="block-illustration"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <img src={block.illustration} className="sketch-img" alt="" style={{ maxWidth: '400px', margin: '1rem 0' }} />
+              </motion.div>
+            )}
+
             {block.items.length > 0 ? (
               <div className="block-items-grid">
                 {block.items.map((item, i) => (
@@ -191,7 +255,7 @@ function BlockSlide({ slide }: { slide: FlatSlide }) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 + i * 0.06 }}
                   >
-                                        <div>
+                    <div>
                       <p className="block-item-title">{item.title}</p>
                       <p className="block-item-preview">{item.content}</p>
                     </div>
@@ -242,17 +306,17 @@ function ItemSlide({ slide, isPresenter, isVotingOpen, showResults, contribution
 
   const VOTE_OPTIONS = item.votingType === 'decision'
     ? [
-        { key: 'activar',     icon: <Rocket size={13} />,      label: 'Activar',  color: '#27ae60' },
-        { key: 'pilotar',     icon: <FlaskConical size={13} />, label: 'Pilotar',  color: '#3498db' },
-        { key: 'preparar',    icon: <Construction size={13} />, label: 'Preparar', color: '#c9922a' },
-        { key: 'reflexionar', icon: <Brain size={13} />,        label: 'Repensar', color: '#8e44ad' },
-        { key: 'desestimar',  icon: <Ban size={13} />,          label: 'No',       color: '#e74c3c' },
-      ]
+      { key: 'activar', icon: <Rocket size={13} />, label: 'Activar', color: '#27ae60' },
+      { key: 'pilotar', icon: <FlaskConical size={13} />, label: 'Pilotar', color: '#3498db' },
+      { key: 'preparar', icon: <Construction size={13} />, label: 'Preparar', color: '#c9922a' },
+      { key: 'reflexionar', icon: <Brain size={13} />, label: 'Repensar', color: '#8e44ad' },
+      { key: 'desestimar', icon: <Ban size={13} />, label: 'No', color: '#e74c3c' },
+    ]
     : [
-        { key: 'confirmar', icon: <Check size={14} />,      label: 'Confirmar', color: '#27ae60' },
-        { key: 'dubtar',    icon: <HelpCircle size={14} />, label: 'Dubtar',    color: '#c9922a' },
-        { key: 'denegar',   icon: <X size={14} />,          label: 'Denegar',   color: '#e74c3c' },
-      ];
+      { key: 'confirmar', icon: <Check size={14} />, label: 'Confirmar', color: '#27ae60' },
+      { key: 'dubtar', icon: <HelpCircle size={14} />, label: 'Dubtar', color: '#c9922a' },
+      { key: 'denegar', icon: <X size={14} />, label: 'Denegar', color: '#e74c3c' },
+    ];
 
   return (
     <>
@@ -440,10 +504,27 @@ export default function App() {
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') updateSlide(currentIndex + 1);
-      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   updateSlide(currentIndex - 1);
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') updateSlide(currentIndex - 1);
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
+  }, [currentIndex, isPresenter]);
+
+  useEffect(() => {
+    let startX = 0;
+    let startY = 0;
+    const onStart = (e: TouchEvent) => { startX = e.touches[0].clientX; startY = e.touches[0].clientY; };
+    const onEnd = (e: TouchEvent) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+        if (dx < 0) updateSlide(currentIndex + 1);
+        else updateSlide(currentIndex - 1);
+      }
+    };
+    window.addEventListener('touchstart', onStart, { passive: true });
+    window.addEventListener('touchend', onEnd, { passive: true });
+    return () => { window.removeEventListener('touchstart', onStart); window.removeEventListener('touchend', onEnd); };
   }, [currentIndex, isPresenter]);
 
   const toggleVoting = async () => {
@@ -513,7 +594,25 @@ export default function App() {
             })}
           </div>
 
-          {isPresenter && <span className="badge" style={{ borderColor: 'rgba(201,146,42,0.4)', color: 'var(--gold)' }}>PRESENTADOR</span>}
+          {isPresenter && (
+            <>
+              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="badge"
+                style={{ background: isVotingOpen ? '#c0392b' : '#1e8449', color: 'white', cursor: 'pointer', border: 'none' }}
+                onClick={toggleVoting}
+              >
+                {isVotingOpen ? <><X size={10} style={{ marginRight: 4 }} /> TANCAR VOTS</> : <><Rocket size={10} style={{ marginRight: 4 }} /> OBRIR VOTS</>}
+              </motion.button>
+
+              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="badge"
+                style={{ background: 'var(--surface-alt)', border: '1px solid var(--border)', color: 'var(--text-muted)', cursor: 'pointer' }}
+                onClick={() => setShowResults(v => !v)}
+              >
+                {showResults ? <><EyeOff size={10} style={{ marginRight: 4 }} /> AMAGAR</> : <><BarChart2 size={10} style={{ marginRight: 4 }} /> RESULTATS</>}
+              </motion.button>
+
+              <span className="badge" style={{ borderColor: 'rgba(201,146,42,0.4)', color: 'var(--gold)' }}>PRESENTADOR</span>
+            </>
+          )}
         </div>
       </header>
 
@@ -535,37 +634,15 @@ export default function App() {
           </motion.div>
         </AnimatePresence>
       </main>
-
-      {/* Footer */}
-      <footer className="footer">
-        {isPresenter ? (
-          <>
-            <button className="btn-nav" onClick={() => updateSlide(currentIndex - 1)} disabled={currentIndex === 0}>
-              <ChevronLeft size={20} />
-            </button>
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-              <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="btn-action"
-                style={{ background: isVotingOpen ? '#c0392b' : '#1e8449' }} onClick={toggleVoting}>
-                {isVotingOpen ? <><X size={14} /> Tancar vots</> : <><Rocket size={14} /> Obrir vots</>}
-              </motion.button>
-              <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="btn-action"
-                style={{ background: 'var(--surface-alt)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}
-                onClick={() => setShowResults(v => !v)}>
-                {showResults ? <><EyeOff size={14} /> Amagar</> : <><BarChart2 size={14} /> Resultats</>}
-              </motion.button>
-              <div className="slide-counter">{currentIndex + 1} / {allSlides.length}</div>
-            </div>
-            <button className="btn-nav" onClick={() => updateSlide(currentIndex + 1)} disabled={currentIndex === allSlides.length - 1}>
-              <ChevronRight size={20} />
-            </button>
-          </>
-        ) : (
-          <div style={{ width: '100%', height: '3px', background: 'var(--border-light)', borderRadius: '2px', overflow: 'hidden' }}>
-            <motion.div style={{ height: '100%', background: color, borderRadius: '2px' }}
-              animate={{ width: `${((currentIndex + 1) / allSlides.length) * 100}%` }} transition={{ duration: 0.5 }} />
-          </div>
-        )}
-      </footer>
+      {/* Navegació Flotant Minimalista (Només fletxes) */}
+      <div className="nav-overlay">
+        <button className="nav-arrow-float" onClick={() => updateSlide(currentIndex - 1)} disabled={currentIndex === 0}>
+          <ChevronLeft size={24} />
+        </button>
+        <button className="nav-arrow-float" onClick={() => updateSlide(currentIndex + 1)} disabled={currentIndex === allSlides.length - 1}>
+          <ChevronRight size={24} />
+        </button>
+      </div>
     </div>
   );
 }
