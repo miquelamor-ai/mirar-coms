@@ -472,75 +472,136 @@ function DashboardSlide() {
     return () => { mounted = false; clearInterval(interval); };
   }, []);
 
+  // Enrich items with stats
   const allItems = dins.blocks.flatMap((b, bi) =>
-    b.items.map((item, ii) => ({ ...item, blockIdx: bi, itemIdx: ii }))
+    b.items.map((item, ii) => {
+      const iv = votes.filter(v => v.proposal_id === item.id);
+      const yes = iv.filter(v => v.choice === 'confirmar').length;
+      const no  = iv.filter(v => v.choice === 'denegar').length;
+      const total = yes + no;
+      const yesPct = total > 0 ? Math.round((yes / total) * 100) : 0;
+      return { ...item, blockIdx: bi, itemIdx: ii, blockTitle: b.title, yes, no, total, yesPct };
+    })
   );
+
   const participantCount = new Set(votes.map(v => v.session_id)).size;
+  const globalYes   = allItems.reduce((s, i) => s + i.yes, 0);
+  const globalTotal = allItems.reduce((s, i) => s + i.total, 0);
+  const globalPct   = globalTotal > 0 ? Math.round((globalYes / globalTotal) * 100) : 0;
+
+  const voted = allItems.filter(i => i.total > 0);
+  const topAgree    = [...voted].sort((a, b) => b.yesPct - a.yesPct).slice(0, 3);
+  const topDisagree = [...voted].sort((a, b) => a.yesPct - b.yesPct).slice(0, 3);
+
+  const numLabel = (i: typeof allItems[0]) => `${i.blockIdx + 1}.${String(i.itemIdx + 1).padStart(2, '0')}`;
 
   return (
     <>
+      {/* Left: resum executiu */}
       <div className="panel-left intro-panel" style={{ background: color }}>
         <div className="intro-left-content">
           <div className="mirada-num">02</div>
           <h1 className="mirada-ttl">Resultats</h1>
           <p className="mirada-sub">Mirada Dins · Diagnosi</p>
-          <p className="intro-text-compact" style={{ color: 'rgba(255,255,255,0.85)', marginTop: '1.5rem' }}>
-            {participantCount} participant{participantCount !== 1 ? 's' : ''} han votat
-          </p>
-          <div style={{ marginTop: '1.5rem' }}>
-            {allItems.map((item) => {
-              const itemVotes = votes.filter(v => v.proposal_id === item.id);
-              const yes = itemVotes.filter(v => v.choice === 'confirmar').length;
-              const total = yes + itemVotes.filter(v => v.choice === 'denegar').length;
-              const yesPct = total > 0 ? Math.round((yes / total) * 100) : 0;
-              const numLabel = `${item.blockIdx + 1}.${String(item.itemIdx + 1).padStart(2, '0')}`;
-              return (
-                <div key={item.id} style={{ marginBottom: '0.4rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.62rem', color: 'rgba(255,255,255,0.6)', marginBottom: '2px' }}>
-                    <span>{numLabel}</span><span>{yesPct}%</span>
-                  </div>
-                  <div style={{ height: '4px', background: 'rgba(255,255,255,0.15)', borderRadius: '2px', overflow: 'hidden' }}>
-                    <motion.div style={{ height: '100%', background: 'rgba(255,255,255,0.75)', borderRadius: '2px' }}
-                      initial={{ width: 0 }} animate={{ width: `${yesPct}%` }} transition={{ duration: 0.6, delay: item.itemIdx * 0.04 }} />
-                  </div>
-                </div>
-              );
-            })}
+
+          <div className="ds-stat-row">
+            <span className="ds-stat-big">{participantCount}</span>
+            <span className="ds-stat-label">participants</span>
           </div>
+
+          {globalTotal > 0 && (
+            <div className="ds-global">
+              <div className="ds-global-top">
+                <span className="ds-global-pct">{globalPct}%</span>
+                <span className="ds-global-label">acord global</span>
+              </div>
+              <div className="ds-global-track">
+                <motion.div className="ds-global-fill"
+                  initial={{ width: 0 }} animate={{ width: `${globalPct}%` }}
+                  transition={{ duration: 0.9 }} />
+              </div>
+            </div>
+          )}
+
+          {topAgree.length > 0 && (
+            <div className="ds-top">
+              <p className="ds-top-label">↑ Més acord</p>
+              {topAgree.map(item => (
+                <div key={item.id} className="ds-top-row">
+                  <span className="ds-top-num">{numLabel(item)}</span>
+                  <span className="ds-top-title">{item.title}</span>
+                  <span className="ds-top-pct">{item.yesPct}%</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {topDisagree.length > 0 && (
+            <div className="ds-top ds-top--no">
+              <p className="ds-top-label">↓ Menys acord</p>
+              {topDisagree.map(item => (
+                <div key={item.id} className="ds-top-row">
+                  <span className="ds-top-num">{numLabel(item)}</span>
+                  <span className="ds-top-title">{item.title}</span>
+                  <span className="ds-top-pct">{item.yesPct}%</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="panel-right" style={{ overflowY: 'auto' }}>
-        <div className="dashboard-grid">
-          {allItems.map((item) => {
-            const itemVotes = votes.filter(v => v.proposal_id === item.id);
-            const yes = itemVotes.filter(v => v.choice === 'confirmar').length;
-            const no  = itemVotes.filter(v => v.choice === 'denegar').length;
-            const total = yes + no;
-            const yesPct = total > 0 ? Math.round((yes / total) * 100) : 0;
-            const noPct  = total > 0 ? Math.round((no  / total) * 100) : 0;
-            const numLabel = `${item.blockIdx + 1}.${String(item.itemIdx + 1).padStart(2, '0')}`;
-            return (
-              <div key={item.id} className="dashboard-item">
-                <div className="dash-item-header">
-                  <span className="dash-item-num" style={{ color }}>{numLabel}</span>
-                  <p className="dash-item-title">{item.title}</p>
-                </div>
-                <div className="dash-bar-track">
-                  <motion.div className="dash-bar dash-bar--yes" title={`${yes} coincideixen`}
-                    initial={{ width: 0 }} animate={{ width: `${yesPct}%` }} transition={{ duration: 0.6, delay: item.itemIdx * 0.05 }} />
-                  <motion.div className="dash-bar dash-bar--no" title={`${no} no coincideixen`}
-                    initial={{ width: 0 }} animate={{ width: `${noPct}%` }} transition={{ duration: 0.6, delay: item.itemIdx * 0.05 + 0.1 }} />
-                </div>
-                <div className="dash-counts">
-                  <span className="dash-yes">{yes} coincideixen</span>
-                  <span className="dash-no">{no} no coincideixen</span>
-                  {total === 0 && <span style={{ color: 'var(--text-dim)', fontSize: '0.72rem' }}>Sense vots</span>}
-                </div>
+      {/* Right: items agrupats per bloc */}
+      <div className="panel-right ds-right">
+        {dins.blocks.map((block, bi) => {
+          const blockItems = allItems.filter(i => i.blockIdx === bi);
+          const bYes   = blockItems.reduce((s, i) => s + i.yes, 0);
+          const bTotal = blockItems.reduce((s, i) => s + i.total, 0);
+          const bPct   = bTotal > 0 ? Math.round((bYes / bTotal) * 100) : null;
+
+          return (
+            <div key={block.id} className="ds-block">
+              <div className="ds-block-header">
+                <span className="ds-block-num" style={{ color }}>{String(bi + 1).padStart(2, '0')}</span>
+                <h3 className="ds-block-title">{block.title}</h3>
+                {bPct !== null && (
+                  <span className="ds-block-badge" style={{ background: `${color}18`, color }}>
+                    {bPct}% acord
+                  </span>
+                )}
               </div>
-            );
-          })}
-        </div>
+
+              {blockItems.map((item, ii) => (
+                <motion.div key={item.id} className="ds-item-row"
+                  initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: (bi * 3 + ii) * 0.04 }}>
+                  <span className="ds-item-num" style={{ color }}>{numLabel(item)}</span>
+                  <div className="ds-item-body">
+                    <div className="ds-item-top">
+                      <span className="ds-item-title">{item.title}</span>
+                      {item.total > 0 ? (
+                        <span className="ds-item-counts">
+                          <span className="ds-count-yes">{item.yes}✓</span>
+                          <span className="ds-count-no">{item.no}✗</span>
+                        </span>
+                      ) : (
+                        <span className="ds-item-empty">—</span>
+                      )}
+                    </div>
+                    <div className="ds-bar-track">
+                      <motion.div className="ds-bar-yes"
+                        initial={{ width: 0 }} animate={{ width: `${item.yesPct}%` }}
+                        transition={{ duration: 0.6, delay: (bi * 3 + ii) * 0.05 }} />
+                      <motion.div className="ds-bar-no"
+                        initial={{ width: 0 }} animate={{ width: `${item.total > 0 ? 100 - item.yesPct : 0}%` }}
+                        transition={{ duration: 0.6, delay: (bi * 3 + ii) * 0.05 + 0.1 }} />
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          );
+        })}
       </div>
     </>
   );
