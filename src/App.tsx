@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 // ─── FLAT SLIDE STRUCTURE ─────────────────────────────────────────────────────
 
-type SlideType = 'mirada-intro' | 'block' | 'item' | 'dashboard' | 'endavant-vote-intro';
+type SlideType = 'mirada-intro' | 'block' | 'item' | 'dashboard' | 'endavant-vote-intro' | 'correlation';
 
 interface FlatSlide {
   type: SlideType;
@@ -65,6 +65,14 @@ function buildSlides(): FlatSlide[] {
         result.push({
           type: 'dashboard',
           slideKey: `${mirada.id}:dashboard`,
+          mirada, blockIndex: -1, itemIndex: -1,
+          totalBlocks: 0, totalItems: 0,
+        });
+      }
+      if (mirada.id === 'mirada-endavant') {
+        result.push({
+          type: 'correlation',
+          slideKey: 'mirada-endavant:correlation',
           mirada, blockIndex: -1, itemIndex: -1,
           totalBlocks: 0, totalItems: 0,
         });
@@ -778,11 +786,14 @@ const CHART_TYPES: { key: ChartType; label: string }[] = [
 
 function DashboardEndavant() {
   const [votes, setVotes] = useState<{ proposal_id: string; choice: string; session_id: string }[]>([]);
+  const [dinsVotesSeg, setDinsVotesSeg] = useState<{ session_id: string; choice: string }[]>([]);
   const [activeBlock, setActiveBlock] = useState<string>('all');
   const [activeOpt, setActiveOpt] = useState<string | null>(null);
   const [chartType, setChartType] = useState<ChartType>('stacked');
+  const [segByDins, setSegByDins] = useState(false);
   const endavant = comsData.find(m => m.id === 'mirada-endavant')!;
   const color = COLORS['mirada-endavant'];
+  const colorDins = COLORS['mirada-dins'];
 
   useEffect(() => {
     let mounted = true;
@@ -795,6 +806,12 @@ function DashboardEndavant() {
     const interval = setInterval(fetchVotes, 3000);
     return () => { mounted = false; clearInterval(interval); };
   }, []);
+
+  useEffect(() => {
+    if (!segByDins) { setDinsVotesSeg([]); return; }
+    supabase.from('coms_votes').select('session_id, choice').eq('slide_id', 'mirada-dins')
+      .then(({ data }) => setDinsVotesSeg(data || []));
+  }, [segByDins]);
 
   const allItems: EndavantItemStat[] = endavant.blocks.flatMap((b, bi) =>
     b.items.map((item, ii) => {
@@ -819,6 +836,47 @@ function DashboardEndavant() {
     .filter(i => activeBlock === 'all' || i.blockLetter === activeBlock)
     .filter(i => !activeOpt || i.winner?.key === activeOpt);
   const numLabel = (item: EndavantItemStat) => `${item.blockIdx + 1}.${String(item.itemIdx + 1).padStart(2, '0')}`;
+
+  // Diagnosi segmentation
+  const diagProfile: Record<string, 'alta' | 'baixa'> = {};
+  if (segByDins && dinsVotesSeg.length > 0) {
+    const bySession: Record<string, { confirmar: number; total: number }> = {};
+    dinsVotesSeg.forEach(v => {
+      if (!bySession[v.session_id]) bySession[v.session_id] = { confirmar: 0, total: 0 };
+      bySession[v.session_id].total++;
+      if (v.choice === 'confirmar') bySession[v.session_id].confirmar++;
+    });
+    Object.entries(bySession).forEach(([sid, { confirmar, total }]) => {
+      diagProfile[sid] = confirmar / total >= 0.5 ? 'alta' : 'baixa';
+    });
+  }
+
+  const itemSegData: Record<string, { altaCounts: Record<string, number>; altaTotal: number; baixaCounts: Record<string, number>; baixaTotal: number }> = {};
+  if (segByDins && Object.keys(diagProfile).length > 0) {
+    allItems.forEach(item => {
+      const iv = votes.filter(v => v.proposal_id === item.id);
+      const altaIv  = iv.filter(v => diagProfile[v.session_id] === 'alta');
+      const baixaIv = iv.filter(v => diagProfile[v.session_id] === 'baixa');
+      itemSegData[item.id] = {
+        altaCounts:  Object.fromEntries(ENDAVANT_OPTS.map(o => [o.key, altaIv.filter(v => v.choice === o.key).length])),
+        altaTotal:   altaIv.length,
+        baixaCounts: Object.fromEntries(ENDAVANT_OPTS.map(o => [o.key, baixaIv.filter(v => v.choice === o.key).length])),
+        baixaTotal:  baixaIv.length,
+      };
+    });
+  }
+
+  const renderRow = (item: EndavantItemStat, nl: string, delay: number) =>
+    segByDins ? (
+      <DeSegmentedRow key={item.id} item={item} numLabel={nl} delay={delay}
+        altaCounts={itemSegData[item.id]?.altaCounts ?? {}}
+        altaTotal={itemSegData[item.id]?.altaTotal ?? 0}
+        baixaCounts={itemSegData[item.id]?.baixaCounts ?? {}}
+        baixaTotal={itemSegData[item.id]?.baixaTotal ?? 0}
+      />
+    ) : (
+      <DeItemRow key={item.id} item={item} numLabel={nl} delay={delay} chartType={chartType} />
+    );
 
   return (
     <>
@@ -879,16 +937,25 @@ function DashboardEndavant() {
       <div className="panel-right de-right">
         {/* Chart type + block filter row */}
         <div className="de-top-bar">
-          <div className="de-chart-toggle">
-            {CHART_TYPES.map(ct => (
-              <button key={ct.key}
-                className={`de-chart-btn${chartType === ct.key ? ' active' : ''}`}
-                style={chartType === ct.key ? { borderColor: color, color, background: `${color}10` } : {}}
-                onClick={() => setChartType(ct.key)}>
-                {ct.label}
-              </button>
-            ))}
-          </div>
+          {!segByDins && (
+            <div className="de-chart-toggle">
+              {CHART_TYPES.map(ct => (
+                <button key={ct.key}
+                  className={`de-chart-btn${chartType === ct.key ? ' active' : ''}`}
+                  style={chartType === ct.key ? { borderColor: color, color, background: `${color}10` } : {}}
+                  onClick={() => setChartType(ct.key)}>
+                  {ct.label}
+                </button>
+              ))}
+            </div>
+          )}
+          <button
+            className={`de-chart-btn${segByDins ? ' active' : ''}`}
+            style={segByDins ? { borderColor: colorDins, color: colorDins, background: `${colorDins}10` } : {}}
+            onClick={() => setSegByDins(v => !v)}
+            title="Segmentar per perfil de diagnosi intern">
+            ◈ Diagnosi
+          </button>
           <div className="de-filters">
             <button className={`de-filter-btn${activeBlock === 'all' ? ' active' : ''}`}
               style={activeBlock === 'all' ? { borderColor: color, color } : {}}
@@ -920,20 +987,222 @@ function DashboardEndavant() {
                   <span className="ds-block-num" style={{ color }}>{String(bi + 1).padStart(2, '0')}</span>
                   <h3 className="ds-block-title">{block.title}</h3>
                 </div>
-                {blockItems.map((item, ii) => (
-                  <DeItemRow key={item.id} item={item} numLabel={numLabel(item)} delay={(bi * 3 + ii) * 0.04} chartType={chartType} />
-                ))}
+                {blockItems.map((item, ii) => renderRow(item, numLabel(item), (bi * 3 + ii) * 0.04))}
               </div>
             );
           })
         ) : (
           <div className="ds-block">
-            {filteredItems.length > 0 ? filteredItems.map((item, ii) => (
-              <DeItemRow key={item.id} item={item} numLabel={numLabel(item)} delay={ii * 0.05} chartType={chartType} />
-            )) : (
+            {filteredItems.length > 0 ? filteredItems.map((item, ii) => renderRow(item, numLabel(item), ii * 0.05)) : (
               <p className="de-empty">Cap proposta amb aquesta combinació de filtres.</p>
             )}
           </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+// ─── SEGMENTED ROW (DIAGNOSI ×  ENDAVANT) ─────────────────────────────────────
+
+function DeSegmentedRow({ item, numLabel, delay, altaCounts, altaTotal, baixaCounts, baixaTotal }: {
+  item: EndavantItemStat; numLabel: string; delay: number;
+  altaCounts: Record<string, number>; altaTotal: number;
+  baixaCounts: Record<string, number>; baixaTotal: number;
+}) {
+  const renderSegBar = (counts: Record<string, number>, total: number) => (
+    <div className="de-stacked-bar de-stacked-bar--sm">
+      {total > 0 ? ENDAVANT_OPTS.map(opt => {
+        const pct = (counts[opt.key] / total) * 100;
+        return pct > 0 ? (
+          <motion.div key={opt.key} className="de-stacked-seg"
+            style={{ background: opt.color }}
+            initial={{ width: 0 }} animate={{ width: `${pct}%` }}
+            transition={{ duration: 0.6, delay: delay + 0.1 }}
+            title={`${opt.label}: ${Math.round(pct)}%`}>
+            {pct >= 15 && <span className="de-seg-pct">{Math.round(pct)}%</span>}
+          </motion.div>
+        ) : null;
+      }) : <span className="de-no-votes">—</span>}
+    </div>
+  );
+
+  return (
+    <motion.div className="de-item-row" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
+      <span className="ds-item-num">{numLabel}</span>
+      <div className="de-item-body">
+        <div className="de-item-top">
+          <span className="de-item-title">{item.title}</span>
+        </div>
+        <div className="de-diag-row">
+          <span className="de-diag-label de-diag-label--alta">Alta diagnosi <small>n={altaTotal}</small></span>
+          {renderSegBar(altaCounts, altaTotal)}
+        </div>
+        <div className="de-diag-row">
+          <span className="de-diag-label de-diag-label--baixa">Baixa diagnosi <small>n={baixaTotal}</small></span>
+          {renderSegBar(baixaCounts, baixaTotal)}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── CORRELATION DASHBOARD ────────────────────────────────────────────────────
+
+function CorrelationDashboard() {
+  const [dinsVotes, setDinsVotes] = useState<{ session_id: string; proposal_id: string; choice: string }[]>([]);
+  const [endVotes,  setEndVotes]  = useState<{ session_id: string; proposal_id: string; choice: string }[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchAll = async () => {
+      const [d, e] = await Promise.all([
+        supabase.from('coms_votes').select('session_id, proposal_id, choice').eq('slide_id', 'mirada-dins'),
+        supabase.from('coms_votes').select('session_id, proposal_id, choice').eq('slide_id', 'mirada-endavant'),
+      ]);
+      if (mounted) { setDinsVotes(d.data || []); setEndVotes(e.data || []); }
+    };
+    fetchAll();
+    const interval = setInterval(fetchAll, 5000);
+    return () => { mounted = false; clearInterval(interval); };
+  }, []);
+
+  const URGENCY: Record<string, number> = { desestimar: 0, reflexionar: 25, preparar: 50, pilotar: 75, activar: 100 };
+  const allSessions = new Set([...dinsVotes, ...endVotes].map(v => v.session_id));
+
+  type Point = { dins: number; end: number };
+  const points: Point[] = [];
+  allSessions.forEach(sid => {
+    const myDins = dinsVotes.filter(v => v.session_id === sid);
+    const myEnd  = endVotes.filter(v => v.session_id === sid);
+    if (myDins.length === 0 || myEnd.length === 0) return;
+    const confirmar = myDins.filter(v => v.choice === 'confirmar').length;
+    points.push({
+      dins: (confirmar / myDins.length) * 100,
+      end:  myEnd.reduce((s, v) => s + (URGENCY[v.choice] ?? 0), 0) / myEnd.length,
+    });
+  });
+
+  const n = points.length;
+  let r = 0, slope = 0, intercept = 50;
+  if (n >= 2) {
+    const meanX = points.reduce((s, p) => s + p.dins, 0) / n;
+    const meanY = points.reduce((s, p) => s + p.end,  0) / n;
+    const ssxy = points.reduce((s, p) => s + (p.dins - meanX) * (p.end - meanY), 0);
+    const ssx  = points.reduce((s, p) => s + (p.dins - meanX) ** 2, 0);
+    const ssy  = points.reduce((s, p) => s + (p.end  - meanY) ** 2, 0);
+    r         = ssx > 0 && ssy > 0 ? ssxy / Math.sqrt(ssx * ssy) : 0;
+    slope     = ssx > 0 ? ssxy / ssx : 0;
+    intercept = meanY - slope * meanX;
+  }
+
+  // SVG layout
+  const W = 460, H = 300, PL = 54, PR = 16, PT = 16, PB = 36;
+  const plotW = W - PL - PR, plotH = H - PT - PB;
+  const toX = (v: number) => PL + (v / 100) * plotW;
+  const toY = (v: number) => PT + plotH - (v / 100) * plotH;
+  const tY1 = Math.max(0, Math.min(100, slope * 0   + intercept));
+  const tY2 = Math.max(0, Math.min(100, slope * 100 + intercept));
+
+  const YLABELS = [
+    { v: 0,   l: 'Des.' }, { v: 25,  l: 'Refl.' }, { v: 50, l: 'Prep.' },
+    { v: 75,  l: 'Pilot.' }, { v: 100, l: 'Activ.' },
+  ];
+
+  const absR = Math.abs(r);
+  const strength  = absR > 0.5 ? 'forta' : absR > 0.3 ? 'moderada' : 'feble';
+  const direction = r >  0.05 ? 'positiva' : r < -0.05 ? 'negativa' : 'nul·la';
+  const rColor    = r >  0.3  ? '#2ecc71'  : r < -0.3   ? '#e74c3c'  : '#bdc3c7';
+  const colorDins = COLORS['mirada-dins'];
+  const colorEnd  = COLORS['mirada-endavant'];
+
+  const interpretation = r > 0.3
+    ? 'Les persones que coincideixen més amb el diagnòstic tendeixen a votar propostes més ambicioses.'
+    : r < -0.3
+    ? 'Les persones que coincideixen menys amb el diagnòstic tendeixen a votar propostes més ambicioses.'
+    : 'No hi ha una correlació clara entre diagnosi i ambició de les propostes.';
+
+  return (
+    <>
+      <div className="panel-left intro-panel" style={{ background: 'linear-gradient(155deg, #1c2e40 0%, #1a3025 100%)' }}>
+        <div className="intro-left-content">
+          <div className="mirada-num" style={{ opacity: 0.5, fontSize: '2rem' }}>◈</div>
+          <h1 className="mirada-ttl">Correlació</h1>
+          <p className="mirada-sub">Diagnosi × Ambició</p>
+
+          <div className="ds-stat-row" style={{ marginTop: '1.5rem' }}>
+            <span className="ds-stat-big">{n}</span>
+            <span className="ds-stat-label">participants creuats</span>
+          </div>
+
+          {n >= 2 && (
+            <>
+              <div className="corr-r-display">
+                <span className="corr-r-val" style={{ color: rColor }}>r = {r.toFixed(2)}</span>
+                <span className="corr-r-sub">correlació {direction} {strength}</span>
+              </div>
+              <div className="corr-interpret">
+                <p className="corr-interpret-text">{interpretation}</p>
+              </div>
+            </>
+          )}
+
+          <div className="corr-legend">
+            <div className="corr-legend-row">
+              <span className="corr-legend-dot" style={{ background: colorDins }} />
+              <span>Eix X · % coincideixo (Dins)</span>
+            </div>
+            <div className="corr-legend-row">
+              <span className="corr-legend-dot" style={{ background: colorEnd }} />
+              <span>Eix Y · Ambició propostes (Endavant)</span>
+            </div>
+            <div className="corr-legend-row">
+              <span className="corr-legend-dash">– –</span>
+              <span>Tendència (regressió lineal)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="panel-right corr-right">
+        {n < 2 ? (
+          <p className="corr-empty">Calen almenys 2 participants amb vots a les dues mirades.</p>
+        ) : (
+          <>
+            <p className="corr-chart-title">Diagnosi interna (Mirada Dins) vs Ambició de les propostes (Mirada Endavant)</p>
+            <svg className="corr-svg" viewBox={`0 0 ${W} ${H}`}>
+              {/* Grid */}
+              {YLABELS.map(yl => (
+                <line key={yl.v} x1={PL} y1={toY(yl.v)} x2={W - PR} y2={toY(yl.v)} stroke="var(--border)" strokeWidth={1} />
+              ))}
+              {[0, 25, 50, 75, 100].map(x => (
+                <line key={x} x1={toX(x)} y1={PT} x2={toX(x)} y2={H - PB} stroke="var(--border)" strokeWidth={1} />
+              ))}
+              {/* Y labels */}
+              {YLABELS.map(yl => (
+                <text key={yl.v} x={PL - 5} y={toY(yl.v) + 4} textAnchor="end" fill="var(--text-muted)" fontSize={10}>{yl.l}</text>
+              ))}
+              {/* X labels */}
+              {[0, 25, 50, 75, 100].map(x => (
+                <text key={x} x={toX(x)} y={H - PB + 14} textAnchor="middle" fill="var(--text-muted)" fontSize={10}>{x}%</text>
+              ))}
+              {/* Trend line */}
+              <line x1={toX(0)} y1={toY(tY1)} x2={toX(100)} y2={toY(tY2)}
+                stroke="#7f8c8d" strokeWidth={1.5} strokeDasharray="5 4" opacity={0.7} />
+              {/* Points */}
+              {points.map((p, i) => (
+                <circle key={i} cx={toX(p.dins)} cy={toY(p.end)} r={5.5}
+                  fill={`${colorEnd}aa`} stroke={colorEnd} strokeWidth={0.8} opacity={0.8} />
+              ))}
+              {/* Axes */}
+              <line x1={PL} y1={PT} x2={PL} y2={H - PB} stroke="var(--text-dim)" strokeWidth={1} />
+              <line x1={PL} y1={H - PB} x2={W - PR} y2={H - PB} stroke="var(--text-dim)" strokeWidth={1} />
+            </svg>
+            <div className="corr-axes-labels">
+              <span>→ Coincideixo amb el diagnòstic intern (%)</span>
+              <span className="corr-y-axis-label">↑ Ambició (Desestimar → Activar)</span>
+            </div>
+          </>
         )}
       </div>
     </>
@@ -1230,6 +1499,7 @@ export default function App() {
                     ? <DashboardSlide />
                     : <DashboardEndavant />
                 )}
+                {slide.type === 'correlation' && <CorrelationDashboard />}
                 {slide.type === 'item' && (
                   <ItemSlide slide={slide} isPresenter={isPresenter} isVotingOpen={isVotingOpen}
                     showResults={showResults} contributions={contributions}
