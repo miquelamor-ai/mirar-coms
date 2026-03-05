@@ -674,6 +674,8 @@ function EndavantVoteIntroSlide() {
 
 // ─── DASHBOARD ENDAVANT ───────────────────────────────────────────────────
 
+type ChartType = 'stacked' | 'bubbles' | 'grouped';
+
 type EndavantItemStat = {
   id: string; title: string;
   blockIdx: number; itemIdx: number;
@@ -683,7 +685,70 @@ type EndavantItemStat = {
   winner: typeof ENDAVANT_OPTS[0] | null;
 };
 
-function DeItemRow({ item, numLabel, delay }: { item: EndavantItemStat; numLabel: string; delay: number }) {
+function DeItemRow({ item, numLabel, delay, chartType }: {
+  item: EndavantItemStat; numLabel: string; delay: number; chartType: ChartType;
+}) {
+  const chart = item.total > 0 ? (() => {
+    if (chartType === 'stacked') return (
+      <div className="de-stacked-bar">
+        {ENDAVANT_OPTS.map(opt => {
+          const pct = (item.counts[opt.key] / item.total) * 100;
+          return pct > 0 ? (
+            <motion.div key={opt.key} className="de-stacked-seg"
+              style={{ background: opt.color }}
+              initial={{ width: 0 }} animate={{ width: `${pct}%` }}
+              transition={{ duration: 0.6, delay: delay + 0.1, ease: [0.22, 1, 0.36, 1] }}
+              title={`${opt.label}: ${Math.round(pct)}%`}>
+              {pct >= 11 && <span className="de-seg-pct">{Math.round(pct)}%</span>}
+            </motion.div>
+          ) : null;
+        })}
+      </div>
+    );
+
+    if (chartType === 'bubbles') return (
+      <div className="de-bubbles">
+        {ENDAVANT_OPTS.map(opt => {
+          const pct = (item.counts[opt.key] / item.total) * 100;
+          if (pct === 0) return null;
+          const size = Math.max(10, Math.sqrt(pct) * 5.2);
+          return (
+            <div key={opt.key} className="de-bubble-wrap" title={`${opt.label}: ${Math.round(pct)}%`}>
+              <motion.div className="de-bubble"
+                style={{ width: size, height: size, background: opt.color }}
+                initial={{ scale: 0 }} animate={{ scale: 1 }}
+                transition={{ delay: delay + 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }} />
+              <span className="de-bubble-lbl" style={{ color: opt.color }}>{opt.label.slice(0, 3)}</span>
+            </div>
+          );
+        })}
+      </div>
+    );
+
+    // grouped vertical bars
+    return (
+      <div className="de-grouped-bars">
+        {ENDAVANT_OPTS.map(opt => {
+          const pct = (item.counts[opt.key] / item.total) * 100;
+          return (
+            <div key={opt.key} className="de-gbar-col">
+              <div className="de-gbar-track">
+                <motion.div className="de-gbar-fill"
+                  style={{ background: opt.color }}
+                  initial={{ height: 0 }} animate={{ height: `${pct}%` }}
+                  transition={{ duration: 0.6, delay: delay + 0.1, ease: [0.22, 1, 0.36, 1] }} />
+              </div>
+              {pct >= 8 && <span className="de-gbar-pct">{Math.round(pct)}%</span>}
+              <span className="de-gbar-label" style={{ color: pct > 0 ? opt.color : 'var(--border)' }}>
+                {opt.label.slice(0, 3)}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  })() : <span className="de-no-votes">—</span>;
+
   return (
     <motion.div className="de-item-row"
       initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}
@@ -699,33 +764,23 @@ function DeItemRow({ item, numLabel, delay }: { item: EndavantItemStat; numLabel
             </span>
           )}
         </div>
-        {item.total > 0 ? (
-          <div className="de-stacked-bar">
-            {ENDAVANT_OPTS.map(opt => {
-              const pct = (item.counts[opt.key] / item.total) * 100;
-              return pct > 0 ? (
-                <motion.div key={opt.key} className="de-stacked-seg"
-                  style={{ background: opt.color }}
-                  initial={{ width: 0 }} animate={{ width: `${pct}%` }}
-                  transition={{ duration: 0.6, delay: delay + 0.1, ease: [0.22, 1, 0.36, 1] }}
-                  title={`${opt.label}: ${Math.round(pct)}%`}>
-                  {pct >= 11 && <span className="de-seg-pct">{Math.round(pct)}%</span>}
-                </motion.div>
-              ) : null;
-            })}
-          </div>
-        ) : (
-          <span className="de-no-votes">—</span>
-        )}
+        {chart}
       </div>
     </motion.div>
   );
 }
 
+const CHART_TYPES: { key: ChartType; label: string }[] = [
+  { key: 'stacked',  label: 'Acumulat'  },
+  { key: 'bubbles',  label: 'Bombolles' },
+  { key: 'grouped',  label: 'Barres'    },
+];
+
 function DashboardEndavant() {
   const [votes, setVotes] = useState<{ proposal_id: string; choice: string; session_id: string }[]>([]);
   const [activeBlock, setActiveBlock] = useState<string>('all');
   const [activeOpt, setActiveOpt] = useState<string | null>(null);
+  const [chartType, setChartType] = useState<ChartType>('stacked');
   const endavant = comsData.find(m => m.id === 'mirada-endavant')!;
   const color = COLORS['mirada-endavant'];
 
@@ -822,24 +877,37 @@ function DashboardEndavant() {
       </div>
 
       <div className="panel-right de-right">
-        <div className="de-filters">
-          <button className={`de-filter-btn${activeBlock === 'all' ? ' active' : ''}`}
-            style={activeBlock === 'all' ? { borderColor: color, color } : {}}
-            onClick={() => setActiveBlock('all')}>
-            Tot
-          </button>
-          {endavant.blocks.map((b, bi) => {
-            const letter = String.fromCharCode(65 + bi);
-            return (
-              <button key={letter}
-                className={`de-filter-btn${activeBlock === letter ? ' active' : ''}`}
-                style={activeBlock === letter ? { borderColor: color, color } : {}}
-                onClick={() => setActiveBlock(letter)}
-                title={b.title}>
-                {letter}
+        {/* Chart type + block filter row */}
+        <div className="de-top-bar">
+          <div className="de-chart-toggle">
+            {CHART_TYPES.map(ct => (
+              <button key={ct.key}
+                className={`de-chart-btn${chartType === ct.key ? ' active' : ''}`}
+                style={chartType === ct.key ? { borderColor: color, color, background: `${color}10` } : {}}
+                onClick={() => setChartType(ct.key)}>
+                {ct.label}
               </button>
-            );
-          })}
+            ))}
+          </div>
+          <div className="de-filters">
+            <button className={`de-filter-btn${activeBlock === 'all' ? ' active' : ''}`}
+              style={activeBlock === 'all' ? { borderColor: color, color } : {}}
+              onClick={() => setActiveBlock('all')}>
+              Tot
+            </button>
+            {endavant.blocks.map((b, bi) => {
+              const letter = String.fromCharCode(65 + bi);
+              return (
+                <button key={letter}
+                  className={`de-filter-btn${activeBlock === letter ? ' active' : ''}`}
+                  style={activeBlock === letter ? { borderColor: color, color } : {}}
+                  onClick={() => setActiveBlock(letter)}
+                  title={b.title}>
+                  {letter}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {activeBlock === 'all' && !activeOpt ? (
@@ -853,7 +921,7 @@ function DashboardEndavant() {
                   <h3 className="ds-block-title">{block.title}</h3>
                 </div>
                 {blockItems.map((item, ii) => (
-                  <DeItemRow key={item.id} item={item} numLabel={numLabel(item)} delay={(bi * 3 + ii) * 0.04} />
+                  <DeItemRow key={item.id} item={item} numLabel={numLabel(item)} delay={(bi * 3 + ii) * 0.04} chartType={chartType} />
                 ))}
               </div>
             );
@@ -861,7 +929,7 @@ function DashboardEndavant() {
         ) : (
           <div className="ds-block">
             {filteredItems.length > 0 ? filteredItems.map((item, ii) => (
-              <DeItemRow key={item.id} item={item} numLabel={numLabel(item)} delay={ii * 0.05} />
+              <DeItemRow key={item.id} item={item} numLabel={numLabel(item)} delay={ii * 0.05} chartType={chartType} />
             )) : (
               <p className="de-empty">Cap proposta amb aquesta combinació de filtres.</p>
             )}

@@ -1557,18 +1557,65 @@ body {
   gap: 0;
 }
 
-/* Filter bar */
-.de-filters {
+/* Top bar: chart toggle + block filter (sticky) */
+.de-top-bar {
   display: flex;
-  gap: 0.4rem;
-  padding: 1rem 0 0.75rem;
-  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
   position: sticky;
   top: 0;
   background: var(--bg);
   z-index: 10;
+  padding: 0.75rem 0 0;
   border-bottom: 1px solid var(--border-light);
   margin-bottom: 0.25rem;
+  flex-wrap: wrap;
+}
+
+/* Chart type segmented toggle */
+.de-chart-toggle {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-bottom: 0.75rem;
+}
+
+.de-chart-btn {
+  padding: 0.28rem 0.75rem;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: var(--surface-alt);
+  color: var(--text-dim);
+  border: none;
+  border-right: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  letter-spacing: 0.03em;
+}
+
+.de-chart-btn:last-child {
+  border-right: none;
+}
+
+.de-chart-btn:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.de-chart-btn.active {
+  font-weight: 700;
+}
+
+/* Block filter pills */
+.de-filters {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0 0 0.75rem;
+  flex-wrap: wrap;
+  flex: 1;
 }
 
 .de-filter-btn {
@@ -1678,6 +1725,86 @@ body {
 .de-no-votes {
   font-size: 0.75rem;
   color: var(--text-dim);
+}
+
+/* Bubble chart */
+.de-bubbles {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.7rem;
+  min-height: 54px;
+  padding-bottom: 0.15rem;
+}
+
+.de-bubble-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.de-bubble {
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.de-bubble-lbl {
+  font-size: 0.55rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Grouped vertical bars */
+.de-grouped-bars {
+  display: flex;
+  gap: 0.3rem;
+  align-items: flex-end;
+  height: 66px;
+}
+
+.de-gbar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.de-gbar-track {
+  width: 100%;
+  flex: 1;
+  background: var(--border-light);
+  border-radius: 3px 3px 0 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.de-gbar-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-radius: 2px 2px 0 0;
+}
+
+.de-gbar-pct {
+  font-size: 0.5rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  line-height: 1;
+}
+
+.de-gbar-label {
+  font-size: 0.54rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  max-width: 100%;
+  text-align: center;
 }
 
 /* ── QR MODAL ─────────────────────────────────────────────────────────────── */
