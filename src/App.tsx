@@ -690,29 +690,30 @@ function DeItemRow({ item, numLabel, delay }: { item: EndavantItemStat; numLabel
       transition={{ delay }}>
       <span className="ds-item-num">{numLabel}</span>
       <div className="de-item-body">
-        <span className="de-item-title">{item.title}</span>
+        <div className="de-item-top">
+          <span className="de-item-title">{item.title}</span>
+          {item.winner && (
+            <span className="de-win-badge"
+              style={{ background: `${item.winner.color}18`, color: item.winner.color, borderColor: `${item.winner.color}40` }}>
+              {item.winner.label}
+            </span>
+          )}
+        </div>
         {item.total > 0 ? (
-          <>
-            <div className="de-stacked-bar">
-              {ENDAVANT_OPTS.map(opt => {
-                const pct = (item.counts[opt.key] / item.total) * 100;
-                return pct > 0 ? (
-                  <motion.div key={opt.key} className="de-stacked-seg"
-                    style={{ background: opt.color }}
-                    initial={{ width: 0 }} animate={{ width: `${pct}%` }}
-                    transition={{ duration: 0.6, delay: delay + 0.1, ease: [0.22, 1, 0.36, 1] }}
-                    title={`${opt.label}: ${Math.round(pct)}%`}
-                  />
-                ) : null;
-              })}
-            </div>
-            {item.winner && (
-              <span className="de-win-badge"
-                style={{ background: `${item.winner.color}18`, color: item.winner.color, borderColor: `${item.winner.color}40` }}>
-                {item.winner.label}
-              </span>
-            )}
-          </>
+          <div className="de-stacked-bar">
+            {ENDAVANT_OPTS.map(opt => {
+              const pct = (item.counts[opt.key] / item.total) * 100;
+              return pct > 0 ? (
+                <motion.div key={opt.key} className="de-stacked-seg"
+                  style={{ background: opt.color }}
+                  initial={{ width: 0 }} animate={{ width: `${pct}%` }}
+                  transition={{ duration: 0.6, delay: delay + 0.1, ease: [0.22, 1, 0.36, 1] }}
+                  title={`${opt.label}: ${Math.round(pct)}%`}>
+                  {pct >= 11 && <span className="de-seg-pct">{Math.round(pct)}%</span>}
+                </motion.div>
+              ) : null;
+            })}
+          </div>
         ) : (
           <span className="de-no-votes">—</span>
         )}
@@ -724,6 +725,7 @@ function DeItemRow({ item, numLabel, delay }: { item: EndavantItemStat; numLabel
 function DashboardEndavant() {
   const [votes, setVotes] = useState<{ proposal_id: string; choice: string; session_id: string }[]>([]);
   const [activeBlock, setActiveBlock] = useState<string>('all');
+  const [activeOpt, setActiveOpt] = useState<string | null>(null);
   const endavant = comsData.find(m => m.id === 'mirada-endavant')!;
   const color = COLORS['mirada-endavant'];
 
@@ -758,7 +760,9 @@ function DashboardEndavant() {
     ENDAVANT_OPTS.map(o => [o.key, allItems.reduce((s, item) => s + item.counts[o.key], 0)])
   );
   const globalTotal = Object.values(globalCounts).reduce((s, c) => s + c, 0);
-  const filteredItems = activeBlock === 'all' ? allItems : allItems.filter(i => i.blockLetter === activeBlock);
+  const filteredItems = allItems
+    .filter(i => activeBlock === 'all' || i.blockLetter === activeBlock)
+    .filter(i => !activeOpt || i.winner?.key === activeOpt);
   const numLabel = (item: EndavantItemStat) => `${item.blockIdx + 1}.${String(item.itemIdx + 1).padStart(2, '0')}`;
 
   return (
@@ -790,16 +794,29 @@ function DashboardEndavant() {
               </div>
               <div className="de-dist-legend">
                 {ENDAVANT_OPTS.map(opt => (
-                  <div key={opt.key} className="de-legend-row">
+                  <div key={opt.key}
+                    className={`de-legend-row de-legend-row--btn${activeOpt === opt.key ? ' active' : ''}`}
+                    style={activeOpt === opt.key ? { background: `${opt.color}22`, borderRadius: 6 } : {}}
+                    onClick={() => setActiveOpt(prev => prev === opt.key ? null : opt.key)}
+                    title={`Filtrar per "${opt.label}"`}>
                     <span className="de-legend-dot" style={{ background: opt.color }} />
                     <span className="de-legend-label">{opt.label}</span>
                     <span className="de-legend-pct">
                       {globalTotal > 0 ? `${Math.round((globalCounts[opt.key] / globalTotal) * 100)}%` : '—'}
                     </span>
+                    {activeOpt === opt.key && (
+                      <span className="de-legend-active-dot" />
+                    )}
                   </div>
                 ))}
               </div>
             </div>
+          )}
+
+          {activeOpt && (
+            <p className="de-active-filter-hint">
+              {filteredItems.length} proposta{filteredItems.length !== 1 ? 'es' : ''} · <button className="de-clear-filter" onClick={() => setActiveOpt(null)}>Mostra totes ×</button>
+            </p>
           )}
         </div>
       </div>
@@ -825,9 +842,10 @@ function DashboardEndavant() {
           })}
         </div>
 
-        {activeBlock === 'all' ? (
+        {activeBlock === 'all' && !activeOpt ? (
           endavant.blocks.map((block, bi) => {
-            const blockItems = allItems.filter(i => i.blockIdx === bi);
+            const blockItems = filteredItems.filter(i => i.blockIdx === bi);
+            if (blockItems.length === 0) return null;
             return (
               <div key={block.id} className="ds-block">
                 <div className="ds-block-header" style={{ background: `${color}0f`, borderLeftColor: color }}>
@@ -842,9 +860,11 @@ function DashboardEndavant() {
           })
         ) : (
           <div className="ds-block">
-            {filteredItems.map((item, ii) => (
+            {filteredItems.length > 0 ? filteredItems.map((item, ii) => (
               <DeItemRow key={item.id} item={item} numLabel={numLabel(item)} delay={ii * 0.05} />
-            ))}
+            )) : (
+              <p className="de-empty">Cap proposta amb aquesta combinació de filtres.</p>
+            )}
           </div>
         )}
       </div>
