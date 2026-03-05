@@ -711,7 +711,7 @@ function DeItemRow({ item, numLabel, delay, chartType }: {
         {ENDAVANT_OPTS.map(opt => {
           const pct = (item.counts[opt.key] / item.total) * 100;
           if (pct === 0) return null;
-          const size = Math.max(10, Math.sqrt(pct) * 5.2);
+          const size = Math.max(8, Math.sqrt(pct) * 3.8);
           return (
             <div key={opt.key} className="de-bubble-wrap" title={`${opt.label}: ${Math.round(pct)}%`}>
               <motion.div className="de-bubble"
