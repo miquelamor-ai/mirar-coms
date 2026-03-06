@@ -963,7 +963,6 @@ function DashboardEndavant() {
   const [showCorr, setShowCorr] = useState(false);
   const endavant = comsData.find(m => m.id === 'mirada-endavant')!;
   const color = COLORS['mirada-endavant'];
-  const colorDins = COLORS['mirada-dins'];
 
   useEffect(() => {
     let mounted = true;
