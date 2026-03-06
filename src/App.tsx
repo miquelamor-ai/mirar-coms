@@ -4,7 +4,7 @@ import { comsData, type Mirada, type Block, type Item } from './data/comsContent
 import {
   ChevronRight, ChevronLeft, Check, HelpCircle, X,
   Rocket, FlaskConical, Construction, Brain, Ban, Send,
-  BarChart2, EyeOff, QrCode, RotateCcw, Trash2
+  BarChart2, EyeOff, Eye, QrCode, RotateCcw, Trash2
 } from 'lucide-react';
 import { LiveChart } from './components/LiveChart';
 import { ReportSlide } from './components/ReportSlides';
@@ -963,6 +963,7 @@ function DashboardEndavant() {
   const [showCorr, setShowCorr] = useState(false);
   const endavant = comsData.find(m => m.id === 'mirada-endavant')!;
   const color = COLORS['mirada-endavant'];
+  const colorDins = COLORS['mirada-dins'];
 
   useEffect(() => {
     let mounted = true;
@@ -1060,57 +1061,6 @@ function DashboardEndavant() {
             <span className="ds-stat-label">participants</span>
           </div>
 
-          <div className="de-sidebar-controls">
-            <p className="de-sidebar-label">Vista i Filtres</p>
-            <div className="de-sidebar-group">
-              <div className="de-chart-toggle de-chart-toggle--stacked">
-                {!segByDins && !showCorr && CHART_TYPES.map(ct => (
-                  <button key={ct.key}
-                    className={`de-chart-btn${chartType === ct.key ? ' active' : ''}`}
-                    style={chartType === ct.key ? { borderColor: 'rgba(255,255,255,0.4)', color: 'white', background: 'rgba(255,255,255,0.15)' } : {}}
-                    onClick={() => setChartType(ct.key)}>
-                    {ct.label}
-                  </button>
-                ))}
-                <button
-                  className={`de-chart-btn${segByDins ? ' active' : ''}`}
-                  style={segByDins ? { color: 'white', background: 'rgba(255,255,255,0.25)', borderColor: 'white' } : {}}
-                  onClick={() => { setSegByDins(v => !v); setShowCorr(false); }}
-                  title="Segmentar per perfil de diagnosi intern">
-                  ◈ Diagnosi
-                </button>
-                <button
-                  className={`de-chart-btn${showCorr ? ' active' : ''}`}
-                  style={showCorr ? { color: 'white', background: 'rgba(255,255,255,0.25)', borderColor: 'white' } : {}}
-                  onClick={() => { setShowCorr(v => !v); setSegByDins(false); }}
-                  title="Veure correlació diagnosi × ambició">
-                  ⊕ Correlació
-                </button>
-              </div>
-
-              <div className="de-filters de-filters--sidebar">
-                <button className={`de-filter-btn${activeBlock === 'all' ? ' active' : ''}`}
-                  style={activeBlock === 'all' ? { background: 'white', color: color } : { color: 'white', borderColor: 'rgba(255,255,255,0.3)' }}
-                  onClick={() => setActiveBlock('all')}>
-                  Tots els blocs
-                </button>
-                <div className="de-filter-grid">
-                  {endavant.blocks.map((b, bi) => {
-                    const letter = String.fromCharCode(65 + bi);
-                    return (
-                      <button key={letter}
-                        className={`de-filter-btn${activeBlock === letter ? ' active' : ''}`}
-                        style={activeBlock === letter ? { background: 'white', color: color } : { color: 'white', borderColor: 'rgba(255,255,255,0.3)' }}
-                        onClick={() => setActiveBlock(letter)}
-                        title={b.title}>
-                        {letter}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
 
           {globalTotal > 0 && !showCorr && (
             <div className="de-dist">
@@ -1147,6 +1097,61 @@ function DashboardEndavant() {
       </div>
 
       <div className="panel-right de-right">
+        {/* Horizontal Filters Bar */}
+        {!showCorr && (
+          <div className="de-horizontal-filters">
+            <div className="de-h-row">
+              <span className="de-h-label">Vista:</span>
+              <div className="de-chart-toggle">
+                {!segByDins && CHART_TYPES.map(ct => (
+                  <button key={ct.key}
+                    className={`de-chart-btn${chartType === ct.key ? ' active' : ''}`}
+                    style={chartType === ct.key ? { borderColor: color, color, background: `${color}10` } : {}}
+                    onClick={() => setChartType(ct.key)}>
+                    {ct.label}
+                  </button>
+                ))}
+                <button
+                  className={`de-chart-btn${segByDins ? ' active' : ''}`}
+                  style={segByDins ? { color: colorDins, background: `${colorDins}10`, borderColor: colorDins } : {}}
+                  onClick={() => { setSegByDins(v => !v); setShowCorr(false); }}
+                  title="Segmentar per perfil de diagnosi intern">
+                  ◈ Segmentació
+                </button>
+                <button
+                  className={`de-chart-btn${showCorr ? ' active' : ''}`}
+                  style={showCorr ? { color, background: `${color}10` } : {}}
+                  onClick={() => { setShowCorr(v => !v); setSegByDins(false); }}
+                  title="Veure correlació diagnosi × ambició">
+                  ⊕ Correlació
+                </button>
+              </div>
+            </div>
+
+            <div className="de-h-row">
+              <span className="de-h-label">Blocs:</span>
+              <div className="de-filters de-filters--horizontal">
+                <button className={`de-filter-btn${activeBlock === 'all' ? ' active' : ''}`}
+                  style={activeBlock === 'all' ? { background: color, color: 'white' } : {}}
+                  onClick={() => setActiveBlock('all')}>
+                  Tots
+                </button>
+                {endavant.blocks.map((b, bi) => {
+                  const letter = String.fromCharCode(65 + bi);
+                  return (
+                    <button key={letter}
+                      className={`de-filter-btn${activeBlock === letter ? ' active' : ''}`}
+                      style={activeBlock === letter ? { background: color, color: 'white' } : {}}
+                      onClick={() => setActiveBlock(letter)}
+                      title={b.title}>
+                      {letter}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
         {showCorr ? (
           <CorrelationPlot dinsVotes={dinsVotesSeg} endVotes={votes} />
         ) : activeBlock === 'all' && !activeOpt ? (
@@ -1484,6 +1489,7 @@ export default function App() {
   const [contributions, setContributions] = useState<any[]>([]);
   const [myVotes, setMyVotes] = useState<Record<string, string>>({});
   const [showQr, setShowQr] = useState(false);
+  const [showSelector, setShowSelector] = useState(false);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   // Anonymous session ID (persisted in localStorage)
@@ -1738,14 +1744,7 @@ export default function App() {
 
           <div className="ctrl-counter"
             style={{ cursor: isPresenter ? 'pointer' : 'default' }}
-            onClick={() => {
-              if (!isPresenter) return;
-              const target = window.prompt(`Salta a la diapositiva (1-${allSlides.length}):`, String(currentIndex + 1));
-              if (target) {
-                const n = parseInt(target, 10);
-                if (!isNaN(n) && n > 0 && n <= allSlides.length) updateSlide(n - 1);
-              }
-            }}>
+            onClick={() => isPresenter && setShowSelector(true)}>
             {currentIndex + 1}<span className="ctrl-counter-sep">/</span>{allSlides.length}
           </div>
         </div>
@@ -1822,6 +1821,37 @@ export default function App() {
           </div>
         </div>
       )}
+      {/* Slide Selector Modal */}
+      <AnimatePresence>
+        {showSelector && (
+          <motion.div className="qr-overlay de-selector-overlay"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={() => setShowSelector(false)}>
+            <motion.div className="de-selector-modal"
+              initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
+              onClick={e => e.stopPropagation()}>
+              <div className="de-selector-header">
+                <h3>Ves a la diapositiva</h3>
+                <button className="de-selector-close" onClick={() => setShowSelector(false)}><X size={18} /></button>
+              </div>
+              <div className="de-selector-list">
+                {allSlides.map((s, i) => {
+                  const isActive = currentIndex === i;
+                  return (
+                    <button key={i}
+                      className={`de-selector-item${isActive ? ' active' : ''}`}
+                      onClick={() => { updateSlide(i); setShowSelector(false); }}>
+                      <span className="de-sel-num">{i + 1}</span>
+                      <span className="de-sel-title">{s.mirada.title}</span>
+                      {isActive && <Eye size={14} className="de-sel-eye" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
