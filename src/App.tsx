@@ -7,11 +7,12 @@ import {
   BarChart2, EyeOff, QrCode, RotateCcw, Trash2
 } from 'lucide-react';
 import { LiveChart } from './components/LiveChart';
+import { ReportSlide } from './components/ReportSlides';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // ─── FLAT SLIDE STRUCTURE ─────────────────────────────────────────────────────
 
-type SlideType = 'mirada-intro' | 'block' | 'item' | 'dashboard' | 'endavant-vote-intro' | 'correlation';
+type SlideType = 'mirada-intro' | 'block' | 'item' | 'dashboard' | 'endavant-vote-intro' | 'correlation' | 'quiz' | 'report';
 
 interface FlatSlide {
   type: SlideType;
@@ -26,10 +27,67 @@ interface FlatSlide {
   introStep?: number;
 }
 
+const COLORS: Record<string, string> = {
+  'quiz-opening': '#c0392b',
+  'preamble': '#8e44ad',
+  'mirada-fora': '#3498db',
+  'mirada-dins': '#e67e22',
+  'mirada-endavant': '#27ae60',
+  'report': '#16a085'
+};
+
+const QUIZ = {
+  slideId: 'quiz-opening',
+  proposalId: 'q1',
+  question: "Segons la recerca més rigorosa (Hattie, UCL, OCDE), quin d'aquests factors té l'evidència més demostrada per millorar l'aprenentatge dels alumnes?",
+  options: [
+    { key: 'lideratge', label: 'Lideratge pedagògic i cultura de centre' },
+    { key: 'clima', label: "Clima d'aula segur i d'altes expectatives" },
+    { key: 'desenvolupament', label: 'Desenvolupament professional' },
+    { key: 'recursos', label: 'Recursos i materials/tecnologia' },
+    { key: 'visio', label: 'Visió compartida i direcció estratègica' },
+  ],
+  correctKey: 'desenvolupament',
+  audienceUrl: 'https://mirar-coms.vercel.app',
+};
+
+const QUIZ_MIRADA: Mirada = {
+  id: 'quiz-opening',
+  title: 'Pregunta Inicial',
+  subtitle: 'Votem abans de començar',
+  number: '?',
+  color: '#c0392b',
+  intro: '',
+  layout: 'blocks-only',
+  blocks: [],
+};
+
 function buildSlides(): FlatSlide[] {
   const result: FlatSlide[] = [];
 
+  // Opening quiz slide (before all miradas)
+  result.push({
+    type: 'quiz',
+    slideKey: 'quiz:opening',
+    mirada: QUIZ_MIRADA,
+    blockIndex: -1, itemIndex: -1,
+    totalBlocks: 0, totalItems: 0,
+  });
+
   for (const mirada of comsData) {
+    // Special handling for report section
+    if (mirada.id === 'report') {
+      for (let step = 0; step < 5; step++) {
+        result.push({
+          type: 'report',
+          slideKey: `report:s${step}`,
+          mirada, blockIndex: -1, itemIndex: -1,
+          totalBlocks: 0, totalItems: 0, introStep: step,
+        });
+      }
+      continue;
+    }
+
     const introSlide: FlatSlide = {
       type: 'mirada-intro', slideKey: `${mirada.id}:intro`,
       mirada, blockIndex: -1, itemIndex: -1,
@@ -89,12 +147,123 @@ function normalizeKey(key: string): string {
 
 const allSlides = buildSlides();
 
-const COLORS: Record<string, string> = {
-  'preamble':         '#8e44ad',
-  'mirada-fora':      '#3498db',
-  'mirada-dins':      '#e67e22',
-  'mirada-endavant':  '#27ae60'
-};
+// ─── QUIZ COMPONENTS ──────────────────────────────────────────────────────────
+
+function QuizVotePanel({ myVotes, onVote }: {
+  myVotes: Record<string, string>;
+  onVote: (choice: string, itemId: string, sectionId: string) => void;
+}) {
+  const selected = myVotes[QUIZ.proposalId];
+  return (
+    <div className="quiz-vote-wrap">
+      <div className="quiz-vote-header">
+        <span className="quiz-vote-tag">❓ Pregunta inicial</span>
+        <p className="quiz-vote-question">{QUIZ.question}</p>
+      </div>
+      <div className="quiz-vote-options">
+        {QUIZ.options.map((opt, i) => (
+          <button key={opt.key}
+            className={`quiz-vote-opt${selected === opt.key ? ' selected' : ''}`}
+            onClick={() => onVote(opt.key, QUIZ.proposalId, QUIZ.slideId)}>
+            <span className="quiz-opt-num">{i + 1}</span>
+            <span className="quiz-opt-label">{opt.label}</span>
+            {selected === opt.key && <Check size={15} className="quiz-opt-check" />}
+          </button>
+        ))}
+      </div>
+      {selected ? (
+        <p className="quiz-vote-hint">✓ Resposta registrada. Pots canviar-la fins que el presentador continuï.</p>
+      ) : (
+        <p className="quiz-vote-hint">Selecciona una opció per votar.</p>
+      )}
+    </div>
+  );
+}
+
+function QuizSlide() {
+  const [votes, setVotes] = useState<{ session_id: string; choice: string }[]>([]);
+  const [revealed, setRevealed] = useState(false);
+  const color = COLORS['quiz-opening'];
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchVotes = async () => {
+      const { data } = await supabase.from('coms_votes')
+        .select('session_id, choice')
+        .eq('slide_id', QUIZ.slideId)
+        .eq('proposal_id', QUIZ.proposalId);
+      if (mounted) setVotes(data || []);
+    };
+    fetchVotes();
+    const interval = setInterval(fetchVotes, 2000);
+    return () => { mounted = false; clearInterval(interval); };
+  }, []);
+
+  const counts: Record<string, number> = Object.fromEntries(QUIZ.options.map(o => [o.key, 0]));
+  votes.forEach(v => { if (v.choice in counts) counts[v.choice]++; });
+  const participantCount = new Set(votes.map(v => v.session_id)).size;
+  const maxCount = Math.max(...Object.values(counts), 1);
+
+  return (
+    <>
+      <div className="panel-left quiz-left" style={{ background: `linear-gradient(160deg, #1a0a0a 0%, #2c0e0e 100%)` }}>
+        <div className="intro-left-content">
+          <span className="quiz-slide-tag" style={{ color }}>❓ Pregunta inicial</span>
+          <p className="quiz-slide-question">{QUIZ.question}</p>
+          <div className="quiz-qr-block">
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(QUIZ.audienceUrl)}`}
+              alt="QR Code" className="quiz-qr-img" />
+            <code className="quiz-qr-url">{QUIZ.audienceUrl}</code>
+          </div>
+        </div>
+      </div>
+
+      <div className="panel-right quiz-right">
+        <div className="quiz-right-header">
+          <span className="ds-stat-row">
+            <span className="ds-stat-big">{participantCount}</span>
+            <span className="ds-stat-label">respostes</span>
+          </span>
+          <button
+            className={`quiz-reveal-btn${revealed ? ' revealed' : ''}`}
+            style={revealed ? { background: '#2ecc7122', borderColor: '#2ecc71', color: '#2ecc71' } : { borderColor: color, color }}
+            onClick={() => setRevealed(v => !v)}>
+            {revealed ? '✓ Ocultar resposta' : '▶ Revelar resposta correcta'}
+          </button>
+        </div>
+
+        <div className="quiz-result-bars">
+          {QUIZ.options.map((opt, i) => {
+            const count = counts[opt.key] || 0;
+            const isCorrect = opt.key === QUIZ.correctKey;
+            const highlight = revealed && isCorrect;
+            const barPct = (count / maxCount) * 100;
+            return (
+              <div key={opt.key} className={`quiz-result-row${highlight ? ' correct' : ''}`}>
+                <span className="quiz-result-num" style={{ color: highlight ? '#2ecc71' : 'var(--text-muted)' }}>{i + 1}</span>
+                <div className="quiz-result-body">
+                  <span className="quiz-result-label" style={{ color: highlight ? '#2ecc71' : 'var(--text)' }}>
+                    {opt.label}
+                    {highlight && <Check size={14} style={{ display: 'inline', marginLeft: '0.4rem', verticalAlign: 'middle' }} />}
+                  </span>
+                  <div className="quiz-result-track">
+                    <motion.div className="quiz-result-fill"
+                      style={{ background: highlight ? '#2ecc71' : `${color}99` }}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${barPct}%` }}
+                      transition={{ duration: 0.5 }} />
+                  </div>
+                </div>
+                <span className="quiz-result-count" style={{ color: highlight ? '#2ecc71' : 'var(--text-muted)' }}>{count}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
+}
 
 // ─── MIRADA INTRO SLIDE ───────────────────────────────────────────────────────
 
@@ -273,16 +442,16 @@ function ItemSlide({ slide, isPresenter, isVotingOpen, showResults, contribution
 
   const VOTE_OPTIONS = item.votingType === 'decision'
     ? [
-      { key: 'activar',     icon: <Rocket size={13} />,      label: 'Activar',    color: '#27ae60' },
-      { key: 'pilotar',     icon: <FlaskConical size={13} />, label: 'Pilotar',    color: '#3498db' },
-      { key: 'preparar',    icon: <Construction size={13} />, label: 'Preparar',   color: '#c9922a' },
-      { key: 'reflexionar', icon: <Brain size={13} />,        label: 'Repensar',   color: '#8e44ad' },
-      { key: 'desestimar',  icon: <Ban size={13} />,          label: 'No',         color: '#e74c3c' },
+      { key: 'activar', icon: <Rocket size={13} />, label: 'Activar', color: '#27ae60' },
+      { key: 'pilotar', icon: <FlaskConical size={13} />, label: 'Pilotar', color: '#3498db' },
+      { key: 'preparar', icon: <Construction size={13} />, label: 'Preparar', color: '#c9922a' },
+      { key: 'reflexionar', icon: <Brain size={13} />, label: 'Repensar', color: '#8e44ad' },
+      { key: 'desestimar', icon: <Ban size={13} />, label: 'No', color: '#e74c3c' },
     ]
     : [
-      { key: 'confirmar', icon: <Check size={14} />,     label: 'Confirmar', color: '#27ae60' },
-      { key: 'dubtar',    icon: <HelpCircle size={14} />, label: 'Dubtar',    color: '#c9922a' },
-      { key: 'denegar',   icon: <X size={14} />,         label: 'Denegar',   color: '#e74c3c' },
+      { key: 'confirmar', icon: <Check size={14} />, label: 'Confirmar', color: '#27ae60' },
+      { key: 'dubtar', icon: <HelpCircle size={14} />, label: 'Dubtar', color: '#c9922a' },
+      { key: 'denegar', icon: <X size={14} />, label: 'Denegar', color: '#e74c3c' },
     ];
 
   return (
@@ -373,11 +542,11 @@ function ItemSlide({ slide, isPresenter, isVotingOpen, showResults, contribution
 // ─── VOTING PANEL (AUDIENCE) ──────────────────────────────────────────────────
 
 const ENDAVANT_OPTS = [
-  { key: 'desestimar',  label: 'Desestimar',  color: '#e74c3c' },
+  { key: 'desestimar', label: 'Desestimar', color: '#e74c3c' },
   { key: 'reflexionar', label: 'Reflexionar', color: '#8e44ad' },
-  { key: 'preparar',    label: 'Preparar',    color: '#c9922a' },
-  { key: 'pilotar',     label: 'Pilotar',     color: '#3498db' },
-  { key: 'activar',     label: 'Activar',     color: '#27ae60' },
+  { key: 'preparar', label: 'Preparar', color: '#c9922a' },
+  { key: 'pilotar', label: 'Pilotar', color: '#3498db' },
+  { key: 'activar', label: 'Activar', color: '#27ae60' },
 ];
 
 function VotingPanel({ mirada, myVotes, onVote, onReset }: {
@@ -499,7 +668,7 @@ function DashboardSlide() {
     b.items.map((item, ii) => {
       const iv = votes.filter(v => v.proposal_id === item.id);
       const yes = iv.filter(v => v.choice === 'confirmar').length;
-      const no  = iv.filter(v => v.choice === 'denegar').length;
+      const no = iv.filter(v => v.choice === 'denegar').length;
       const total = yes + no;
       const yesPct = total > 0 ? Math.round((yes / total) * 100) : 0;
       return { ...item, blockIdx: bi, itemIdx: ii, blockTitle: b.title, yes, no, total, yesPct };
@@ -507,12 +676,12 @@ function DashboardSlide() {
   );
 
   const participantCount = new Set(votes.map(v => v.session_id)).size;
-  const globalYes   = allItems.reduce((s, i) => s + i.yes, 0);
+  const globalYes = allItems.reduce((s, i) => s + i.yes, 0);
   const globalTotal = allItems.reduce((s, i) => s + i.total, 0);
-  const globalPct   = globalTotal > 0 ? Math.round((globalYes / globalTotal) * 100) : 0;
+  const globalPct = globalTotal > 0 ? Math.round((globalYes / globalTotal) * 100) : 0;
 
   const voted = allItems.filter(i => i.total > 0);
-  const topAgree    = [...voted].sort((a, b) => b.yesPct - a.yesPct).slice(0, 3);
+  const topAgree = [...voted].sort((a, b) => b.yesPct - a.yesPct).slice(0, 3);
   const topDisagree = [...voted].sort((a, b) => a.yesPct - b.yesPct).slice(0, 3);
 
   const numLabel = (i: typeof allItems[0]) => `${i.blockIdx + 1}.${String(i.itemIdx + 1).padStart(2, '0')}`;
@@ -577,9 +746,9 @@ function DashboardSlide() {
       <div className="panel-right ds-right">
         {dins.blocks.map((block, bi) => {
           const blockItems = allItems.filter(i => i.blockIdx === bi);
-          const bYes   = blockItems.reduce((s, i) => s + i.yes, 0);
+          const bYes = blockItems.reduce((s, i) => s + i.yes, 0);
           const bTotal = blockItems.reduce((s, i) => s + i.total, 0);
-          const bPct   = bTotal > 0 ? Math.round((bYes / bTotal) * 100) : null;
+          const bPct = bTotal > 0 ? Math.round((bYes / bTotal) * 100) : null;
 
           return (
             <div key={block.id} className="ds-block">
@@ -628,11 +797,11 @@ function DashboardSlide() {
 // ─── ENDAVANT VOTE INTRO ──────────────────────────────────────────────────
 
 const ENDAVANT_CAT_DESCS: Record<string, string> = {
-  desestimar:  'No es veu possibilitat ni a la llarga de ser factible.',
+  desestimar: 'No es veu possibilitat ni a la llarga de ser factible.',
   reflexionar: 'Cal dedicar més temps a parlar-ne i valorar la idoneïtat.',
-  preparar:    'Es necessita temps, recursos o formació per implementar-ho.',
-  pilotar:     'Es considera una prova per aprendre i poder escalar.',
-  activar:     'Es pot implementar immediatament.',
+  preparar: 'Es necessita temps, recursos o formació per implementar-ho.',
+  pilotar: 'Es considera una prova per aprendre i poder escalar.',
+  activar: 'Es pot implementar immediatament.',
 };
 
 function EndavantVoteIntroSlide() {
@@ -779,9 +948,9 @@ function DeItemRow({ item, numLabel, delay, chartType }: {
 }
 
 const CHART_TYPES: { key: ChartType; label: string }[] = [
-  { key: 'stacked',  label: 'Acumulat'  },
-  { key: 'bubbles',  label: 'Bombolles' },
-  { key: 'grouped',  label: 'Barres'    },
+  { key: 'stacked', label: 'Acumulat' },
+  { key: 'bubbles', label: 'Bombolles' },
+  { key: 'grouped', label: 'Barres' },
 ];
 
 function DashboardEndavant() {
@@ -791,6 +960,7 @@ function DashboardEndavant() {
   const [activeOpt, setActiveOpt] = useState<string | null>(null);
   const [chartType, setChartType] = useState<ChartType>('stacked');
   const [segByDins, setSegByDins] = useState(false);
+  const [showCorr, setShowCorr] = useState(false);
   const endavant = comsData.find(m => m.id === 'mirada-endavant')!;
   const color = COLORS['mirada-endavant'];
   const colorDins = COLORS['mirada-dins'];
@@ -808,10 +978,10 @@ function DashboardEndavant() {
   }, []);
 
   useEffect(() => {
-    if (!segByDins) { setDinsVotesSeg([]); return; }
+    if (!segByDins && !showCorr) { setDinsVotesSeg([]); return; }
     supabase.from('coms_votes').select('session_id, choice').eq('slide_id', 'mirada-dins')
       .then(({ data }) => setDinsVotesSeg(data || []));
-  }, [segByDins]);
+  }, [segByDins, showCorr]);
 
   const allItems: EndavantItemStat[] = endavant.blocks.flatMap((b, bi) =>
     b.items.map((item, ii) => {
@@ -855,13 +1025,13 @@ function DashboardEndavant() {
   if (segByDins && Object.keys(diagProfile).length > 0) {
     allItems.forEach(item => {
       const iv = votes.filter(v => v.proposal_id === item.id);
-      const altaIv  = iv.filter(v => diagProfile[v.session_id] === 'alta');
+      const altaIv = iv.filter(v => diagProfile[v.session_id] === 'alta');
       const baixaIv = iv.filter(v => diagProfile[v.session_id] === 'baixa');
       itemSegData[item.id] = {
-        altaCounts:  Object.fromEntries(ENDAVANT_OPTS.map(o => [o.key, altaIv.filter(v => v.choice === o.key).length])),
-        altaTotal:   altaIv.length,
+        altaCounts: Object.fromEntries(ENDAVANT_OPTS.map(o => [o.key, altaIv.filter(v => v.choice === o.key).length])),
+        altaTotal: altaIv.length,
         baixaCounts: Object.fromEntries(ENDAVANT_OPTS.map(o => [o.key, baixaIv.filter(v => v.choice === o.key).length])),
-        baixaTotal:  baixaIv.length,
+        baixaTotal: baixaIv.length,
       };
     });
   }
@@ -885,12 +1055,65 @@ function DashboardEndavant() {
           <div className="mirada-num">03</div>
           <h1 className="mirada-ttl">Resultats</h1>
           <p className="mirada-sub">Mirada Endavant · Decisions</p>
+
           <div className="ds-stat-row">
             <span className="ds-stat-big">{participantCount}</span>
             <span className="ds-stat-label">participants</span>
           </div>
 
-          {globalTotal > 0 && (
+          <div className="de-sidebar-controls">
+            <p className="de-sidebar-label">Vista i Filtres</p>
+            <div className="de-sidebar-group">
+              <div className="de-chart-toggle de-chart-toggle--stacked">
+                {!segByDins && !showCorr && CHART_TYPES.map(ct => (
+                  <button key={ct.key}
+                    className={`de-chart-btn${chartType === ct.key ? ' active' : ''}`}
+                    style={chartType === ct.key ? { borderColor: 'rgba(255,255,255,0.4)', color: 'white', background: 'rgba(255,255,255,0.15)' } : {}}
+                    onClick={() => setChartType(ct.key)}>
+                    {ct.label}
+                  </button>
+                ))}
+                <button
+                  className={`de-chart-btn${segByDins ? ' active' : ''}`}
+                  style={segByDins ? { color: 'white', background: 'rgba(255,255,255,0.25)', borderColor: 'white' } : {}}
+                  onClick={() => { setSegByDins(v => !v); setShowCorr(false); }}
+                  title="Segmentar per perfil de diagnosi intern">
+                  ◈ Diagnosi
+                </button>
+                <button
+                  className={`de-chart-btn${showCorr ? ' active' : ''}`}
+                  style={showCorr ? { color: 'white', background: 'rgba(255,255,255,0.25)', borderColor: 'white' } : {}}
+                  onClick={() => { setShowCorr(v => !v); setSegByDins(false); }}
+                  title="Veure correlació diagnosi × ambició">
+                  ⊕ Correlació
+                </button>
+              </div>
+
+              <div className="de-filters de-filters--sidebar">
+                <button className={`de-filter-btn${activeBlock === 'all' ? ' active' : ''}`}
+                  style={activeBlock === 'all' ? { background: 'white', color: color } : { color: 'white', borderColor: 'rgba(255,255,255,0.3)' }}
+                  onClick={() => setActiveBlock('all')}>
+                  Tots els blocs
+                </button>
+                <div className="de-filter-grid">
+                  {endavant.blocks.map((b, bi) => {
+                    const letter = String.fromCharCode(65 + bi);
+                    return (
+                      <button key={letter}
+                        className={`de-filter-btn${activeBlock === letter ? ' active' : ''}`}
+                        style={activeBlock === letter ? { background: 'white', color: color } : { color: 'white', borderColor: 'rgba(255,255,255,0.3)' }}
+                        onClick={() => setActiveBlock(letter)}
+                        title={b.title}>
+                        {letter}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {globalTotal > 0 && !showCorr && (
             <div className="de-dist">
               <p className="de-dist-label">Distribució global</p>
               <div className="de-dist-bar">
@@ -900,7 +1123,7 @@ function DashboardEndavant() {
                     <motion.div key={opt.key} className="de-dist-seg"
                       style={{ background: opt.color }}
                       initial={{ width: 0 }} animate={{ width: `${pct}%` }}
-                      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                      transition={{ duration: 0.8 }}
                     />
                   ) : null;
                 })}
@@ -909,75 +1132,25 @@ function DashboardEndavant() {
                 {ENDAVANT_OPTS.map(opt => (
                   <div key={opt.key}
                     className={`de-legend-row de-legend-row--btn${activeOpt === opt.key ? ' active' : ''}`}
-                    style={activeOpt === opt.key ? { background: `${opt.color}22`, borderRadius: 6 } : {}}
-                    onClick={() => setActiveOpt(prev => prev === opt.key ? null : opt.key)}
-                    title={`Filtrar per "${opt.label}"`}>
+                    style={activeOpt === opt.key ? { background: 'rgba(255,255,255,0.18)', borderRadius: 6 } : {}}
+                    onClick={() => setActiveOpt(prev => prev === opt.key ? null : opt.key)}>
                     <span className="de-legend-dot" style={{ background: opt.color }} />
                     <span className="de-legend-label">{opt.label}</span>
                     <span className="de-legend-pct">
-                      {globalTotal > 0 ? `${Math.round((globalCounts[opt.key] / globalTotal) * 100)}%` : '—'}
+                      {globalTotal > 0 ? `${Math.round((globalCounts[opt.key] / globalTotal) * 100)}%` : '-'}
                     </span>
-                    {activeOpt === opt.key && (
-                      <span className="de-legend-active-dot" />
-                    )}
                   </div>
                 ))}
               </div>
             </div>
           )}
-
-          {activeOpt && (
-            <p className="de-active-filter-hint">
-              {filteredItems.length} proposta{filteredItems.length !== 1 ? 'es' : ''} · <button className="de-clear-filter" onClick={() => setActiveOpt(null)}>Mostra totes ×</button>
-            </p>
-          )}
         </div>
       </div>
 
       <div className="panel-right de-right">
-        {/* Chart type + block filter row */}
-        <div className="de-top-bar">
-          {!segByDins && (
-            <div className="de-chart-toggle">
-              {CHART_TYPES.map(ct => (
-                <button key={ct.key}
-                  className={`de-chart-btn${chartType === ct.key ? ' active' : ''}`}
-                  style={chartType === ct.key ? { borderColor: color, color, background: `${color}10` } : {}}
-                  onClick={() => setChartType(ct.key)}>
-                  {ct.label}
-                </button>
-              ))}
-            </div>
-          )}
-          <button
-            className={`de-chart-btn${segByDins ? ' active' : ''}`}
-            style={segByDins ? { borderColor: colorDins, color: colorDins, background: `${colorDins}10` } : {}}
-            onClick={() => setSegByDins(v => !v)}
-            title="Segmentar per perfil de diagnosi intern">
-            ◈ Diagnosi
-          </button>
-          <div className="de-filters">
-            <button className={`de-filter-btn${activeBlock === 'all' ? ' active' : ''}`}
-              style={activeBlock === 'all' ? { borderColor: color, color } : {}}
-              onClick={() => setActiveBlock('all')}>
-              Tot
-            </button>
-            {endavant.blocks.map((b, bi) => {
-              const letter = String.fromCharCode(65 + bi);
-              return (
-                <button key={letter}
-                  className={`de-filter-btn${activeBlock === letter ? ' active' : ''}`}
-                  style={activeBlock === letter ? { borderColor: color, color } : {}}
-                  onClick={() => setActiveBlock(letter)}
-                  title={b.title}>
-                  {letter}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {activeBlock === 'all' && !activeOpt ? (
+        {showCorr ? (
+          <CorrelationPlot dinsVotes={dinsVotesSeg} endVotes={votes} />
+        ) : activeBlock === 'all' && !activeOpt ? (
           endavant.blocks.map((block, bi) => {
             const blockItems = filteredItems.filter(i => i.blockIdx === bi);
             if (blockItems.length === 0) return null;
@@ -1047,11 +1220,101 @@ function DeSegmentedRow({ item, numLabel, delay, altaCounts, altaTotal, baixaCou
   );
 }
 
+// ─── CORRELATION PLOT (shared, inline-embeddable) ─────────────────────────────
+
+function CorrelationPlot({
+  dinsVotes, endVotes,
+}: {
+  dinsVotes: { session_id: string; choice: string }[];
+  endVotes: { session_id: string; choice: string }[];
+}) {
+  const URGENCY: Record<string, number> = { desestimar: 0, reflexionar: 25, preparar: 50, pilotar: 75, activar: 100 };
+  const colorEnd = COLORS['mirada-endavant'];
+
+  const allSessions = new Set([...dinsVotes, ...endVotes].map(v => v.session_id));
+  const points: { dins: number; end: number }[] = [];
+  allSessions.forEach(sid => {
+    const md = dinsVotes.filter(v => v.session_id === sid);
+    const me = endVotes.filter(v => v.session_id === sid);
+    if (!md.length || !me.length) return;
+    const confirmar = md.filter(v => v.choice === 'confirmar').length;
+    points.push({
+      dins: (confirmar / md.length) * 100,
+      end: me.reduce((s, v) => s + (URGENCY[v.choice] ?? 0), 0) / me.length,
+    });
+  });
+
+  const n = points.length;
+  let r = 0, slope = 0, intercept = 50;
+  if (n >= 2) {
+    const mX = points.reduce((s, p) => s + p.dins, 0) / n;
+    const mY = points.reduce((s, p) => s + p.end, 0) / n;
+    const ssxy = points.reduce((s, p) => s + (p.dins - mX) * (p.end - mY), 0);
+    const ssx = points.reduce((s, p) => s + (p.dins - mX) ** 2, 0);
+    const ssy = points.reduce((s, p) => s + (p.end - mY) ** 2, 0);
+    r = ssx > 0 && ssy > 0 ? ssxy / Math.sqrt(ssx * ssy) : 0;
+    slope = ssx > 0 ? ssxy / ssx : 0;
+    intercept = mY - slope * mX;
+  }
+
+  const W = 460, H = 280, PL = 54, PR = 16, PT = 16, PB = 36;
+  const plotW = W - PL - PR, plotH = H - PT - PB;
+  const toX = (v: number) => PL + (v / 100) * plotW;
+  const toY = (v: number) => PT + plotH - (v / 100) * plotH;
+  const tY1 = Math.max(0, Math.min(100, slope * 0 + intercept));
+  const tY2 = Math.max(0, Math.min(100, slope * 100 + intercept));
+  const YLABELS = [
+    { v: 0, l: 'Des.' }, { v: 25, l: 'Refl.' }, { v: 50, l: 'Prep.' },
+    { v: 75, l: 'Pilot.' }, { v: 100, l: 'Activ.' },
+  ];
+  const rColor = r > 0.3 ? '#2ecc71' : r < -0.3 ? '#e74c3c' : '#bdc3c7';
+  const absR = Math.abs(r);
+  const strength = absR > 0.5 ? 'forta' : absR > 0.3 ? 'moderada' : 'feble';
+  const direction = r > 0.05 ? 'positiva' : r < -0.05 ? 'negativa' : 'nul·la';
+
+  if (n < 2) return <p className="corr-empty">Calen almenys 2 participants amb vots a les dues mirades.</p>;
+
+  return (
+    <div className="corr-plot-wrap">
+      <div className="corr-inline-header">
+        <span className="corr-r-val" style={{ color: rColor }}>r = {r.toFixed(2)}</span>
+        <span className="corr-r-sub">correlació {direction} {strength} · {n} participants creuats</span>
+      </div>
+      <svg className="corr-svg" viewBox={`0 0 ${W} ${H}`}>
+        {YLABELS.map(yl => (
+          <line key={yl.v} x1={PL} y1={toY(yl.v)} x2={W - PR} y2={toY(yl.v)} stroke="var(--border)" strokeWidth={1} />
+        ))}
+        {[0, 25, 50, 75, 100].map(x => (
+          <line key={x} x1={toX(x)} y1={PT} x2={toX(x)} y2={H - PB} stroke="var(--border)" strokeWidth={1} />
+        ))}
+        {YLABELS.map(yl => (
+          <text key={yl.v} x={PL - 5} y={toY(yl.v) + 4} textAnchor="end" fill="var(--text-muted)" fontSize={10}>{yl.l}</text>
+        ))}
+        {[0, 25, 50, 75, 100].map(x => (
+          <text key={x} x={toX(x)} y={H - PB + 14} textAnchor="middle" fill="var(--text-muted)" fontSize={10}>{x}%</text>
+        ))}
+        <line x1={toX(0)} y1={toY(tY1)} x2={toX(100)} y2={toY(tY2)}
+          stroke="#7f8c8d" strokeWidth={1.5} strokeDasharray="5 4" opacity={0.7} />
+        {points.map((p, i) => (
+          <circle key={i} cx={toX(p.dins)} cy={toY(p.end)} r={5.5}
+            fill={`${colorEnd}aa`} stroke={colorEnd} strokeWidth={0.8} opacity={0.8} />
+        ))}
+        <line x1={PL} y1={PT} x2={PL} y2={H - PB} stroke="var(--text-dim)" strokeWidth={1} />
+        <line x1={PL} y1={H - PB} x2={W - PR} y2={H - PB} stroke="var(--text-dim)" strokeWidth={1} />
+      </svg>
+      <div className="corr-axes-labels">
+        <span>→ % Coincideixo (Mirada Dins)</span>
+        <span className="corr-y-axis-label">↑ Ambició (Desestimar → Activar)</span>
+      </div>
+    </div>
+  );
+}
+
 // ─── CORRELATION DASHBOARD ────────────────────────────────────────────────────
 
 function CorrelationDashboard() {
   const [dinsVotes, setDinsVotes] = useState<{ session_id: string; proposal_id: string; choice: string }[]>([]);
-  const [endVotes,  setEndVotes]  = useState<{ session_id: string; proposal_id: string; choice: string }[]>([]);
+  const [endVotes, setEndVotes] = useState<{ session_id: string; proposal_id: string; choice: string }[]>([]);
 
   useEffect(() => {
     let mounted = true;
@@ -1074,12 +1337,12 @@ function CorrelationDashboard() {
   const points: Point[] = [];
   allSessions.forEach(sid => {
     const myDins = dinsVotes.filter(v => v.session_id === sid);
-    const myEnd  = endVotes.filter(v => v.session_id === sid);
+    const myEnd = endVotes.filter(v => v.session_id === sid);
     if (myDins.length === 0 || myEnd.length === 0) return;
     const confirmar = myDins.filter(v => v.choice === 'confirmar').length;
     points.push({
       dins: (confirmar / myDins.length) * 100,
-      end:  myEnd.reduce((s, v) => s + (URGENCY[v.choice] ?? 0), 0) / myEnd.length,
+      end: myEnd.reduce((s, v) => s + (URGENCY[v.choice] ?? 0), 0) / myEnd.length,
     });
   });
 
@@ -1087,12 +1350,12 @@ function CorrelationDashboard() {
   let r = 0, slope = 0, intercept = 50;
   if (n >= 2) {
     const meanX = points.reduce((s, p) => s + p.dins, 0) / n;
-    const meanY = points.reduce((s, p) => s + p.end,  0) / n;
+    const meanY = points.reduce((s, p) => s + p.end, 0) / n;
     const ssxy = points.reduce((s, p) => s + (p.dins - meanX) * (p.end - meanY), 0);
-    const ssx  = points.reduce((s, p) => s + (p.dins - meanX) ** 2, 0);
-    const ssy  = points.reduce((s, p) => s + (p.end  - meanY) ** 2, 0);
-    r         = ssx > 0 && ssy > 0 ? ssxy / Math.sqrt(ssx * ssy) : 0;
-    slope     = ssx > 0 ? ssxy / ssx : 0;
+    const ssx = points.reduce((s, p) => s + (p.dins - meanX) ** 2, 0);
+    const ssy = points.reduce((s, p) => s + (p.end - meanY) ** 2, 0);
+    r = ssx > 0 && ssy > 0 ? ssxy / Math.sqrt(ssx * ssy) : 0;
+    slope = ssx > 0 ? ssxy / ssx : 0;
     intercept = meanY - slope * meanX;
   }
 
@@ -1101,26 +1364,26 @@ function CorrelationDashboard() {
   const plotW = W - PL - PR, plotH = H - PT - PB;
   const toX = (v: number) => PL + (v / 100) * plotW;
   const toY = (v: number) => PT + plotH - (v / 100) * plotH;
-  const tY1 = Math.max(0, Math.min(100, slope * 0   + intercept));
+  const tY1 = Math.max(0, Math.min(100, slope * 0 + intercept));
   const tY2 = Math.max(0, Math.min(100, slope * 100 + intercept));
 
   const YLABELS = [
-    { v: 0,   l: 'Des.' }, { v: 25,  l: 'Refl.' }, { v: 50, l: 'Prep.' },
-    { v: 75,  l: 'Pilot.' }, { v: 100, l: 'Activ.' },
+    { v: 0, l: 'Des.' }, { v: 25, l: 'Refl.' }, { v: 50, l: 'Prep.' },
+    { v: 75, l: 'Pilot.' }, { v: 100, l: 'Activ.' },
   ];
 
   const absR = Math.abs(r);
-  const strength  = absR > 0.5 ? 'forta' : absR > 0.3 ? 'moderada' : 'feble';
-  const direction = r >  0.05 ? 'positiva' : r < -0.05 ? 'negativa' : 'nul·la';
-  const rColor    = r >  0.3  ? '#2ecc71'  : r < -0.3   ? '#e74c3c'  : '#bdc3c7';
+  const strength = absR > 0.5 ? 'forta' : absR > 0.3 ? 'moderada' : 'feble';
+  const direction = r > 0.05 ? 'positiva' : r < -0.05 ? 'negativa' : 'nul·la';
+  const rColor = r > 0.3 ? '#2ecc71' : r < -0.3 ? '#e74c3c' : '#bdc3c7';
   const colorDins = COLORS['mirada-dins'];
-  const colorEnd  = COLORS['mirada-endavant'];
+  const colorEnd = COLORS['mirada-endavant'];
 
   const interpretation = r > 0.3
     ? 'Les persones que coincideixen més amb el diagnòstic tendeixen a votar propostes més ambicioses.'
     : r < -0.3
-    ? 'Les persones que coincideixen menys amb el diagnòstic tendeixen a votar propostes més ambicioses.'
-    : 'No hi ha una correlació clara entre diagnosi i ambició de les propostes.';
+      ? 'Les persones que coincideixen menys amb el diagnòstic tendeixen a votar propostes més ambicioses.'
+      : 'No hi ha una correlació clara entre diagnosi i ambició de les propostes.';
 
   return (
     <>
@@ -1311,7 +1574,7 @@ export default function App() {
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') updateSlide(currentIndex + 1);
-      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   updateSlide(currentIndex - 1);
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') updateSlide(currentIndex - 1);
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
@@ -1326,11 +1589,11 @@ export default function App() {
       const dy = e.changedTouches[0].clientY - startY;
       if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
         if (dx < 0) updateSlide(currentIndex + 1);
-        else        updateSlide(currentIndex - 1);
+        else updateSlide(currentIndex - 1);
       }
     };
     window.addEventListener('touchstart', onStart, { passive: true });
-    window.addEventListener('touchend',   onEnd,   { passive: true });
+    window.addEventListener('touchend', onEnd, { passive: true });
     return () => { window.removeEventListener('touchstart', onStart); window.removeEventListener('touchend', onEnd); };
   }, [currentIndex, isPresenter]);
 
@@ -1390,6 +1653,7 @@ export default function App() {
   const slide = allSlides[currentIndex];
   const color = COLORS[slide.mirada.id];
   const isVotingSection =
+    slide.type === 'quiz' ||
     slide.mirada.id === 'mirada-dins' ||
     slide.type === 'endavant-vote-intro' ||
     (slide.type === 'dashboard' && slide.mirada.id === 'mirada-endavant');
@@ -1418,7 +1682,14 @@ export default function App() {
               const pct = currentInMirada >= 0 ? ((currentInMirada + 1) / miradaSlides.length) : 0;
               const isActive = slide.mirada.id === m.id;
               return (
-                <div key={m.id} className="nav-dot-col">
+                <div key={m.id} className="nav-dot-col"
+                  style={{ cursor: isPresenter ? 'pointer' : 'default' }}
+                  onClick={() => {
+                    if (!isPresenter) return;
+                    const firstSlideIdx = allSlides.findIndex(s => s.mirada.id === m.id);
+                    if (firstSlideIdx !== -1) updateSlide(firstSlideIdx);
+                  }}
+                  title={isPresenter ? `Salta a: ${m.title}` : ''}>
                   <motion.div className="nav-dot-bar"
                     animate={{ background: isActive ? mColor : 'var(--border)', width: isActive ? '26px' : '12px' }}
                     transition={{ duration: 0.3 }} />
@@ -1437,37 +1708,48 @@ export default function App() {
         </div>
 
         {/* Right: presenter controls (or empty spacer for audience) */}
-        {isPresenter ? (
-          <div className="header-controls">
-            <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-              className={`ctrl-vote-btn${isVotingOpen ? ' ctrl-vote-btn--open' : ''}`}
-              onClick={toggleVoting}>
-              {isVotingOpen
-                ? <><X size={11} /> Tancar vots</>
-                : <><Rocket size={11} /> Obrir vots</>}
-            </motion.button>
+        <div className="header-controls">
+          {isPresenter && (
+            <>
+              <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                className={`ctrl-vote-btn${isVotingOpen ? ' ctrl-vote-btn--open' : ''}`}
+                onClick={toggleVoting}>
+                {isVotingOpen
+                  ? <><X size={11} /> Tancar vots</>
+                  : <><Rocket size={11} /> Obrir vots</>}
+              </motion.button>
 
-            <div className="ctrl-icon-group">
-              <button className={`ctrl-icon-btn${showResults ? ' active' : ''}`}
-                onClick={() => setShowResults(v => !v)}
-                title={showResults ? 'Amagar resultats' : 'Mostrar resultats'}>
-                {showResults ? <EyeOff size={13} /> : <BarChart2 size={13} />}
-              </button>
-              <button className={`ctrl-icon-btn${showQr ? ' active' : ''}`}
-                onClick={() => setShowQr(v => !v)} title="QR per participants">
-                <QrCode size={13} />
-              </button>
-              <button className="ctrl-icon-btn ctrl-icon-btn--danger"
-                onClick={resetAllVotes} title="Nova votació (esborra tots els vots)">
-                <Trash2 size={13} />
-              </button>
-            </div>
+              <div className="ctrl-icon-group">
+                <button className={`ctrl-icon-btn${showResults ? ' active' : ''}`}
+                  onClick={() => setShowResults(v => !v)}
+                  title={showResults ? 'Amagar resultats' : 'Mostrar resultats'}>
+                  {showResults ? <EyeOff size={13} /> : <BarChart2 size={13} />}
+                </button>
+                <button className={`ctrl-icon-btn${showQr ? ' active' : ''}`}
+                  onClick={() => setShowQr(v => !v)} title="QR per participants">
+                  <QrCode size={13} />
+                </button>
+                <button className="ctrl-icon-btn ctrl-icon-btn--danger"
+                  onClick={resetAllVotes} title="Nova votació (esborra tots els vots)">
+                  <Trash2 size={13} />
+                </button>
+              </div>
+            </>
+          )}
 
-            <span className="ctrl-counter">{currentIndex + 1}<span className="ctrl-counter-sep">/</span>{allSlides.length}</span>
+          <div className="ctrl-counter"
+            style={{ cursor: isPresenter ? 'pointer' : 'default' }}
+            onClick={() => {
+              if (!isPresenter) return;
+              const target = window.prompt(`Salta a la diapositiva (1-${allSlides.length}):`, String(currentIndex + 1));
+              if (target) {
+                const n = parseInt(target, 10);
+                if (!isNaN(n) && n > 0 && n <= allSlides.length) updateSlide(n - 1);
+              }
+            }}>
+            {currentIndex + 1}<span className="ctrl-counter-sep">/</span>{allSlides.length}
           </div>
-        ) : (
-          <div className="header-brand" style={{ visibility: 'hidden' }} aria-hidden />
-        )}
+        </div>
       </header>
 
       {/* Slide */}
@@ -1486,11 +1768,14 @@ export default function App() {
             className="slide-area" style={{ width: '100%' }}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.22 }}>
 
-            {/* Audience in voting sections → VotingPanel (stays even when presenter is at dashboard) */}
+            {/* Audience in voting sections → voting panel */}
             {!isPresenter && isVotingSection ? (
-              <VotingPanel mirada={slide.mirada} myVotes={myVotes} onVote={handleVote} onReset={resetMyVotes} />
+              slide.type === 'quiz'
+                ? <QuizVotePanel myVotes={myVotes} onVote={handleVote} />
+                : <VotingPanel mirada={slide.mirada} myVotes={myVotes} onVote={handleVote} onReset={resetMyVotes} />
             ) : (
               <>
+                {slide.type === 'quiz' && <QuizSlide />}
                 {slide.type === 'mirada-intro' && <IntroSlide slide={slide} />}
                 {slide.type === 'block' && <BlockSlide slide={slide} />}
                 {slide.type === 'endavant-vote-intro' && <EndavantVoteIntroSlide />}
@@ -1500,6 +1785,7 @@ export default function App() {
                     : <DashboardEndavant />
                 )}
                 {slide.type === 'correlation' && <CorrelationDashboard />}
+                {slide.type === 'report' && <ReportSlide step={slide.introStep ?? 0} />}
                 {slide.type === 'item' && (
                   <ItemSlide slide={slide} isPresenter={isPresenter} isVotingOpen={isVotingOpen}
                     showResults={showResults} contributions={contributions}

@@ -1,4 +1,4 @@
-export type ViewId = 'preamble' | 'mirada-fora' | 'mirada-dins' | 'mirada-endavant';
+export type ViewId = 'preamble' | 'mirada-fora' | 'mirada-dins' | 'mirada-endavant' | 'quiz-opening' | 'report';
 
 export interface Item {
     id: string;
@@ -496,5 +496,17 @@ export const comsData: Mirada[] = [
                 ]
             }
         ]
+    },
+
+    // ── ★ · INFORME ────────────────────────────────────────────────────────
+    {
+        id: 'report',
+        title: 'INFORME',
+        subtitle: 'Resultats de la consulta',
+        number: '★',
+        color: '#16a085',
+        layout: 'reveal-only',
+        intro: 'Resum dels resultats de la consulta realitzada a 21 direccions de centres sobre el Pla d\'Aprenentatge FJE 2026–2029.',
+        blocks: []
     }
 ];
