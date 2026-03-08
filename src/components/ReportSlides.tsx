@@ -696,52 +696,55 @@ const KEY_DECISIONS = [
 function ReportConclusions() {
   return (
     <>
-      <div className="panel-left intro-panel" style={{ background: 'linear-gradient(155deg, #1a2e1a 0%, #1c2e40 100%)' }}>
+      <div className="panel-left intro-panel" style={{ background: COLOR }}>
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
-          <div className="mirada-num" style={{ opacity: 0.5, fontSize: '2rem' }}>⬟</div>
+          <div className="mirada-num">★</div>
           <h1 className="mirada-ttl">Conclusions</h1>
-          <p className="mirada-sub">Del desig a la viabilitat</p>
+          <p className="mirada-sub">Cadena de dependències</p>
 
-          <div style={{ marginTop: '1.2rem' }}>
-            <p style={{ fontSize: '0.78rem', opacity: 0.9, lineHeight: 1.6 }}>
-              Les propostes no són independents. Existeix una cadena de dependències
-              que condiciona l'ordre d'implementació.
-            </p>
-          </div>
+          <p className="intro-text-compact" style={{ marginTop: '1rem', opacity: 0.95 }}>
+            Les propostes no són independents. L'ordre d'implementació ve determinat per la seva seqüència lògica.
+          </p>
 
           <div style={{ marginTop: '1rem' }}>
             {DEPENDENCY_LAYERS.map((layer, i) => (
-              <motion.div key={i} style={{
-                display: 'flex', alignItems: 'flex-start', gap: '0.4rem',
-                marginTop: i > 0 ? '0.35rem' : 0,
-              }}
+              <motion.div key={i}
                 initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + i * 0.1, ease }}>
                 {i > 0 && (
-                  <span style={{
-                    position: 'absolute', marginLeft: '3px', marginTop: '-0.35rem',
-                    fontSize: '0.6rem', opacity: 0.4,
-                  }}>↓</span>
+                  <div style={{
+                    marginLeft: '5px', height: '10px',
+                    borderLeft: '2px solid rgba(255,255,255,0.35)',
+                  }} />
                 )}
-                <span style={{
-                  width: 8, height: 8, borderRadius: '50%', marginTop: '0.25rem',
-                  background: layer.color, flexShrink: 0,
-                }} />
-                <span style={{ fontSize: '0.7rem', opacity: 0.9 }}>
-                  <strong>{layer.label.split(' — ')[1]}</strong>
-                  <span style={{ opacity: 0.6 }}> · {layer.tag}</span>
-                </span>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: '0.5rem',
+                }}>
+                  <span style={{
+                    width: 12, height: 12, borderRadius: '50%',
+                    background: layer.color, flexShrink: 0,
+                    border: '2px solid rgba(255,255,255,0.3)',
+                  }} />
+                  <div>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>
+                      {layer.label.split(' — ')[1]}
+                    </span>
+                    <span style={{ fontSize: '0.72rem', opacity: 0.8 }}>
+                      {' '}· {layer.tag}
+                    </span>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
 
-          <motion.p style={{ fontSize: '0.72rem', opacity: 0.7, marginTop: '1rem', lineHeight: 1.5, fontStyle: 'italic' }}
-            initial={{ opacity: 0 }} animate={{ opacity: 0.7 }}
+          <motion.p style={{ fontSize: '0.78rem', opacity: 0.9, marginTop: '1.2rem', lineHeight: 1.5 }}
+            initial={{ opacity: 0 }} animate={{ opacity: 0.9 }}
             transition={{ delay: 0.8 }}>
-            El desig d'avaluar (45% Activar) expressa urgència per saber si fem bé les coses
-            — però primer cal que hi hagi transferència real.
+            El desig d'avaluar (45%) expressa urgència
+            — però primer cal transferència real.
           </motion.p>
         </motion.div>
       </div>
