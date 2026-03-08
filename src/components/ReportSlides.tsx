@@ -404,17 +404,23 @@ function ReportAllProposals() {
                     <span className="rpt-prop-title">{p.title}</span>
                     <div className="rpt-prop-bar-wrap">
                       <div className="rpt-prop-bar" style={{ width: `${(p.total / maxTotal) * 100}%` }}>
-                        {segments.map(seg => seg.val > 0 ? (
-                          <div key={seg.key} className="rpt-prop-seg"
-                            style={{
-                              width: `${(seg.val / p.total) * 100}%`,
-                              background: PHASE_COLORS[seg.key],
-                            }}
-                            title={`${seg.key}: ${seg.val}`}
-                          />
-                        ) : null)}
+                        {segments.map(seg => {
+                          const pct = Math.round((seg.val / p.total) * 100);
+                          return seg.val > 0 ? (
+                            <div key={seg.key} className="rpt-prop-seg"
+                              style={{
+                                width: `${pct}%`,
+                                background: PHASE_COLORS[seg.key],
+                              }}
+                              title={`${seg.key}: ${seg.val} (${pct}%)`}
+                            >
+                              {pct >= 20 && (
+                                <span className="rpt-prop-seg-pct">{pct}</span>
+                              )}
+                            </div>
+                          ) : null;
+                        })}
                       </div>
-                      <span className="rpt-prop-total">{p.total}</span>
                     </div>
                   </div>
                 </motion.div>
@@ -767,7 +773,7 @@ function ReportConclusions() {
           <motion.div className="rpt-message-box"
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, ease }}>
-            <p className="rpt-message-title" style={{ color: COLOR }}>El missatge clau</p>
+            <p className="rpt-message-title" style={{ color: COLOR }}>El missatge a les direccions</p>
             <div className="rpt-message-items">
               <div className="rpt-message-item">
                 <span className="rpt-message-icon" style={{ color: '#27ae60' }}>●</span>
@@ -781,6 +787,12 @@ function ReportConclusions() {
                 <span className="rpt-message-icon" style={{ color: '#3498db' }}>●</span>
                 <span>L'avaluació vindrà — quan pugui mesurar alguna cosa real</span>
               </div>
+            </div>
+            <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid var(--border)' }}>
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.45 }}>
+                <span style={{ color: '#e67e22', fontWeight: 600 }}>r = −0,31</span>
+                {' '}· Els més crítics volen accelerar, els més alineats volen solidesa — combinar ambdós perfils en equips pilots mixtos.
+              </p>
             </div>
           </motion.div>
         </motion.div>
@@ -797,9 +809,8 @@ export function ReportSlide({ step }: { step: number }) {
     case 1: return <ReportDiagnostic />;
     case 2: return <ReportDistribution />;
     case 3: return <ReportAllProposals />;
-    case 4: return <ReportProfiles />;
-    case 5: return <ReportRoadmap />;
-    case 6: return <ReportConclusions />;
+    case 4: return <ReportRoadmap />;
+    case 5: return <ReportConclusions />;
     default: return <ReportExecSummary />;
   }
 }

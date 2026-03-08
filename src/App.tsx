@@ -77,7 +77,7 @@ function buildSlides(): FlatSlide[] {
   for (const mirada of comsData) {
     // Special handling for report section
     if (mirada.id === 'report') {
-      for (let step = 0; step < 7; step++) {
+      for (let step = 0; step < 6; step++) {
         result.push({
           type: 'report',
           slideKey: `report:s${step}`,
