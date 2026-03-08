@@ -23,60 +23,52 @@ const PHASE_COLORS: Record<string, string> = {
   reflexionar: '#8e44ad', desestimar: '#e74c3c',
 };
 
-const GLOBAL_DIST = [
-  { phase: 'Activar', key: 'activar', votes: 88, pct: 31.3 },
-  { phase: 'Pilotar', key: 'pilotar', votes: 66, pct: 23.5 },
-  { phase: 'Preparar', key: 'preparar', votes: 64, pct: 22.8 },
-  { phase: 'Reflexionar', key: 'reflexionar', votes: 54, pct: 19.2 },
-  { phase: 'Desestimar', key: 'desestimar', votes: 9, pct: 3.2 },
-];
-
 const TOP_ACTIVAR = [
   { title: 'Autonomia de centre', pct: 47.6 },
   { title: 'Durant — experiència activa', pct: 47.6 },
+  { title: 'Més enllà de la satisfacció', pct: 45.0 },
   { title: 'Abans — preparació i compromís', pct: 42.9 },
-  { title: 'Avaluació dinàmica', pct: 35.0 },
+  { title: 'Banc de talents intern', pct: 35.0 },
   { title: 'Superar les 15h actuals', pct: 33.3 },
-  { title: 'Banc de talents intern', pct: 30.0 },
 ];
 
 const TOP_PILOTAR = [
   { title: 'Després — el focus real', pct: 50.0 },
-  { title: 'Itineraris plurianuals', pct: 30.0 },
-  { title: 'Avaluació dinàmica', pct: 30.0 },
+  { title: 'Recull d\'evidències d\'aula', pct: 36.8 },
+  { title: 'Plataforma dedicada i portafoli', pct: 30.0 },
+  { title: 'Banc de talents intern', pct: 30.0 },
 ];
 
 const TOP_PREPARAR = [
-  { title: 'Nivells de profunditat', pct: 42.1 },
-  { title: 'Més enllà de la satisfacció', pct: 40.0 },
+  { title: 'Auditoria d\'impacte', pct: 42.1 },
   { title: 'Lideratge per a la transferència', pct: 40.0 },
+  { title: 'Plataforma dedicada i portafoli', pct: 35.0 },
 ];
 
 const ROADMAP = [
   {
-    year: '2026–27', phase: 'Activar', color: '#27ae60',
+    year: '2026–27', phase: 'Bases + Lideratge', color: '#27ae60',
     items: [
-      'Autonomia de centre per gestionar formació',
+      'Autonomia de centre i CPA',
       'Model ADD: fases Abans i Durant',
-      'Avaluació més enllà de la satisfacció',
-      'Banc de talents intern de la xarxa',
-      'Itineraris plurianuals (primers pilots)',
+      'Banc de talents intern',
+      'Formació intensiva Lideratge transferència',
     ]
   },
   {
-    year: '2026–28', phase: 'Pilotar', color: '#3498db',
+    year: '2027–28', phase: 'Transferència', color: '#3498db',
     items: [
-      'Després (ADD): acompanyament post-formació',
+      'Pilotar fase Després (3-5 centres)',
+      'Avaluació dinàmica integrada als pilots',
+      'Superar les 15h (consolidar)',
+    ]
+  },
+  {
+    year: '2028–29', phase: 'Avaluació', color: '#c9922a',
+    items: [
+      'Més enllà de la satisfacció (mesurable)',
       'Recull d\'evidències d\'aula',
-      'Lideratge per a la transferència',
-    ]
-  },
-  {
-    year: '2026–29', phase: 'Preparar', color: '#c9922a',
-    items: [
       'Auditoria d\'impacte amb universitats',
-      'Plataforma dedicada i portafoli professional',
-      'Nivells de profunditat competencial',
     ]
   },
 ];
@@ -85,12 +77,11 @@ const ROADMAP = [
 
 function ReportExecSummary() {
   const stats = [
-    { value: '21', label: 'direccions participants', accent: COLOR },
-    { value: '94,3%', label: 'acord amb el diagnòstic', accent: '#27ae60' },
-    { value: '54,8%', label: 'voluntat d\'acció directa', accent: '#3498db' },
-    { value: '281', label: 'vots emesos en total', accent: COLOR },
-    { value: 'r = −0,31', label: 'correlació diagnosi–ambició', accent: '#e67e22' },
-    { value: '3,2%', label: 'rebuig mínim a les propostes', accent: '#e74c3c' },
+    { value: '94,3%', label: 'Diagnòstic — acord global', accent: '#27ae60' },
+    { value: '281', label: '14 propostes — vots emesos', accent: '#3498db' },
+    { value: '54,8%', label: 'Voluntat d\'acció (Activar+Pilotar)', accent: COLOR },
+    { value: 'r = −0,31', label: 'Correlació — diagnosi × ambició', accent: '#e67e22' },
+    { value: '5 capes', label: 'Cadena de dependències', accent: '#8e44ad' },
   ];
 
   return (
@@ -106,7 +97,7 @@ function ReportExecSummary() {
             Resum de la consulta a 21 direccions de centres FJE sobre el Pla d'Aprenentatge 2026–2029.
           </p>
           <p className="intro-text-compact" style={{ marginTop: '0.8rem', opacity: 0.7, fontSize: '0.8rem' }}>
-            5 de març de 2026
+            8 de març de 2026 · Dades verificades
           </p>
         </motion.div>
       </div>
@@ -126,11 +117,11 @@ function ReportExecSummary() {
           <div className="rpt-conclusions">
             <p className="rpt-conclusions-title">Conclusions principals</p>
             {[
-              'Alt acord amb el diagnòstic: el punt de partida queda validat',
-              'Voluntat d\'acció clara: Activar + Pilotar concentren la majoria de vots',
-              'Consens en prioritats: Autonomia de centre i model ADD lideren',
-              'Repte identificat: la transferència post-formació requereix pilotatge',
-              'Rebuig residual: només el 3,2% descarta propostes',
+              'Diagnòstic validat: 94,3% d\'acord, 3 ítems amb consens unànime',
+              'Mandat clar per avançar: 54,8% volen Activar o Pilotar',
+              'Coll d\'ampolla identificat: el Lideratge per a la transferència',
+              'Dependències crítiques: no es pot avaluar sense transferir primer',
+              'Rebuig mínin (3,2%): alineació estratègica excepcional',
             ].map((c, i) => (
               <motion.div key={i} className="rpt-conclusion-item"
                 initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
@@ -222,6 +213,29 @@ function ReportDiagnostic() {
 
 // ─── STEP 2: DISTRIBUCIÓ GLOBAL + PRIORITATS ──────────────────────────────────
 
+const GLOBAL_DIST = [
+  { phase: 'Activar', key: 'activar', votes: 88, pct: 31.3 },
+  { phase: 'Pilotar', key: 'pilotar', votes: 66, pct: 23.5 },
+  { phase: 'Preparar', key: 'preparar', votes: 64, pct: 22.8 },
+  { phase: 'Reflexionar', key: 'reflexionar', votes: 54, pct: 19.2 },
+  { phase: 'Desestimar', key: 'desestimar', votes: 9, pct: 3.2 },
+];
+
+const CATEGORIES = [
+  { key: 'activar', label: 'Activar', icon: '▲', pct: 31.3, items: TOP_ACTIVAR.slice(0, 4) },
+  { key: 'pilotar', label: 'Pilotar', icon: '◆', pct: 23.5, items: TOP_PILOTAR },
+  { key: 'preparar', label: 'Preparar', icon: '●', pct: 22.8, items: [
+    ...TOP_PREPARAR,
+    { title: 'Més enllà de la satisfacció', pct: 25.0 },
+  ]},
+  { key: 'reflexionar', label: 'Reflexionar', icon: '◇', pct: 19.2, items: [
+    { title: 'Nivells de profunditat', pct: 30.0 },
+    { title: 'Lideratge per a la transferència', pct: 30.0 },
+    { title: 'Autonomia de centre', pct: 28.6 },
+    { title: 'Superar les 15h actuals', pct: 23.8 },
+  ]},
+];
+
 function ReportDistribution() {
   const maxPct = Math.max(...GLOBAL_DIST.map(d => d.pct));
 
@@ -236,95 +250,61 @@ function ReportDistribution() {
           <p className="mirada-sub">281 vots · Mirada Endavant</p>
 
           <div style={{ marginTop: '1.5rem' }}>
-            <div className="rpt-dist-stacked">
-              {GLOBAL_DIST.map(d => (
-                <motion.div key={d.key} className="rpt-dist-seg"
-                  style={{ background: PHASE_COLORS[d.key] }}
-                  initial={{ width: 0 }} animate={{ width: `${d.pct}%` }}
-                  transition={{ duration: 0.8, ease }}
-                  title={`${d.phase}: ${d.pct}%`}>
-                  {d.pct >= 12 && <span className="rpt-dist-seg-pct">{Math.round(d.pct)}%</span>}
-                </motion.div>
-              ))}
-            </div>
-            <div className="rpt-dist-legend">
-              {GLOBAL_DIST.map(d => (
-                <div key={d.key} className="rpt-dist-legend-row">
-                  <span className="rpt-dist-legend-dot" style={{ background: PHASE_COLORS[d.key] }} />
-                  <span className="rpt-dist-legend-label">{d.phase}</span>
-                  <span className="rpt-dist-legend-pct">{d.pct}%</span>
+            {GLOBAL_DIST.map((d, i) => (
+              <motion.div key={d.key} style={{
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                marginTop: i > 0 ? '0.55rem' : 0,
+              }}
+                initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 + i * 0.08, ease }}>
+                <span style={{ fontSize: '0.78rem', width: '74px', textAlign: 'right', opacity: 0.9 }}>{d.phase}</span>
+                <div style={{
+                  flex: 1, height: 10, background: 'rgba(255,255,255,0.15)',
+                  borderRadius: 5, overflow: 'hidden',
+                }}>
+                  <motion.div style={{
+                    height: '100%', borderRadius: 5,
+                    background: PHASE_COLORS[d.key],
+                  }}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(d.pct / maxPct) * 100}%` }}
+                    transition={{ duration: 0.7, delay: 0.25 + i * 0.08, ease }} />
                 </div>
-              ))}
-            </div>
+                <span style={{ fontSize: '0.78rem', fontWeight: 700, width: '38px' }}>{d.pct}%</span>
+              </motion.div>
+            ))}
           </div>
 
-          <p style={{ fontSize: '0.75rem', opacity: 0.8, marginTop: '1rem' }}>
+          <p style={{ fontSize: '0.78rem', opacity: 0.8, marginTop: '1.2rem' }}>
             54,8% aposten per l'acció directa o controlada
           </p>
         </motion.div>
       </div>
       <div className="panel-right rpt-right">
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
-          <p className="rpt-section-label" style={{ color: COLOR }}>Distribució per fase d'implementació</p>
+          <p className="rpt-section-label" style={{ color: COLOR }}>Top propostes per categoria</p>
 
-          <div className="rpt-dist-bars">
-            {GLOBAL_DIST.map((d, i) => (
-              <motion.div key={d.key} className="rpt-dist-bar-row"
-                initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 + i * 0.06, ease }}>
-                <span className="rpt-dist-bar-label" style={{ color: PHASE_COLORS[d.key] }}>{d.phase}</span>
-                <div className="rpt-dist-bar-track">
-                  <motion.div className="rpt-dist-bar-fill"
-                    style={{ background: PHASE_COLORS[d.key] }}
-                    initial={{ width: 0 }} animate={{ width: `${(d.pct / maxPct) * 100}%` }}
-                    transition={{ duration: 0.7, delay: 0.15 + i * 0.08, ease }} />
+          <div className="rpt-cat-grid">
+            {CATEGORIES.map((cat, ci) => (
+              <motion.div key={cat.key} className="rpt-cat-tile"
+                initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1 + ci * 0.08, ease }}>
+                <div className="rpt-cat-tile-header" style={{ background: PHASE_COLORS[cat.key] }}>
+                  <span className="rpt-cat-tile-icon">{cat.icon}</span>
+                  <span className="rpt-cat-tile-label">{cat.label}</span>
+                  <span className="rpt-cat-tile-pct">{cat.pct}%</span>
                 </div>
-                <span className="rpt-dist-bar-info">
-                  <strong>{d.pct}%</strong> <small>({d.votes})</small>
-                </span>
+                <div className="rpt-cat-tile-body">
+                  {cat.items.map((p, i) => (
+                    <div key={i} className="rpt-cat-tile-item">
+                      <span className="rpt-cat-tile-rank" style={{ color: PHASE_COLORS[cat.key] }}>{i + 1}</span>
+                      <span className="rpt-cat-tile-title">{p.title}</span>
+                      <span className="rpt-cat-tile-val" style={{ color: PHASE_COLORS[cat.key] }}>{p.pct}%</span>
+                    </div>
+                  ))}
+                </div>
               </motion.div>
             ))}
-          </div>
-
-          <div className="rpt-top-sections">
-            <div className="rpt-top-col">
-              <p className="rpt-top-header" style={{ color: PHASE_COLORS.activar }}>▲ Top per Activar</p>
-              {TOP_ACTIVAR.map((p, i) => (
-                <motion.div key={i} className="rpt-top-item"
-                  initial={{ opacity: 0, x: 6 }} animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 + i * 0.05, ease }}>
-                  <span className="rpt-top-rank">{i + 1}</span>
-                  <span className="rpt-top-title">{p.title}</span>
-                  <span className="rpt-top-pct" style={{ color: PHASE_COLORS.activar }}>{p.pct}%</span>
-                </motion.div>
-              ))}
-            </div>
-            <div className="rpt-top-two-cols">
-              <div className="rpt-top-col rpt-top-col--sm">
-                <p className="rpt-top-header" style={{ color: PHASE_COLORS.pilotar }}>◆ Top per Pilotar</p>
-                {TOP_PILOTAR.map((p, i) => (
-                  <motion.div key={i} className="rpt-top-item"
-                    initial={{ opacity: 0, x: 6 }} animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.6 + i * 0.05, ease }}>
-                    <span className="rpt-top-rank">{i + 1}</span>
-                    <span className="rpt-top-title">{p.title}</span>
-                    <span className="rpt-top-pct" style={{ color: PHASE_COLORS.pilotar }}>{p.pct}%</span>
-                  </motion.div>
-                ))}
-              </div>
-              <div className="rpt-top-col rpt-top-col--sm">
-                <p className="rpt-top-header" style={{ color: PHASE_COLORS.preparar }}>● Top per Preparar</p>
-                {TOP_PREPARAR.map((p, i) => (
-                  <motion.div key={i} className="rpt-top-item"
-                    initial={{ opacity: 0, x: 6 }} animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.7 + i * 0.05, ease }}>
-                    <span className="rpt-top-rank">{i + 1}</span>
-                    <span className="rpt-top-title">{p.title}</span>
-                    <span className="rpt-top-pct" style={{ color: PHASE_COLORS.preparar }}>{p.pct}%</span>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
           </div>
         </motion.div>
       </div>
@@ -332,7 +312,122 @@ function ReportDistribution() {
   );
 }
 
-// ─── STEP 3: PERFILS DIRECTIUS + CORRELACIÓ ────────────────────────────────────
+// ─── STEP 3: TOTES LES PROPOSTES ──────────────────────────────────────────────
+
+const ALL_PROPOSALS = [
+  { dim: 'A', title: 'Superar les 15h', act: 7, pil: 1, prep: 5, ref: 5, des: 3, total: 21 },
+  { dim: 'A', title: 'Autonomia de centre', act: 10, pil: 3, prep: 2, ref: 6, des: 0, total: 21 },
+  { dim: 'B', title: 'Abans — preparació', act: 9, pil: 4, prep: 4, ref: 4, des: 0, total: 21 },
+  { dim: 'B', title: 'Durant — experiència', act: 10, pil: 6, prep: 4, ref: 1, des: 0, total: 21 },
+  { dim: 'B', title: 'Després — el focus real', act: 4, pil: 10, prep: 4, ref: 2, des: 0, total: 20 },
+  { dim: 'C', title: 'Lideratge transferència', act: 5, pil: 1, prep: 8, ref: 6, des: 0, total: 20 },
+  { dim: 'C', title: 'Banc de talents', act: 7, pil: 6, prep: 3, ref: 4, des: 0, total: 20 },
+  { dim: 'D', title: 'Itineraris plurianuals', act: 6, pil: 5, prep: 3, ref: 4, des: 2, total: 20 },
+  { dim: 'D', title: 'Nivells profunditat', act: 3, pil: 4, prep: 5, ref: 6, des: 2, total: 20 },
+  { dim: 'E', title: 'Plataforma i portafoli', act: 3, pil: 6, prep: 7, ref: 4, des: 0, total: 20 },
+  { dim: 'E', title: 'Auditoria d\'impacte', act: 4, pil: 5, prep: 8, ref: 2, des: 0, total: 19 },
+  { dim: 'F', title: 'Més enllà satisfacció', act: 9, pil: 4, prep: 5, ref: 2, des: 0, total: 20 },
+  { dim: 'F', title: 'Avaluació dinàmica', act: 6, pil: 4, prep: 4, ref: 4, des: 1, total: 19 },
+  { dim: 'F', title: 'Recull d\'evidències', act: 5, pil: 7, prep: 2, ref: 4, des: 1, total: 19 },
+];
+
+const DIM_LABELS: Record<string, string> = {
+  A: 'Temps i Ritmes', B: 'Estructura ADD', C: 'Formadors i rols',
+  D: 'Tipologies', E: 'Recursos', F: 'Avaluació i impacte',
+};
+
+function ReportAllProposals() {
+  const maxTotal = Math.max(...ALL_PROPOSALS.map(p => p.total));
+
+  return (
+    <>
+      <div className="panel-left intro-panel" style={{ background: COLOR }}>
+        <motion.div className="intro-left-content"
+          initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease }}>
+          <div className="mirada-num">★</div>
+          <h1 className="mirada-ttl">14 Propostes</h1>
+          <p className="mirada-sub">Mirada Endavant — detall complet</p>
+
+          <div className="ds-stat-row" style={{ marginTop: '1.5rem' }}>
+            <span className="ds-stat-big">281</span>
+            <span className="ds-stat-label">vots totals</span>
+          </div>
+
+          <div style={{ marginTop: '1rem' }}>
+            <p style={{ fontSize: '0.75rem', opacity: 0.8, lineHeight: 1.5 }}>
+              21 participants × 14 propostes agrupades en 6 dimensions estratègiques.
+            </p>
+          </div>
+
+          <div style={{ marginTop: '1rem' }}>
+            {Object.entries(PHASE_COLORS).map(([key, color]) => (
+              <div key={key} style={{
+                display: 'flex', alignItems: 'center', gap: '0.4rem',
+                marginTop: '0.25rem',
+              }}>
+                <span style={{
+                  width: 10, height: 10, borderRadius: 2,
+                  background: color, flexShrink: 0,
+                }} />
+                <span style={{ fontSize: '0.7rem', opacity: 0.85, textTransform: 'capitalize' }}>
+                  {key}
+                </span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+      <div className="panel-right rpt-right">
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
+          <p className="rpt-section-label" style={{ color: COLOR }}>Distribució de vots per proposta</p>
+          <div className="rpt-proposals-list">
+            {ALL_PROPOSALS.map((p, i) => {
+              const showDim = i === 0 || ALL_PROPOSALS[i - 1].dim !== p.dim;
+              const segments = [
+                { key: 'activar', val: p.act },
+                { key: 'pilotar', val: p.pil },
+                { key: 'preparar', val: p.prep },
+                { key: 'reflexionar', val: p.ref },
+                { key: 'desestimar', val: p.des },
+              ];
+              return (
+                <motion.div key={i}
+                  initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.05 + i * 0.03, ease }}>
+                  {showDim && (
+                    <div className="rpt-prop-dim-label" style={{ color: COLOR }}>
+                      {p.dim}. {DIM_LABELS[p.dim]}
+                    </div>
+                  )}
+                  <div className="rpt-prop-row">
+                    <span className="rpt-prop-title">{p.title}</span>
+                    <div className="rpt-prop-bar-wrap">
+                      <div className="rpt-prop-bar" style={{ width: `${(p.total / maxTotal) * 100}%` }}>
+                        {segments.map(seg => seg.val > 0 ? (
+                          <div key={seg.key} className="rpt-prop-seg"
+                            style={{
+                              width: `${(seg.val / p.total) * 100}%`,
+                              background: PHASE_COLORS[seg.key],
+                            }}
+                            title={`${seg.key}: ${seg.val}`}
+                          />
+                        ) : null)}
+                      </div>
+                      <span className="rpt-prop-total">{p.total}</span>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
+      </div>
+    </>
+  );
+}
+
+// ─── STEP 4: PERFILS DIRECTIUS + CORRELACIÓ ────────────────────────────────────
 
 function ReportProfiles() {
   const profiles = [
@@ -455,8 +550,8 @@ function ReportProfiles() {
                   ))}
                 </ul>
                 <div className="rpt-profile-rec" style={{ background: `${p.color}08`, borderColor: `${p.color}20` }}>
-                  <span style={{ fontSize: '0.7rem', color: p.color, fontWeight: 600 }}>Recomanació</span>
-                  <p style={{ fontSize: '0.76rem', marginTop: '0.2rem' }}>{p.recommendation}</p>
+                  <span style={{ fontSize: '0.84rem', color: p.color, fontWeight: 600 }}>Recomanació</span>
+                  <p style={{ fontSize: '0.88rem', marginTop: '0.2rem' }}>{p.recommendation}</p>
                 </div>
               </motion.div>
             ))}
@@ -487,8 +582,8 @@ function ReportRoadmap() {
           <p className="mirada-sub">Del diagnòstic a l'acció</p>
 
           <p className="intro-text-compact" style={{ marginTop: '1.5rem', opacity: 0.9 }}>
-            Tres horitzons d'implementació basats en el consens de les 21 direccions,
-            respectant el nivell de maduresa de cada proposta.
+            Tres horitzons seqüencials que respecten les dependències entre propostes:
+            primer líders, després transferència, llavors avaluació.
           </p>
 
           <div style={{ marginTop: '1.5rem' }}>
@@ -546,16 +641,142 @@ function ReportRoadmap() {
               <p className="rpt-roadmap-keys-title">Factors clau per a l'èxit</p>
               <div className="rpt-roadmap-key-items">
                 {[
-                  { icon: '🤝', text: 'Acompanyament i mentoria post-formació sostenible' },
-                  { icon: '💰', text: 'Recursos i pressupost plurianual per infraestructura' },
-                  { icon: '📢', text: 'Comunicació transparent de criteris i resultats' },
-                  { icon: '📊', text: 'Cultura d\'avaluació basada en evidències, no en fiscalització' },
+                  { icon: '🔑', text: 'Formar líders de transferència abans de pilotar el Després' },
+                  { icon: '🔗', text: 'Respectar la cadena: líders → transferència → avaluació' },
+                  { icon: '📢', text: 'Comunicar que seqüenciar no és frenar, sinó construir bé' },
+                  { icon: '🤝', text: 'Equips mixtos: inconformistes + prudents als pilots' },
                 ].map((k, i) => (
                   <div key={i} className="rpt-roadmap-key-item">
                     <span>{k.icon}</span>
                     <span>{k.text}</span>
                   </div>
                 ))}
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </>
+  );
+}
+
+// ─── STEP 5: CONCLUSIONS ──────────────────────────────────────────────────────
+
+const DEPENDENCY_LAYERS = [
+  {
+    label: 'CAPA 1 — BASES', color: '#27ae60', tag: 'Activar ara',
+    items: ['Autonomia de centre', 'Abans i Durant (ADD)', 'Banc de talents', 'Itineraris'],
+  },
+  {
+    label: 'CAPA 2 — LIDERATGE', color: '#c9922a', tag: 'Preparar',
+    items: ['Lideratge per a la transferència'],
+  },
+  {
+    label: 'CAPA 3 — TRANSFERÈNCIA', color: '#3498db', tag: 'Pilotar',
+    items: ['Després — el focus real'],
+  },
+  {
+    label: 'CAPA 4 — AVALUACIÓ', color: '#8e44ad', tag: 'Quan hi hagi transferència',
+    items: ['Avaluació dinàmica', 'Recull d\'evidències', 'Més enllà de la satisfacció'],
+  },
+  {
+    label: 'CAPA 5 — IMPACTE', color: '#e74c3c', tag: 'Fase final',
+    items: ['Auditoria d\'impacte'],
+  },
+];
+
+const KEY_DECISIONS = [
+  { num: '1', text: 'Activar immediatament les bases estructurals (Autonomia, ADD, Banc de talents)', color: '#27ae60' },
+  { num: '2', text: 'Prioritzar la formació del Lideratge per a la transferència — el coll d\'ampolla', color: '#c9922a' },
+  { num: '3', text: 'No pilotar el Després fins a tenir líders formats (any 2, no any 1)', color: '#3498db' },
+  { num: '4', text: 'Diferir el bloc avaluatiu — primer transferir, després avaluar', color: '#8e44ad' },
+  { num: '5', text: 'Obrir debat conceptual sobre Nivells de profunditat', color: '#95a5a6' },
+];
+
+function ReportConclusions() {
+  return (
+    <>
+      <div className="panel-left intro-panel" style={{ background: 'linear-gradient(155deg, #1a2e1a 0%, #1c2e40 100%)' }}>
+        <motion.div className="intro-left-content"
+          initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease }}>
+          <div className="mirada-num" style={{ opacity: 0.5, fontSize: '2rem' }}>⬟</div>
+          <h1 className="mirada-ttl">Conclusions</h1>
+          <p className="mirada-sub">Del desig a la viabilitat</p>
+
+          <div style={{ marginTop: '1.2rem' }}>
+            <p style={{ fontSize: '0.78rem', opacity: 0.9, lineHeight: 1.6 }}>
+              Les propostes no són independents. Existeix una cadena de dependències
+              que condiciona l'ordre d'implementació.
+            </p>
+          </div>
+
+          <div style={{ marginTop: '1rem' }}>
+            {DEPENDENCY_LAYERS.map((layer, i) => (
+              <motion.div key={i} style={{
+                display: 'flex', alignItems: 'flex-start', gap: '0.4rem',
+                marginTop: i > 0 ? '0.35rem' : 0,
+              }}
+                initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 + i * 0.1, ease }}>
+                {i > 0 && (
+                  <span style={{
+                    position: 'absolute', marginLeft: '3px', marginTop: '-0.35rem',
+                    fontSize: '0.6rem', opacity: 0.4,
+                  }}>↓</span>
+                )}
+                <span style={{
+                  width: 8, height: 8, borderRadius: '50%', marginTop: '0.25rem',
+                  background: layer.color, flexShrink: 0,
+                }} />
+                <span style={{ fontSize: '0.7rem', opacity: 0.9 }}>
+                  <strong>{layer.label.split(' — ')[1]}</strong>
+                  <span style={{ opacity: 0.6 }}> · {layer.tag}</span>
+                </span>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.p style={{ fontSize: '0.72rem', opacity: 0.7, marginTop: '1rem', lineHeight: 1.5, fontStyle: 'italic' }}
+            initial={{ opacity: 0 }} animate={{ opacity: 0.7 }}
+            transition={{ delay: 0.8 }}>
+            El desig d'avaluar (45% Activar) expressa urgència per saber si fem bé les coses
+            — però primer cal que hi hagi transferència real.
+          </motion.p>
+        </motion.div>
+      </div>
+      <div className="panel-right rpt-right">
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
+          <p className="rpt-section-label" style={{ color: COLOR }}>Les 5 decisions estratègiques</p>
+
+          <div className="rpt-decisions-list">
+            {KEY_DECISIONS.map((d, i) => (
+              <motion.div key={i} className="rpt-decision-card"
+                style={{ borderLeftColor: d.color }}
+                initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.12 + i * 0.08, ease }}>
+                <span className="rpt-decision-num" style={{ background: d.color }}>{d.num}</span>
+                <span className="rpt-decision-text">{d.text}</span>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div className="rpt-message-box"
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, ease }}>
+            <p className="rpt-message-title" style={{ color: COLOR }}>El missatge clau</p>
+            <div className="rpt-message-items">
+              <div className="rpt-message-item">
+                <span className="rpt-message-icon" style={{ color: '#27ae60' }}>●</span>
+                <span>No tot es pot fer alhora — respectar la seqüència lògica</span>
+              </div>
+              <div className="rpt-message-item">
+                <span className="rpt-message-icon" style={{ color: '#c9922a' }}>●</span>
+                <span>2026–27 és el curs dels líders — la inversió que ho desbloqueja tot</span>
+              </div>
+              <div className="rpt-message-item">
+                <span className="rpt-message-icon" style={{ color: '#3498db' }}>●</span>
+                <span>L'avaluació vindrà — quan pugui mesurar alguna cosa real</span>
               </div>
             </div>
           </motion.div>
@@ -572,8 +793,10 @@ export function ReportSlide({ step }: { step: number }) {
     case 0: return <ReportExecSummary />;
     case 1: return <ReportDiagnostic />;
     case 2: return <ReportDistribution />;
-    case 3: return <ReportProfiles />;
-    case 4: return <ReportRoadmap />;
+    case 3: return <ReportAllProposals />;
+    case 4: return <ReportProfiles />;
+    case 5: return <ReportRoadmap />;
+    case 6: return <ReportConclusions />;
     default: return <ReportExecSummary />;
   }
 }

@@ -77,7 +77,7 @@ function buildSlides(): FlatSlide[] {
   for (const mirada of comsData) {
     // Special handling for report section
     if (mirada.id === 'report') {
-      for (let step = 0; step < 5; step++) {
+      for (let step = 0; step < 7; step++) {
         result.push({
           type: 'report',
           slideKey: `report:s${step}`,
@@ -1696,7 +1696,7 @@ export default function App() {
                   }}
                   title={isPresenter ? `Salta a: ${m.title}` : ''}>
                   <motion.div className="nav-dot-bar"
-                    animate={{ background: isActive ? mColor : 'var(--border)', width: isActive ? '26px' : '12px' }}
+                    animate={{ background: isActive ? mColor : '#8a9199', width: isActive ? '26px' : '14px' }}
                     transition={{ duration: 0.3 }} />
                   {isActive && (
                     <div className="nav-dot-track">
