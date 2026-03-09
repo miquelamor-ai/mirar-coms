@@ -90,13 +90,13 @@ function ReportExecSummary() {
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
-          <div className="mirada-num">★</div>
-          <h1 className="mirada-ttl">INFORME</h1>
-          <p className="mirada-sub">Resultats de la consulta</p>
-          <p className="intro-text-compact" style={{ marginTop: '1.5rem', opacity: 0.95, fontSize: '1.15rem' }}>
+          <div className="mirada-num" style={{ fontSize: '3rem' }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '2.2rem' }}>INFORME</h1>
+          <p className="mirada-sub" style={{ fontSize: '0.88rem' }}>Resultats de la consulta</p>
+          <p className="intro-text-compact" style={{ marginTop: '1.2rem', opacity: 0.95, fontSize: '0.95rem' }}>
             Resum de la consulta a 21 direccions de centres FJE sobre el Pla d'Aprenentatge 2026–2029.
           </p>
-          <p className="intro-text-compact" style={{ marginTop: '0.8rem', opacity: 0.8, fontSize: '0.95rem' }}>
+          <p className="intro-text-compact" style={{ marginTop: '0.6rem', opacity: 0.8, fontSize: '0.82rem' }}>
             8 de març de 2026 · Dades verificades
           </p>
         </motion.div>
@@ -146,13 +146,13 @@ function ReportDiagnostic() {
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
-          <div className="mirada-num" style={{ color: '#fff' }}>★</div>
-          <h1 className="mirada-ttl" style={{ color: '#fff' }}>Diagnòstic</h1>
-          <p className="mirada-sub" style={{ color: '#fff', opacity: 1 }}>Validació de la Mirada Dins</p>
+          <div className="mirada-num" style={{ color: '#fff', fontSize: '4rem' }}>★</div>
+          <h1 className="mirada-ttl" style={{ color: '#fff', fontSize: '3.2rem' }}>Diagnòstic</h1>
+          <p className="mirada-sub" style={{ color: '#fff', opacity: 1, fontSize: '1.1rem' }}>Validació de la Mirada Dins</p>
 
           <div className="ds-stat-row" style={{ marginTop: '1.5rem' }}>
-            <span className="ds-stat-big" style={{ color: '#fff' }}>94,3%</span>
-            <span className="ds-stat-label" style={{ color: 'rgba(255,255,255,0.85)' }}>acord global</span>
+            <span className="ds-stat-big" style={{ color: '#fff', fontSize: '4rem' }}>94,3%</span>
+            <span className="ds-stat-label" style={{ color: 'rgba(255,255,255,0.85)', fontSize: '1rem' }}>acord global</span>
           </div>
 
           <div className="ds-global" style={{ marginTop: '1rem' }}>
@@ -164,14 +164,14 @@ function ReportDiagnostic() {
             </div>
           </div>
 
-          <div style={{ marginTop: '1.8rem', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
-              <span style={{ fontSize: '1.8rem', fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)', lineHeight: 1 }}>3</span>
-              <span style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.3 }}>ítems amb<br /><strong>100% d'acord</strong></span>
+          <div style={{ marginTop: '1.8rem', display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+              <span style={{ fontSize: '2.4rem', fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)', lineHeight: 1 }}>3</span>
+              <span style={{ fontSize: '1.15rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.3 }}>ítems amb<br /><strong>100% d'acord</strong></span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
-              <span style={{ fontSize: '1.8rem', fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)', lineHeight: 1 }}>210</span>
-              <span style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.3 }}>vots totals<br /><strong>21 × 10 ítems</strong></span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+              <span style={{ fontSize: '2.4rem', fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)', lineHeight: 1 }}>210</span>
+              <span style={{ fontSize: '1.15rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.3 }}>vots totals<br /><strong>21 × 10 ítems</strong></span>
             </div>
           </div>
         </motion.div>
