@@ -285,11 +285,12 @@ function ReportDistribution() {
           </p>
         </motion.div>
       </div>
-      <div className="panel-right rpt-right">
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
+      <div className="panel-right rpt-right" style={{ padding: '1.8rem 2rem', display: 'flex', flexDirection: 'column' }}>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}
+          style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
           <p className="rpt-section-label" style={{ color: COLOR }}>Top propostes per categoria</p>
 
-          <div className="rpt-cat-grid">
+          <div className="rpt-cat-grid" style={{ flex: 1 }}>
             {CATEGORIES.map((cat, ci) => (
               <motion.div key={cat.key} className="rpt-cat-tile"
                 initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}

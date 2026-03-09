@@ -2929,13 +2929,13 @@ body {
 .rpt-cat-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .rpt-cat-tile {
   background: var(--surface);
   border: 1px solid var(--border-light);
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -2944,51 +2944,52 @@ body {
 .rpt-cat-tile-header {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.65rem 0.85rem;
+  gap: 0.6rem;
+  padding: 0.9rem 1.1rem;
   color: #fff;
 }
 
 .rpt-cat-tile-icon {
-  font-size: 0.9rem;
-  opacity: 0.85;
+  font-size: 1.1rem;
+  opacity: 0.9;
 }
 
 .rpt-cat-tile-label {
   font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-size: 1.15rem;
   font-weight: 700;
   flex: 1;
 }
 
 .rpt-cat-tile-pct {
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 .rpt-cat-tile-body {
-  padding: 0.65rem 0.85rem;
+  padding: 0.85rem 1.1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.55rem;
   flex: 1;
+  justify-content: center;
 }
 
 .rpt-cat-tile-item {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.92rem;
+  gap: 0.55rem;
+  font-size: 1.05rem;
   line-height: 1.4;
 }
 
 .rpt-cat-tile-rank {
   font-family: var(--font-display);
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  width: 16px;
+  width: 20px;
   flex-shrink: 0;
   text-align: center;
 }
@@ -3001,7 +3002,7 @@ body {
 
 .rpt-cat-tile-val {
   font-family: var(--font-display);
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   font-weight: 700;
   flex-shrink: 0;
 }
