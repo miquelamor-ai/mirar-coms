@@ -86,7 +86,7 @@ function ReportExecSummary() {
 
   return (
     <>
-      <div className="panel-left intro-panel" style={{ background: COLOR }}>
+      <div className="panel-left intro-panel" style={{ background: '#0a6b57' }}>
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
@@ -246,7 +246,7 @@ function ReportDistribution() {
 
   return (
     <>
-      <div className="panel-left intro-panel" style={{ background: COLOR }}>
+      <div className="panel-left intro-panel" style={{ background: '#0a6b57' }}>
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
@@ -346,7 +346,7 @@ function ReportAllProposals() {
 
   return (
     <>
-      <div className="panel-left intro-panel" style={{ background: COLOR }}>
+      <div className="panel-left intro-panel" style={{ background: '#0a6b57' }}>
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
@@ -443,7 +443,7 @@ function ReportAllProposals() {
 function ReportRoadmap() {
   return (
     <>
-      <div className="panel-left intro-panel" style={{ background: COLOR }}>
+      <div className="panel-left intro-panel" style={{ background: '#0a6b57' }}>
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
@@ -567,7 +567,7 @@ const KEY_DECISIONS = [
 function ReportConclusions() {
   return (
     <>
-      <div className="panel-left intro-panel" style={{ background: COLOR }}>
+      <div className="panel-left intro-panel" style={{ background: '#0a6b57' }}>
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
