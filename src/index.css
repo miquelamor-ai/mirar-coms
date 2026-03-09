@@ -2734,29 +2734,29 @@ body {
 .rpt-diag-list {
   display: flex;
   flex-direction: column;
-  gap: 0.42rem;
+  gap: 0.5rem;
 }
 
 .rpt-diag-card {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
-  padding: 0.6rem 0.9rem;
+  gap: 1.1rem;
+  padding: 0.8rem 1.2rem 0.8rem 1rem;
   background: var(--surface);
   border: 1px solid var(--border-light);
-  border-left: 4px solid;
-  border-radius: 0 10px 10px 0;
+  border-left: 5px solid;
+  border-radius: 0 12px 12px 0;
 }
 
 .rpt-diag-card-left {
   flex-shrink: 0;
-  width: 34px;
+  width: 40px;
   text-align: center;
 }
 
 .rpt-diag-id {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 700;
 }
 
@@ -2764,7 +2764,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.35rem;
   min-width: 0;
 }
 
@@ -2772,11 +2772,11 @@ body {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .rpt-diag-title {
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   font-weight: 500;
   color: var(--text);
   white-space: nowrap;
@@ -2786,40 +2786,40 @@ body {
 
 .rpt-diag-pct {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   font-weight: 700;
   flex-shrink: 0;
 }
 
 .rpt-diag-track {
-  height: 10px;
+  height: 13px;
   background: var(--border-light);
-  border-radius: 5px;
+  border-radius: 6px;
   overflow: hidden;
 }
 
 .rpt-diag-fill {
   height: 100%;
-  border-radius: 5px;
+  border-radius: 6px;
 }
 
 .rpt-diag-votes-col {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.1rem;
+  gap: 0.15rem;
   flex-shrink: 0;
-  min-width: 40px;
+  min-width: 48px;
 }
 
 .rpt-diag-yes {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #27ae60;
 }
 
 .rpt-diag-no {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #e74c3c;
 }
