@@ -140,7 +140,6 @@ function ReportExecSummary() {
 // ─── STEP 1: VALIDACIÓ DEL DIAGNÒSTIC ─────────────────────────────────────────
 
 function ReportDiagnostic() {
-  const full = DIAG_ITEMS.filter(d => d.pct === 100);
   return (
     <>
       <div className="panel-left intro-panel" style={{ background: '#0a6b57' }}>
