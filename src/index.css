@@ -2683,13 +2683,13 @@ body {
 
 .rpt-stat-big {
   font-family: var(--font-display);
-  font-size: 1.8rem;
+  font-size: 1.45rem;
   font-weight: 700;
   line-height: 1.1;
 }
 
 .rpt-stat-label {
-  font-size: 0.88rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
   line-height: 1.3;
 }
@@ -2705,10 +2705,10 @@ body {
 
 .rpt-conclusions-title {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--text);
-  margin: 0 0 0.65rem;
+  margin: 0 0 0.5rem;
   letter-spacing: 0.02em;
 }
 
@@ -2716,10 +2716,10 @@ body {
   display: flex;
   align-items: flex-start;
   gap: 0.6rem;
-  padding: 0.45rem 0;
-  font-size: 1.05rem;
+  padding: 0.3rem 0;
+  font-size: 0.9rem;
   color: var(--text);
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
 .rpt-conclusion-dot {
@@ -2756,7 +2756,7 @@ body {
 
 .rpt-diag-id {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   font-weight: 700;
 }
 
@@ -2776,7 +2776,7 @@ body {
 }
 
 .rpt-diag-title {
-  font-size: 1.15rem;
+  font-size: 1.3rem;
   font-weight: 500;
   color: var(--text);
   white-space: nowrap;
@@ -2786,13 +2786,13 @@ body {
 
 .rpt-diag-pct {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   font-weight: 700;
   flex-shrink: 0;
 }
 
 .rpt-diag-track {
-  height: 13px;
+  height: 14px;
   background: var(--border-light);
   border-radius: 6px;
   overflow: hidden;
@@ -2813,13 +2813,13 @@ body {
 }
 
 .rpt-diag-yes {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: #27ae60;
 }
 
 .rpt-diag-no {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
   color: #e74c3c;
 }
