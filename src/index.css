@@ -326,9 +326,9 @@ body {
 
 .mirada-sub {
   font-family: var(--font-body);
-  font-size: clamp(0.85rem, 1.3vw, 1rem);
+  font-size: clamp(0.95rem, 1.5vw, 1.15rem);
   font-weight: 400;
-  opacity: 0.65;
+  opacity: 0.75;
   color: white;
   line-height: 1.5;
 }
@@ -1181,8 +1181,8 @@ body {
 }
 
 .ds-stat-label {
-  font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -2646,27 +2646,27 @@ body {
 
 .rpt-section-label {
   font-family: var(--font-display);
-  font-size: 0.88rem;
+  font-size: 1.05rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  margin: 0 0 1.5rem;
+  margin: 0 0 1.2rem;
 }
 
 /* Stat grid (3+2 layout) */
 .rpt-stat-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 0.65rem;
-  margin-bottom: 1.25rem;
+  gap: 0.75rem;
+  margin-bottom: 1.2rem;
 }
 
 .rpt-stat-card {
   grid-column: span 2;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  padding: 0.65rem 0.65rem;
+  gap: 0.3rem;
+  padding: 0.85rem 0.8rem;
   background: var(--surface);
   border: 1px solid var(--border-light);
   border-radius: 10px;
@@ -2683,13 +2683,13 @@ body {
 
 .rpt-stat-big {
   font-family: var(--font-display);
-  font-size: 1.55rem;
+  font-size: 1.8rem;
   font-weight: 700;
   line-height: 1.1;
 }
 
 .rpt-stat-label {
-  font-size: 0.78rem;
+  font-size: 0.88rem;
   color: var(--text-muted);
   line-height: 1.3;
 }
@@ -2697,7 +2697,7 @@ body {
 /* Conclusions */
 .rpt-conclusions {
   margin-top: 0.75rem;
-  padding: 1rem 1.1rem;
+  padding: 1.1rem 1.3rem;
   background: var(--surface-alt);
   border-radius: 12px;
   border: 1px solid var(--border-light);
@@ -2705,7 +2705,7 @@ body {
 
 .rpt-conclusions-title {
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--text);
   margin: 0 0 0.65rem;
@@ -2716,15 +2716,15 @@ body {
   display: flex;
   align-items: flex-start;
   gap: 0.6rem;
-  padding: 0.4rem 0;
-  font-size: 1rem;
+  padding: 0.45rem 0;
+  font-size: 1.05rem;
   color: var(--text);
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
 .rpt-conclusion-dot {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   flex-shrink: 0;
   margin-top: 0.35rem;
@@ -2734,20 +2734,20 @@ body {
 .rpt-diag-list {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.55rem;
 }
 
 .rpt-diag-row {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.7rem;
 }
 
 .rpt-diag-id {
   font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  width: 26px;
+  width: 30px;
   flex-shrink: 0;
   text-align: center;
 }
@@ -2768,7 +2768,7 @@ body {
 }
 
 .rpt-diag-title {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 500;
   color: var(--text);
   white-space: nowrap;
@@ -2778,15 +2778,15 @@ body {
 
 .rpt-diag-pct {
   font-family: var(--font-display);
-  font-size: 0.92rem;
+  font-size: 1.05rem;
   font-weight: 700;
   flex-shrink: 0;
 }
 
 .rpt-diag-track {
-  height: 7px;
+  height: 9px;
   background: var(--border-light);
-  border-radius: 4px;
+  border-radius: 5px;
   overflow: hidden;
 }
 
@@ -2798,7 +2798,7 @@ body {
 .rpt-diag-votes {
   display: flex;
   gap: 0.5rem;
-  font-size: 0.74rem;
+  font-size: 0.82rem;
   color: var(--text-dim);
 }
 
@@ -2915,13 +2915,13 @@ body {
 .rpt-cat-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.65rem;
+  gap: 0.75rem;
 }
 
 .rpt-cat-tile {
   background: var(--surface);
   border: 1px solid var(--border-light);
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -2930,51 +2930,51 @@ body {
 .rpt-cat-tile-header {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 0.7rem;
+  gap: 0.5rem;
+  padding: 0.65rem 0.85rem;
   color: #fff;
 }
 
 .rpt-cat-tile-icon {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   opacity: 0.85;
 }
 
 .rpt-cat-tile-label {
   font-family: var(--font-display);
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   font-weight: 700;
   flex: 1;
 }
 
 .rpt-cat-tile-pct {
   font-family: var(--font-display);
-  font-size: 0.88rem;
+  font-size: 1.05rem;
   font-weight: 700;
   opacity: 0.9;
 }
 
 .rpt-cat-tile-body {
-  padding: 0.55rem 0.7rem;
+  padding: 0.65rem 0.85rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.35rem;
   flex: 1;
 }
 
 .rpt-cat-tile-item {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  font-size: 0.82rem;
-  line-height: 1.35;
+  gap: 0.4rem;
+  font-size: 0.92rem;
+  line-height: 1.4;
 }
 
 .rpt-cat-tile-rank {
   font-family: var(--font-display);
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  width: 14px;
+  width: 16px;
   flex-shrink: 0;
   text-align: center;
 }
@@ -2987,7 +2987,7 @@ body {
 
 .rpt-cat-tile-val {
   font-family: var(--font-display);
-  font-size: 0.78rem;
+  font-size: 0.9rem;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -3164,10 +3164,10 @@ body {
 }
 
 .rpt-roadmap-col {
-  border-top: 3px solid;
+  border-top: 4px solid;
   background: var(--surface);
-  border-radius: 0 0 10px 10px;
-  padding: 0.75rem;
+  border-radius: 0 0 12px 12px;
+  padding: 0.9rem 1rem;
   border-left: 1px solid var(--border-light);
   border-right: 1px solid var(--border-light);
   border-bottom: 1px solid var(--border-light);
@@ -3177,23 +3177,23 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.4rem;
-  margin-bottom: 0.6rem;
+  gap: 0.5rem;
+  margin-bottom: 0.7rem;
 }
 
 .rpt-roadmap-year {
   font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--text);
 }
 
 .rpt-roadmap-phase {
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  padding: 0.15rem 0.45rem;
-  border-radius: 4px;
+  padding: 0.2rem 0.55rem;
+  border-radius: 5px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -3204,24 +3204,24 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.45rem;
 }
 
 .rpt-roadmap-items li {
   display: flex;
   align-items: flex-start;
-  gap: 0.4rem;
-  font-size: 0.85rem;
+  gap: 0.45rem;
+  font-size: 0.95rem;
   color: var(--text);
   line-height: 1.4;
 }
 
 .rpt-roadmap-dot {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   flex-shrink: 0;
-  margin-top: 0.3rem;
+  margin-top: 0.32rem;
 }
 
 .rpt-roadmap-footer {
@@ -3229,7 +3229,7 @@ body {
 }
 
 .rpt-roadmap-keys {
-  padding: 0.75rem 0.85rem;
+  padding: 0.85rem 1rem;
   background: var(--surface-alt);
   border-radius: 10px;
   border: 1px solid var(--border-light);
@@ -3237,7 +3237,7 @@ body {
 
 .rpt-roadmap-keys-title {
   font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--text);
   margin: 0 0 0.5rem;
@@ -3252,8 +3252,8 @@ body {
 .rpt-roadmap-key-item {
   display: flex;
   align-items: flex-start;
-  gap: 0.35rem;
-  font-size: 0.84rem;
+  gap: 0.4rem;
+  font-size: 0.92rem;
   color: var(--text-muted);
   line-height: 1.4;
 }
@@ -3266,13 +3266,13 @@ body {
 }
 
 .rpt-prop-dim-label {
-  font-size: 0.68rem;
+  font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  margin-top: 0.5rem;
-  margin-bottom: 0.15rem;
-  opacity: 0.7;
+  margin-top: 0.6rem;
+  margin-bottom: 0.2rem;
+  opacity: 0.8;
 }
 
 .rpt-prop-dim-label:first-child {
@@ -3282,17 +3282,17 @@ body {
 .rpt-prop-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.18rem 0;
+  gap: 0.6rem;
+  padding: 0.25rem 0;
 }
 
 .rpt-prop-title {
-  font-size: 0.74rem;
+  font-size: 0.84rem;
   color: var(--text-muted);
-  width: 140px;
+  width: 155px;
   flex-shrink: 0;
   text-align: right;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .rpt-prop-bar-wrap {
@@ -3303,9 +3303,9 @@ body {
 }
 
 .rpt-prop-bar {
-  height: 18px;
+  height: 22px;
   display: flex;
-  border-radius: 3px;
+  border-radius: 4px;
   overflow: hidden;
 }
 
@@ -3319,7 +3319,7 @@ body {
 }
 
 .rpt-prop-seg-pct {
-  font-size: 0.58rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: #fff;
   line-height: 1;
@@ -3337,48 +3337,48 @@ body {
 .rpt-decisions-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.6rem;
   margin-bottom: 1rem;
 }
 
 .rpt-decision-card {
   display: flex;
   align-items: flex-start;
-  gap: 0.6rem;
-  padding: 0.55rem 0.7rem;
+  gap: 0.7rem;
+  padding: 0.7rem 0.9rem;
   background: var(--surface);
-  border-radius: 8px;
-  border-left: 3px solid;
+  border-radius: 10px;
+  border-left: 4px solid;
 }
 
 .rpt-decision-num {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   color: #fff;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 700;
   flex-shrink: 0;
 }
 
 .rpt-decision-text {
-  font-size: 0.84rem;
+  font-size: 0.95rem;
   line-height: 1.45;
   color: var(--text);
 }
 
 .rpt-message-box {
   background: var(--surface);
-  border-radius: 10px;
-  padding: 0.75rem 0.9rem;
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
   border: 1px solid var(--border);
 }
 
 .rpt-message-title {
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
@@ -3386,21 +3386,21 @@ body {
 .rpt-message-items {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.45rem;
 }
 
 .rpt-message-item {
   display: flex;
   align-items: flex-start;
-  gap: 0.45rem;
-  font-size: 0.82rem;
+  gap: 0.5rem;
+  font-size: 0.92rem;
   line-height: 1.45;
   color: var(--text-muted);
 }
 
 .rpt-message-icon {
-  font-size: 0.5rem;
-  margin-top: 0.3rem;
+  font-size: 0.55rem;
+  margin-top: 0.32rem;
   flex-shrink: 0;
 }
 

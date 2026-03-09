@@ -93,10 +93,10 @@ function ReportExecSummary() {
           <div className="mirada-num">★</div>
           <h1 className="mirada-ttl">INFORME</h1>
           <p className="mirada-sub">Resultats de la consulta</p>
-          <p className="intro-text-compact" style={{ marginTop: '1.5rem', opacity: 0.9 }}>
+          <p className="intro-text-compact" style={{ marginTop: '1.5rem', opacity: 0.95, fontSize: '1.15rem' }}>
             Resum de la consulta a 21 direccions de centres FJE sobre el Pla d'Aprenentatge 2026–2029.
           </p>
-          <p className="intro-text-compact" style={{ marginTop: '0.8rem', opacity: 0.7, fontSize: '0.8rem' }}>
+          <p className="intro-text-compact" style={{ marginTop: '0.8rem', opacity: 0.8, fontSize: '0.95rem' }}>
             8 de març de 2026 · Dades verificades
           </p>
         </motion.div>
@@ -166,10 +166,10 @@ function ReportDiagnostic() {
           </div>
 
           <div style={{ marginTop: '1.5rem' }}>
-            <p style={{ fontSize: '0.75rem', opacity: 0.8 }}>
+            <p style={{ fontSize: '0.92rem', opacity: 0.9 }}>
               {full.length} propostes amb 100% d'acord
             </p>
-            <p style={{ fontSize: '0.75rem', opacity: 0.7, marginTop: '0.3rem' }}>
+            <p style={{ fontSize: '0.88rem', opacity: 0.8, marginTop: '0.4rem' }}>
               210 vots totals · 21 participants × 10 ítems
             </p>
           </div>
@@ -257,25 +257,25 @@ function ReportDistribution() {
               }}
                 initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 + i * 0.08, ease }}>
-                <span style={{ fontSize: '0.78rem', width: '74px', textAlign: 'right', opacity: 0.9 }}>{d.phase}</span>
+                <span style={{ fontSize: '0.92rem', width: '80px', textAlign: 'right', opacity: 0.95 }}>{d.phase}</span>
                 <div style={{
-                  flex: 1, height: 10, background: 'rgba(255,255,255,0.15)',
-                  borderRadius: 5, overflow: 'hidden',
+                  flex: 1, height: 14, background: 'rgba(255,255,255,0.15)',
+                  borderRadius: 7, overflow: 'hidden',
                 }}>
                   <motion.div style={{
-                    height: '100%', borderRadius: 5,
+                    height: '100%', borderRadius: 7,
                     background: PHASE_COLORS[d.key],
                   }}
                     initial={{ width: 0 }}
                     animate={{ width: `${(d.pct / maxPct) * 100}%` }}
                     transition={{ duration: 0.7, delay: 0.25 + i * 0.08, ease }} />
                 </div>
-                <span style={{ fontSize: '0.78rem', fontWeight: 700, width: '38px' }}>{d.pct}%</span>
+                <span style={{ fontSize: '0.92rem', fontWeight: 700, width: '42px' }}>{d.pct}%</span>
               </motion.div>
             ))}
           </div>
 
-          <p style={{ fontSize: '0.78rem', opacity: 0.8, marginTop: '1.2rem' }}>
+          <p style={{ fontSize: '0.95rem', opacity: 0.9, marginTop: '1.2rem' }}>
             54,8% aposten per l'acció directa o controlada
           </p>
         </motion.div>
@@ -355,22 +355,22 @@ function ReportAllProposals() {
           </div>
 
           <div style={{ marginTop: '1rem' }}>
-            <p style={{ fontSize: '0.75rem', opacity: 0.8, lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.92rem', opacity: 0.9, lineHeight: 1.5 }}>
               21 participants × 14 propostes agrupades en 6 dimensions estratègiques.
             </p>
           </div>
 
-          <div style={{ marginTop: '1rem' }}>
+          <div style={{ marginTop: '1.2rem' }}>
             {Object.entries(PHASE_COLORS).map(([key, color]) => (
               <div key={key} style={{
-                display: 'flex', alignItems: 'center', gap: '0.4rem',
-                marginTop: '0.25rem',
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                marginTop: '0.35rem',
               }}>
                 <span style={{
-                  width: 10, height: 10, borderRadius: 2,
+                  width: 14, height: 14, borderRadius: 3,
                   background: color, flexShrink: 0,
                 }} />
-                <span style={{ fontSize: '0.7rem', opacity: 0.85, textTransform: 'capitalize' }}>
+                <span style={{ fontSize: '0.88rem', opacity: 0.95, textTransform: 'capitalize' as const }}>
                   {key}
                 </span>
               </div>
@@ -446,7 +446,7 @@ function ReportRoadmap() {
           <h1 className="mirada-ttl">Full de Ruta</h1>
           <p className="mirada-sub">Del diagnòstic a l'acció</p>
 
-          <p className="intro-text-compact" style={{ marginTop: '1.5rem', opacity: 0.9 }}>
+          <p className="intro-text-compact" style={{ marginTop: '1.5rem', opacity: 0.95, fontSize: '1.1rem' }}>
             Tres horitzons seqüencials que respecten les dependències entre propostes:
             primer líders, després transferència, llavors avaluació.
           </p>
@@ -454,16 +454,17 @@ function ReportRoadmap() {
           <div style={{ marginTop: '1.5rem' }}>
             {ROADMAP.map((r, i) => (
               <motion.div key={i} style={{
-                display: 'flex', alignItems: 'center', gap: '0.5rem',
-                marginTop: i > 0 ? '0.5rem' : 0, opacity: 0.9
+                display: 'flex', alignItems: 'center', gap: '0.6rem',
+                marginTop: i > 0 ? '0.65rem' : 0, opacity: 0.95
               }}
                 initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + i * 0.1, ease }}>
                 <span style={{
-                  width: 8, height: 8, borderRadius: '50%',
-                  background: r.color, flexShrink: 0
+                  width: 12, height: 12, borderRadius: '50%',
+                  background: r.color, flexShrink: 0,
+                  border: '2px solid rgba(255,255,255,0.3)'
                 }} />
-                <span style={{ fontSize: '0.8rem' }}>
+                <span style={{ fontSize: '0.95rem' }}>
                   <strong>{r.year}</strong> · {r.phase}
                 </span>
               </motion.div>
@@ -569,34 +570,34 @@ function ReportConclusions() {
           <h1 className="mirada-ttl">Conclusions</h1>
           <p className="mirada-sub">Cadena de dependències</p>
 
-          <p className="intro-text-compact" style={{ marginTop: '1rem', opacity: 0.95 }}>
+          <p className="intro-text-compact" style={{ marginTop: '1rem', opacity: 0.95, fontSize: '1.05rem' }}>
             Les propostes no són independents. L'ordre d'implementació ve determinat per la seva seqüència lògica.
           </p>
 
-          <div style={{ marginTop: '1rem' }}>
+          <div style={{ marginTop: '1.2rem' }}>
             {DEPENDENCY_LAYERS.map((layer, i) => (
               <motion.div key={i}
                 initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + i * 0.1, ease }}>
                 {i > 0 && (
                   <div style={{
-                    marginLeft: '5px', height: '10px',
-                    borderLeft: '2px solid rgba(255,255,255,0.35)',
+                    marginLeft: '7px', height: '12px',
+                    borderLeft: '2px solid rgba(255,255,255,0.4)',
                   }} />
                 )}
                 <div style={{
-                  display: 'flex', alignItems: 'center', gap: '0.5rem',
+                  display: 'flex', alignItems: 'center', gap: '0.6rem',
                 }}>
                   <span style={{
-                    width: 12, height: 12, borderRadius: '50%',
+                    width: 14, height: 14, borderRadius: '50%',
                     background: layer.color, flexShrink: 0,
-                    border: '2px solid rgba(255,255,255,0.3)',
+                    border: '2px solid rgba(255,255,255,0.35)',
                   }} />
                   <div>
-                    <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>
+                    <span style={{ fontSize: '0.95rem', fontWeight: 700 }}>
                       {layer.label.split(' — ')[1]}
                     </span>
-                    <span style={{ fontSize: '0.72rem', opacity: 0.8 }}>
+                    <span style={{ fontSize: '0.85rem', opacity: 0.85 }}>
                       {' '}· {layer.tag}
                     </span>
                   </div>
@@ -605,8 +606,8 @@ function ReportConclusions() {
             ))}
           </div>
 
-          <motion.p style={{ fontSize: '0.78rem', opacity: 0.9, marginTop: '1.2rem', lineHeight: 1.5 }}
-            initial={{ opacity: 0 }} animate={{ opacity: 0.9 }}
+          <motion.p style={{ fontSize: '0.92rem', opacity: 0.95, marginTop: '1.2rem', lineHeight: 1.5 }}
+            initial={{ opacity: 0 }} animate={{ opacity: 0.95 }}
             transition={{ delay: 0.8 }}>
             El desig d'avaluar (45%) expressa urgència
             — però primer cal transferència real.
