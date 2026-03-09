@@ -143,67 +143,73 @@ function ReportDiagnostic() {
   const full = DIAG_ITEMS.filter(d => d.pct === 100);
   return (
     <>
-      <div className="panel-left intro-panel" style={{ background: COLOR }}>
+      <div className="panel-left intro-panel" style={{ background: '#0a6b57' }}>
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
-          <div className="mirada-num">★</div>
-          <h1 className="mirada-ttl">Diagnòstic</h1>
-          <p className="mirada-sub">Validació de la Mirada Dins</p>
+          <div className="mirada-num" style={{ color: '#fff' }}>★</div>
+          <h1 className="mirada-ttl" style={{ color: '#fff' }}>Diagnòstic</h1>
+          <p className="mirada-sub" style={{ color: '#fff', opacity: 1 }}>Validació de la Mirada Dins</p>
 
           <div className="ds-stat-row" style={{ marginTop: '1.5rem' }}>
-            <span className="ds-stat-big">94,3%</span>
-            <span className="ds-stat-label">acord global</span>
+            <span className="ds-stat-big" style={{ color: '#fff' }}>94,3%</span>
+            <span className="ds-stat-label" style={{ color: 'rgba(255,255,255,0.85)' }}>acord global</span>
           </div>
 
           <div className="ds-global" style={{ marginTop: '1rem' }}>
-            <div className="ds-global-track">
+            <div className="ds-global-track" style={{ background: 'rgba(255,255,255,0.2)' }}>
               <motion.div className="ds-global-fill"
-                style={{ background: 'rgba(255,255,255,0.9)' }}
+                style={{ background: 'rgba(255,255,255,0.95)' }}
                 initial={{ width: 0 }} animate={{ width: '94.3%' }}
                 transition={{ duration: 1, ease }} />
             </div>
           </div>
 
-          <div style={{ marginTop: '1.5rem' }}>
-            <p style={{ fontSize: '0.92rem', opacity: 0.9 }}>
-              {full.length} propostes amb 100% d'acord
-            </p>
-            <p style={{ fontSize: '0.88rem', opacity: 0.8, marginTop: '0.4rem' }}>
-              210 vots totals · 21 participants × 10 ítems
-            </p>
+          <div style={{ marginTop: '1.8rem', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
+              <span style={{ fontSize: '1.8rem', fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)', lineHeight: 1 }}>3</span>
+              <span style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.3 }}>ítems amb<br /><strong>100% d'acord</strong></span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
+              <span style={{ fontSize: '1.8rem', fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)', lineHeight: 1 }}>210</span>
+              <span style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.3 }}>vots totals<br /><strong>21 × 10 ítems</strong></span>
+            </div>
           </div>
         </motion.div>
       </div>
-      <div className="panel-right rpt-right">
+      <div className="panel-right rpt-right" style={{ padding: '1.8rem 2.5rem' }}>
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
-          <p className="rpt-section-label" style={{ color: COLOR }}>Acord per ítem del diagnòstic</p>
+          <p className="rpt-section-label" style={{ color: '#0a6b57' }}>Acord per ítem del diagnòstic</p>
           <div className="rpt-diag-list">
-            {DIAG_ITEMS.map((item, i) => (
-              <motion.div key={item.id} className="rpt-diag-row"
-                initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 + i * 0.04, ease }}>
-                <span className="rpt-diag-id" style={{ color: COLOR }}>{item.id}</span>
-                <div className="rpt-diag-body">
-                  <div className="rpt-diag-top">
-                    <span className="rpt-diag-title">{item.title}</span>
-                    <span className="rpt-diag-pct" style={{
-                      color: item.pct === 100 ? '#27ae60' : item.pct >= 90 ? COLOR : '#e67e22'
-                    }}>{item.pct}%</span>
+            {DIAG_ITEMS.map((item, i) => {
+              const itemColor = item.pct === 100 ? '#27ae60' : item.pct >= 90 ? '#0a6b57' : '#e67e22';
+              return (
+                <motion.div key={item.id} className="rpt-diag-card"
+                  style={{ borderLeftColor: itemColor }}
+                  initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 + i * 0.04, ease }}>
+                  <div className="rpt-diag-card-left">
+                    <span className="rpt-diag-id" style={{ color: itemColor }}>{item.id}</span>
                   </div>
-                  <div className="rpt-diag-track">
-                    <motion.div className="rpt-diag-fill"
-                      style={{ background: item.pct === 100 ? '#27ae60' : item.pct >= 90 ? COLOR : '#e67e22' }}
-                      initial={{ width: 0 }} animate={{ width: `${item.pct}%` }}
-                      transition={{ duration: 0.7, delay: 0.12 + i * 0.05, ease }} />
+                  <div className="rpt-diag-body">
+                    <div className="rpt-diag-top">
+                      <span className="rpt-diag-title">{item.title}</span>
+                      <span className="rpt-diag-pct" style={{ color: itemColor }}>{item.pct}%</span>
+                    </div>
+                    <div className="rpt-diag-track">
+                      <motion.div className="rpt-diag-fill"
+                        style={{ background: itemColor }}
+                        initial={{ width: 0 }} animate={{ width: `${item.pct}%` }}
+                        transition={{ duration: 0.7, delay: 0.12 + i * 0.05, ease }} />
+                    </div>
                   </div>
-                  <div className="rpt-diag-votes">
+                  <div className="rpt-diag-votes-col">
                     <span className="rpt-diag-yes">✓ {item.yes}</span>
                     {item.no > 0 && <span className="rpt-diag-no">✗ {item.no}</span>}
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </motion.div>
       </div>
