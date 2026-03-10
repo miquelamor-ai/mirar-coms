@@ -90,13 +90,13 @@ function ReportExecSummary() {
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
-          <div className="mirada-num" style={{ fontSize: '1.6rem' }}>★</div>
-          <h1 className="mirada-ttl" style={{ fontSize: '1.4rem' }}>INFORME</h1>
-          <p className="mirada-sub" style={{ fontSize: '0.68rem' }}>Resultats de la consulta</p>
-          <p className="intro-text-compact" style={{ marginTop: '0.8rem', opacity: 0.95, fontSize: '0.7rem' }}>
+          <div className="mirada-num" style={{ fontSize: '3rem' }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '2.5rem' }}>INFORME</h1>
+          <p className="mirada-sub" style={{ fontSize: '1rem' }}>Resultats de la consulta</p>
+          <p className="intro-text-compact" style={{ marginTop: '1rem', opacity: 0.95, fontSize: '0.88rem' }}>
             Resum de la consulta a 21 direccions de centres FJE sobre el Pla d'Aprenentatge 2026–2029.
           </p>
-          <p className="intro-text-compact" style={{ marginTop: '0.4rem', opacity: 0.8, fontSize: '0.62rem' }}>
+          <p className="intro-text-compact" style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: '0.8rem' }}>
             8 de març de 2026 · Dades verificades
           </p>
         </motion.div>
@@ -146,16 +146,16 @@ function ReportDiagnostic() {
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
-          <div className="mirada-num" style={{ color: '#fff', fontSize: '5.5rem' }}>★</div>
-          <h1 className="mirada-ttl" style={{ color: '#fff', fontSize: '4.5rem' }}>Diagnòstic</h1>
-          <p className="mirada-sub" style={{ color: '#fff', opacity: 1, fontSize: '1.4rem' }}>Validació de la Mirada Dins</p>
+          <div className="mirada-num" style={{ color: '#fff', fontSize: '3rem' }}>★</div>
+          <h1 className="mirada-ttl" style={{ color: '#fff', fontSize: '2.5rem' }}>Diagnòstic</h1>
+          <p className="mirada-sub" style={{ color: '#fff', opacity: 1, fontSize: '1rem' }}>Validació de la Mirada Dins</p>
 
-          <div className="ds-stat-row" style={{ marginTop: '1.5rem' }}>
-            <span className="ds-stat-big" style={{ color: '#fff', fontSize: '5.5rem' }}>94,3%</span>
-            <span className="ds-stat-label" style={{ color: 'rgba(255,255,255,0.85)', fontSize: '1.2rem' }}>acord global</span>
+          <div className="ds-stat-row" style={{ marginTop: '1.2rem' }}>
+            <span className="ds-stat-big" style={{ color: '#fff', fontSize: '4rem' }}>94,3%</span>
+            <span className="ds-stat-label" style={{ color: 'rgba(255,255,255,0.85)', fontSize: '1rem' }}>acord global</span>
           </div>
 
-          <div className="ds-global" style={{ marginTop: '1rem' }}>
+          <div className="ds-global" style={{ marginTop: '0.8rem' }}>
             <div className="ds-global-track" style={{ background: 'rgba(255,255,255,0.2)' }}>
               <motion.div className="ds-global-fill"
                 style={{ background: 'rgba(255,255,255,0.95)' }}
@@ -164,14 +164,14 @@ function ReportDiagnostic() {
             </div>
           </div>
 
-          <div style={{ marginTop: '1.8rem', display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
+          <div style={{ marginTop: '1.2rem', display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-              <span style={{ fontSize: '3.5rem', fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)', lineHeight: 1 }}>3</span>
-              <span style={{ fontSize: '1.4rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.3 }}>ítems amb<br /><strong>100% d'acord</strong></span>
+              <span style={{ fontSize: '2.8rem', fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)', lineHeight: 1 }}>3</span>
+              <span style={{ fontSize: '1.05rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.3 }}>ítems amb<br /><strong>100% d'acord</strong></span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-              <span style={{ fontSize: '3.5rem', fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)', lineHeight: 1 }}>210</span>
-              <span style={{ fontSize: '1.4rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.3 }}>vots totals<br /><strong>21 × 10 ítems</strong></span>
+              <span style={{ fontSize: '2.8rem', fontWeight: 800, color: '#fff', fontFamily: 'var(--font-display)', lineHeight: 1 }}>210</span>
+              <span style={{ fontSize: '1.05rem', color: 'rgba(255,255,255,0.9)', lineHeight: 1.3 }}>vots totals<br /><strong>21 × 10 ítems</strong></span>
             </div>
           </div>
         </motion.div>
@@ -250,9 +250,9 @@ function ReportDistribution() {
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
-          <div className="mirada-num">★</div>
-          <h1 className="mirada-ttl">Distribució</h1>
-          <p className="mirada-sub">281 vots · Mirada Endavant</p>
+          <div className="mirada-num" style={{ fontSize: '3rem' }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '2.5rem' }}>Distribució</h1>
+          <p className="mirada-sub" style={{ fontSize: '1rem' }}>281 vots · Mirada Endavant</p>
 
           <div style={{ marginTop: '1.5rem' }}>
             {GLOBAL_DIST.map((d, i) => (
@@ -262,7 +262,7 @@ function ReportDistribution() {
               }}
                 initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 + i * 0.08, ease }}>
-                <span style={{ fontSize: '0.92rem', width: '80px', textAlign: 'right', opacity: 0.95 }}>{d.phase}</span>
+                <span style={{ fontSize: '0.95rem', width: '82px', textAlign: 'right', opacity: 0.95 }}>{d.phase}</span>
                 <div style={{
                   flex: 1, height: 14, background: 'rgba(255,255,255,0.15)',
                   borderRadius: 7, overflow: 'hidden',
@@ -275,12 +275,12 @@ function ReportDistribution() {
                     animate={{ width: `${(d.pct / maxPct) * 100}%` }}
                     transition={{ duration: 0.7, delay: 0.25 + i * 0.08, ease }} />
                 </div>
-                <span style={{ fontSize: '0.92rem', fontWeight: 700, width: '42px' }}>{d.pct}%</span>
+                <span style={{ fontSize: '0.95rem', fontWeight: 700, width: '44px' }}>{d.pct}%</span>
               </motion.div>
             ))}
           </div>
 
-          <p style={{ fontSize: '0.95rem', opacity: 0.9, marginTop: '1.2rem' }}>
+          <p style={{ fontSize: '1rem', opacity: 0.9, marginTop: '1.2rem' }}>
             54,8% aposten per l'acció directa o controlada
           </p>
         </motion.div>
@@ -351,17 +351,17 @@ function ReportAllProposals() {
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
-          <div className="mirada-num">★</div>
-          <h1 className="mirada-ttl">14 Propostes</h1>
-          <p className="mirada-sub">Mirada Endavant — detall complet</p>
+          <div className="mirada-num" style={{ fontSize: '3rem' }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '2.5rem' }}>14 Propostes</h1>
+          <p className="mirada-sub" style={{ fontSize: '1rem' }}>Mirada Endavant — detall complet</p>
 
-          <div className="ds-stat-row" style={{ marginTop: '1.5rem' }}>
+          <div className="ds-stat-row" style={{ marginTop: '1.2rem' }}>
             <span className="ds-stat-big">281</span>
             <span className="ds-stat-label">vots totals</span>
           </div>
 
           <div style={{ marginTop: '1rem' }}>
-            <p style={{ fontSize: '0.92rem', opacity: 0.9, lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.95rem', opacity: 0.9, lineHeight: 1.5 }}>
               21 participants × 14 propostes agrupades en 6 dimensions estratègiques.
             </p>
           </div>
@@ -370,13 +370,13 @@ function ReportAllProposals() {
             {Object.entries(PHASE_COLORS).map(([key, color]) => (
               <div key={key} style={{
                 display: 'flex', alignItems: 'center', gap: '0.5rem',
-                marginTop: '0.35rem',
+                marginTop: '0.4rem',
               }}>
                 <span style={{
                   width: 14, height: 14, borderRadius: 3,
                   background: color, flexShrink: 0,
                 }} />
-                <span style={{ fontSize: '0.88rem', opacity: 0.95, textTransform: 'capitalize' as const }}>
+                <span style={{ fontSize: '0.95rem', opacity: 0.95, textTransform: 'capitalize' as const }}>
                   {key}
                 </span>
               </div>
@@ -448,16 +448,16 @@ function ReportRoadmap() {
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
-          <div className="mirada-num">★</div>
-          <h1 className="mirada-ttl">Full de Ruta</h1>
-          <p className="mirada-sub">Del diagnòstic a l'acció</p>
+          <div className="mirada-num" style={{ fontSize: '3rem' }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '2.5rem' }}>Full de Ruta</h1>
+          <p className="mirada-sub" style={{ fontSize: '1rem' }}>Del diagnòstic a l'acció</p>
 
-          <p className="intro-text-compact" style={{ marginTop: '1.5rem', opacity: 0.95, fontSize: '1.1rem' }}>
+          <p className="intro-text-compact" style={{ marginTop: '1.2rem', opacity: 0.95, fontSize: '1rem' }}>
             Tres horitzons seqüencials que respecten les dependències entre propostes:
             primer líders, després transferència, llavors avaluació.
           </p>
 
-          <div style={{ marginTop: '1.5rem' }}>
+          <div style={{ marginTop: '1.2rem' }}>
             {ROADMAP.map((r, i) => (
               <motion.div key={i} style={{
                 display: 'flex', alignItems: 'center', gap: '0.6rem',
@@ -470,7 +470,7 @@ function ReportRoadmap() {
                   background: r.color, flexShrink: 0,
                   border: '2px solid rgba(255,255,255,0.3)'
                 }} />
-                <span style={{ fontSize: '0.95rem' }}>
+                <span style={{ fontSize: '1rem' }}>
                   <strong>{r.year}</strong> · {r.phase}
                 </span>
               </motion.div>
@@ -572,11 +572,11 @@ function ReportConclusions() {
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
-          <div className="mirada-num">★</div>
-          <h1 className="mirada-ttl">Conclusions</h1>
-          <p className="mirada-sub">Cadena de dependències</p>
+          <div className="mirada-num" style={{ fontSize: '3rem' }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '2.5rem' }}>Conclusions</h1>
+          <p className="mirada-sub" style={{ fontSize: '1rem' }}>Cadena de dependències</p>
 
-          <p className="intro-text-compact" style={{ marginTop: '1rem', opacity: 0.95, fontSize: '1.05rem' }}>
+          <p className="intro-text-compact" style={{ marginTop: '1rem', opacity: 0.95, fontSize: '1rem' }}>
             Les propostes no són independents. L'ordre d'implementació ve determinat per la seva seqüència lògica.
           </p>
 
@@ -600,10 +600,10 @@ function ReportConclusions() {
                     border: '2px solid rgba(255,255,255,0.35)',
                   }} />
                   <div>
-                    <span style={{ fontSize: '0.95rem', fontWeight: 700 }}>
+                    <span style={{ fontSize: '1rem', fontWeight: 700 }}>
                       {layer.label.split(' — ')[1]}
                     </span>
-                    <span style={{ fontSize: '0.85rem', opacity: 0.85 }}>
+                    <span style={{ fontSize: '0.9rem', opacity: 0.85 }}>
                       {' '}· {layer.tag}
                     </span>
                   </div>
@@ -612,7 +612,7 @@ function ReportConclusions() {
             ))}
           </div>
 
-          <motion.p style={{ fontSize: '0.92rem', opacity: 0.95, marginTop: '1.2rem', lineHeight: 1.5 }}
+          <motion.p style={{ fontSize: '0.95rem', opacity: 0.95, marginTop: '1.2rem', lineHeight: 1.5 }}
             initial={{ opacity: 0 }} animate={{ opacity: 0.95 }}
             transition={{ delay: 0.8 }}>
             El desig d'avaluar (45%) expressa urgència

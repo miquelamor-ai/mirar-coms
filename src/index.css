@@ -2646,7 +2646,7 @@ body {
 
 .rpt-section-label {
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -2665,8 +2665,8 @@ body {
   grid-column: span 2;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  padding: 0.85rem 0.8rem;
+  gap: 0.35rem;
+  padding: 1rem 0.9rem;
   background: var(--surface);
   border: 1px solid var(--border-light);
   border-radius: 10px;
@@ -2683,13 +2683,13 @@ body {
 
 .rpt-stat-big {
   font-family: var(--font-display);
-  font-size: 1.45rem;
+  font-size: 1.7rem;
   font-weight: 700;
   line-height: 1.1;
 }
 
 .rpt-stat-label {
-  font-size: 0.78rem;
+  font-size: 0.88rem;
   color: var(--text-muted);
   line-height: 1.3;
 }
@@ -2705,7 +2705,7 @@ body {
 
 .rpt-conclusions-title {
   font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--text);
   margin: 0 0 0.5rem;
@@ -2717,7 +2717,7 @@ body {
   align-items: flex-start;
   gap: 0.6rem;
   padding: 0.3rem 0;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--text);
   line-height: 1.4;
 }
@@ -2776,7 +2776,7 @@ body {
 }
 
 .rpt-diag-title {
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   font-weight: 500;
   color: var(--text);
   white-space: nowrap;
@@ -2792,7 +2792,7 @@ body {
 }
 
 .rpt-diag-track {
-  height: 14px;
+  height: 13px;
   background: var(--border-light);
   border-radius: 6px;
   overflow: hidden;
@@ -3198,14 +3198,14 @@ body {
 
 .rpt-roadmap-year {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--text);
 }
 
 .rpt-roadmap-phase {
   font-family: var(--font-display);
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   font-weight: 700;
   padding: 0.2rem 0.55rem;
   border-radius: 5px;
@@ -3219,14 +3219,14 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.5rem;
 }
 
 .rpt-roadmap-items li {
   display: flex;
   align-items: flex-start;
   gap: 0.45rem;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   color: var(--text);
   line-height: 1.4;
 }
@@ -3252,7 +3252,7 @@ body {
 
 .rpt-roadmap-keys-title {
   font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--text);
   margin: 0 0 0.5rem;
@@ -3261,14 +3261,14 @@ body {
 .rpt-roadmap-key-items {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
 .rpt-roadmap-key-item {
   display: flex;
   align-items: flex-start;
   gap: 0.4rem;
-  font-size: 0.92rem;
+  font-size: 1rem;
   color: var(--text-muted);
   line-height: 1.4;
 }
@@ -3302,9 +3302,9 @@ body {
 }
 
 .rpt-prop-title {
-  font-size: 0.84rem;
+  font-size: 0.95rem;
   color: var(--text-muted);
-  width: 155px;
+  width: 165px;
   flex-shrink: 0;
   text-align: right;
   line-height: 1.25;
@@ -3318,7 +3318,7 @@ body {
 }
 
 .rpt-prop-bar {
-  height: 22px;
+  height: 26px;
   display: flex;
   border-radius: 4px;
   overflow: hidden;
@@ -3334,7 +3334,7 @@ body {
 }
 
 .rpt-prop-seg-pct {
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #fff;
   line-height: 1;
@@ -3380,7 +3380,7 @@ body {
 }
 
 .rpt-decision-text {
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   line-height: 1.45;
   color: var(--text);
 }
@@ -3393,7 +3393,7 @@ body {
 }
 
 .rpt-message-title {
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
@@ -3401,14 +3401,14 @@ body {
 .rpt-message-items {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.5rem;
 }
 
 .rpt-message-item {
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
-  font-size: 0.92rem;
+  font-size: 1rem;
   line-height: 1.45;
   color: var(--text-muted);
 }
