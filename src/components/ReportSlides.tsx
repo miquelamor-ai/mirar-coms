@@ -667,6 +667,718 @@ function ReportConclusions() {
   );
 }
 
+// ─── STEP 6: VISIÓ — L'HORITZÓ FINAL ─────────────────────────────────────────
+
+function ReportVision() {
+  const layers = [
+    { icon: '◉', label: 'Millora de l\'aprenentatge i el benestar de l\'alumnat', sub: 'El nord de tot el que fem', color: '#e74c3c' },
+    { icon: '◈', label: 'Transformació real de la pràctica docent a l\'aula', sub: 'El docent ensenya diferent perquè ha après diferent', color: '#e67e22' },
+    { icon: '◆', label: 'Cultura professional col·laborativa al centre', sub: 'Comunitats que aprenen juntes, no docents aïllats', color: '#c9922a' },
+    { icon: '●', label: 'Desenvolupament professional continu i sostingut', sub: 'Del concert puntual al fil musical permanent', color: '#3498db' },
+    { icon: '○', label: 'Condicions organitzatives que ho fan possible', sub: 'Temps, espais, lideratge i recursos al servei de l\'aprenentatge', color: '#27ae60' },
+  ];
+
+  return (
+    <>
+      <div className="panel-left intro-panel" style={{ background: '#0a6b57' }}>
+        <motion.div className="intro-left-content"
+          initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease }}>
+          <div className="mirada-num" style={{ fontSize: '5rem', opacity: 0.45 }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '3rem' }}>L'horitzó</h1>
+          <p className="mirada-sub" style={{ fontSize: '1.15rem' }}>Per què fem tot això?</p>
+
+          <p className="intro-text-compact" style={{ marginTop: '1.2rem', opacity: 0.95, fontSize: '1rem', lineHeight: 1.6 }}>
+            Tot canvi en el model de formació té un únic criteri de validació:
+            <strong style={{ display: 'block', marginTop: '0.6rem', fontSize: '1.15rem' }}>
+              l'alumne aprèn més i millor, i el docent se sent més competent i acompanyat.
+            </strong>
+          </p>
+
+          <p style={{ marginTop: '1rem', fontSize: '0.95rem', opacity: 0.85, lineHeight: 1.5 }}>
+            No perseguim canviar la formació per canviar-la. Perseguim que cada hora invertida en creixement professional es tradueixi en millores concretes a l'aula.
+          </p>
+        </motion.div>
+      </div>
+      <div className="panel-right rpt-right" style={{ padding: '1.8rem 2.5rem' }}>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
+          <p className="rpt-section-label" style={{ color: COLOR }}>De les condicions a l'impacte</p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+            {layers.map((layer, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.12 + i * 0.1, ease }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: '1rem',
+                  padding: '0.9rem 1.2rem',
+                  background: i === 0 ? `${layer.color}10` : 'transparent',
+                  borderLeft: `4px solid ${layer.color}`,
+                  borderRadius: 'var(--r)',
+                }}>
+                  <span style={{
+                    fontSize: '1.6rem', color: layer.color, flexShrink: 0,
+                    fontFamily: 'var(--font-display)', fontWeight: 700,
+                    width: '2rem', textAlign: 'center',
+                  }}>{layer.icon}</span>
+                  <div>
+                    <span style={{
+                      fontSize: i === 0 ? '1.05rem' : '0.95rem',
+                      fontWeight: i === 0 ? 700 : 600,
+                      color: 'var(--text)',
+                      display: 'block',
+                    }}>{layer.label}</span>
+                    <span style={{
+                      fontSize: '0.82rem', color: 'var(--text-muted)',
+                      lineHeight: 1.4,
+                    }}>{layer.sub}</span>
+                  </div>
+                </div>
+                {i < layers.length - 1 && (
+                  <div style={{
+                    marginLeft: '2.2rem', height: '18px',
+                    borderLeft: '2px dashed var(--border)',
+                    display: 'flex', alignItems: 'center', paddingLeft: '0.7rem',
+                  }}>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>
+                      {['requereix ↓', 'requereix ↓', 'requereix ↓', 'requereix ↓'][i]}
+                    </span>
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div style={{
+            marginTop: '1.2rem', padding: '1rem 1.2rem',
+            background: 'var(--surface-alt)', borderRadius: 'var(--r)',
+            border: '1px solid var(--border)',
+          }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}>
+            <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+              <strong style={{ color: 'var(--text)' }}>Lectura de baix a dalt:</strong> Sense condicions organitzatives no hi ha desenvolupament; sense desenvolupament no hi ha cultura col·laborativa; sense cultura no hi ha transformació docent; sense transformació docent no hi ha impacte en l'alumnat. <strong style={{ color: '#e74c3c' }}>Cada capa depèn de l'anterior.</strong>
+            </p>
+          </motion.div>
+        </motion.div>
+      </div>
+    </>
+  );
+}
+
+// ─── STEP 7: ITINERARI INVERS — DEPENDÈNCIES ─────────────────────────────────
+
+function ReportDependencies() {
+  const chain = [
+    {
+      level: 'IMPACTE',
+      color: '#e74c3c',
+      title: 'Millora de l\'aprenentatge i la convivència',
+      items: [
+        'Resultats acadèmics i competencials de l\'alumnat',
+        'Benestar i clima d\'aula',
+        'Indicadors d\'equitat i inclusió',
+      ],
+      question: 'Com ho sabem?',
+    },
+    {
+      level: 'EVIDÈNCIA',
+      color: '#e67e22',
+      title: 'Dades i evidències d\'aula',
+      items: [
+        'Mostres de treball de l\'alumnat (quantitatives i qualitatives)',
+        'Registres d\'observació entre iguals',
+        'Diaris d\'aula i portafolis docents',
+        'Instruments d\'avaluació dinàmica i autorúbriques',
+      ],
+      question: 'D\'on surten?',
+    },
+    {
+      level: 'TRANSFERÈNCIA',
+      color: '#c9922a',
+      title: 'Transformació real de la pràctica docent',
+      items: [
+        'El docent implementa activitats i materials nous a l\'aula',
+        'Avaluació dinàmica: el docent monitora el seu propi creixement',
+        'Portafoli professional: registre viu d\'experimentació i reflexió',
+        'Reflexió compartida sobre el que funciona i el que no',
+      ],
+      question: 'Què ho fa possible?',
+    },
+    {
+      level: 'SUPORT',
+      color: '#3498db',
+      title: 'Suport organitzatiu i lideratge per a l\'aprenentatge',
+      items: [
+        'Acompanyament per implementar a l\'aula (mentoria, codocència)',
+        'Temps i recursos per crear i modificar activitats',
+        'Orientació en el disseny de propostes d\'aula',
+        'Capacitació: competències per dissenyar i implementar',
+        'Cura emocional del procés de canvi',
+      ],
+      question: 'Sobre quins fonaments?',
+    },
+    {
+      level: 'FONAMENTS',
+      color: '#27ae60',
+      title: 'Preparació, visió i compromís',
+      items: [
+        'Visió compartida i compromís individual i col·lectiu',
+        'Diagnòstic honest i profund del punt de partida',
+        'Objectius i propòsit individual i col·lectiu',
+        'Teoria del canvi i planificació estratègica',
+        'Vincles de confiança i llenguatge compartit',
+      ],
+      question: '',
+    },
+  ];
+
+  return (
+    <>
+      <div className="panel-left intro-panel" style={{ background: '#0a6b57' }}>
+        <motion.div className="intro-left-content"
+          initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease }}>
+          <div className="mirada-num" style={{ fontSize: '5rem', opacity: 0.45 }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '2.5rem' }}>Dependències</h1>
+          <p className="mirada-sub" style={{ fontSize: '1.1rem' }}>L'itinerari invers</p>
+
+          <p className="intro-text-compact" style={{ marginTop: '1rem', opacity: 0.95, fontSize: '0.95rem', lineHeight: 1.6 }}>
+            Si l'objectiu final és l'impacte en l'alumnat, quina cadena d'accions cal construir?
+          </p>
+          <p style={{ marginTop: '0.8rem', fontSize: '0.95rem', opacity: 0.85, lineHeight: 1.5 }}>
+            Llegit <strong>de dalt a baix</strong>: el que volem aconseguir.
+          </p>
+          <p style={{ marginTop: '0.3rem', fontSize: '0.95rem', opacity: 0.85, lineHeight: 1.5 }}>
+            Llegit <strong>de baix a dalt</strong>: l'ordre en què cal construir-ho.
+          </p>
+
+          <motion.p style={{ marginTop: '1.2rem', fontSize: '0.92rem', opacity: 0.9, lineHeight: 1.5, fontStyle: 'italic' }}
+            initial={{ opacity: 0 }} animate={{ opacity: 0.9 }}
+            transition={{ delay: 0.6 }}>
+            Aquest esquema s'aplica a qualsevol línia temporal: un trimestre, un semestre, un curs o un trienni.
+          </motion.p>
+        </motion.div>
+      </div>
+      <div className="panel-right rpt-right" style={{ padding: '1rem 1.5rem' }}>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
+          <p className="rpt-section-label" style={{ color: COLOR }}>De l'impacte als fonaments</p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+            {chain.map((step, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.08 + i * 0.1, ease }}>
+                <div style={{
+                  display: 'flex', gap: '0.8rem',
+                  padding: '0.6rem 0.8rem',
+                  borderLeft: `3px solid ${step.color}`,
+                  borderRadius: 'var(--r)',
+                  background: i === 0 ? `${step.color}08` : 'transparent',
+                }}>
+                  <div style={{ flexShrink: 0, width: '70px' }}>
+                    <span style={{
+                      fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase' as const,
+                      color: step.color, letterSpacing: '0.05em',
+                      background: `${step.color}15`, padding: '2px 6px', borderRadius: 3,
+                    }}>{step.level}</span>
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <span style={{
+                      fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)',
+                      display: 'block', marginBottom: '0.25rem',
+                    }}>{step.title}</span>
+                    {step.items.map((item, j) => (
+                      <div key={j} style={{
+                        display: 'flex', alignItems: 'baseline', gap: '0.4rem',
+                        fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.5,
+                      }}>
+                        <span style={{ color: step.color, flexShrink: 0 }}>•</span>
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {step.question && (
+                  <div style={{
+                    marginLeft: '1.5rem', height: '20px',
+                    borderLeft: '2px dashed var(--border)',
+                    display: 'flex', alignItems: 'center', paddingLeft: '0.7rem',
+                  }}>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', fontStyle: 'italic' }}>
+                      ↑ {step.question}
+                    </span>
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </>
+  );
+}
+
+// ─── STEP 8: FASE ABANS — FONAMENTS I COMPROMÍS ─────────────────────────────
+
+function ReportPhaseAbans() {
+  const dynamics = [
+    {
+      area: 'Visió i compromís',
+      color: '#8e44ad',
+      items: [
+        { name: 'Lectures dialògiques de textos fundacionals', desc: 'Connectar la missió amb la pràctica' },
+        { name: 'Taller d\'indagació apreciativa (4D)', desc: 'Descobrir, Somiar, Dissenyar, Desplegar' },
+        { name: 'Exercicis d\'escriptura reflexiva', desc: 'Vincular textos amb experiència personal' },
+      ]
+    },
+    {
+      area: 'Diagnòstic honest',
+      color: '#e67e22',
+      items: [
+        { name: 'Mapa d\'empatia i User Journey', desc: 'Què sent, veu, escolta i fa l\'alumnat?' },
+        { name: 'Anàlisi de causes (Ishikawa, 5 per què)', desc: 'Arribar a l\'arrel dels problemes' },
+        { name: 'DAFO participatiu i dades del centre', desc: 'Fortaleses, debilitats, oportunitats, amenaces' },
+      ]
+    },
+    {
+      area: 'Objectius i teoria del canvi',
+      color: '#3498db',
+      items: [
+        { name: 'Fórmula: Per a què → Què → Com', desc: 'Impacte alumnat → Focus → Activitats' },
+        { name: 'Preguntes indagatòries', desc: 'Guiar la recerca i l\'experimentació' },
+        { name: 'Revisió d\'evidències de la recerca', desc: 'Decisions basades en dades, no en intuïcions' },
+      ]
+    },
+    {
+      area: 'Vincles i llenguatge',
+      color: '#27ae60',
+      items: [
+        { name: 'Construcció de llenguatge compartit', desc: 'Significats comuns al voltant de conceptes clau' },
+        { name: 'Cura personalis i vincle fratern', desc: 'Confiança, benestar i missió compartida a l\'equip' },
+        { name: 'Normes i responsabilitats de la CPA', desc: 'Rols, freqüència i rituals de funcionament' },
+      ]
+    },
+  ];
+
+  return (
+    <>
+      <div className="panel-left intro-panel" style={{ background: '#0a6b57' }}>
+        <motion.div className="intro-left-content"
+          initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease }}>
+          <div className="mirada-num" style={{ fontSize: '5rem', opacity: 0.45 }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '3rem' }}>ABANS</h1>
+          <p className="mirada-sub" style={{ fontSize: '1.1rem' }}>Context · Experiència · Reflexió</p>
+
+          <div style={{ marginTop: '1.2rem', display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+            <p style={{ fontSize: '0.95rem', opacity: 0.95, lineHeight: 1.5 }}>
+              <strong>No s'arriba a la formació en blanc.</strong> Abans de qualsevol acció formativa cal preparar el terreny.
+            </p>
+            <p style={{ fontSize: '0.92rem', opacity: 0.85, lineHeight: 1.5 }}>
+              Aquesta fase és on es construeixen els fonaments sense els quals el Durant i el Després no funcionen.
+            </p>
+          </div>
+
+          <div style={{ marginTop: '1rem', padding: '0.8rem', background: 'rgba(255,255,255,0.1)', borderRadius: 'var(--r)' }}>
+            <p style={{ fontSize: '0.85rem', opacity: 0.9, lineHeight: 1.5 }}>
+              <strong>Clau:</strong> La reflexió de l'Abans no és abstracta — es basa en dades reals del context propi i en la vivència personal del docent.
+            </p>
+          </div>
+        </motion.div>
+      </div>
+      <div className="panel-right rpt-right" style={{ padding: '1.5rem 2rem' }}>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
+          <p className="rpt-section-label" style={{ color: COLOR }}>Dinàmiques i dispositius de la fase Abans</p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+            {dynamics.map((group, gi) => (
+              <motion.div key={gi}
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 + gi * 0.1, ease }}
+                style={{ borderRadius: 'var(--r)', border: '1px solid var(--border)', overflow: 'hidden' }}>
+                <div style={{
+                  padding: '0.5rem 0.9rem',
+                  background: `${group.color}10`,
+                  borderBottom: '1px solid var(--border)',
+                  display: 'flex', alignItems: 'center', gap: '0.5rem',
+                }}>
+                  <span style={{ width: 10, height: 10, borderRadius: '50%', background: group.color, flexShrink: 0 }} />
+                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)' }}>{group.area}</span>
+                </div>
+                <div style={{ padding: '0.5rem 0.9rem' }}>
+                  {group.items.map((item, i) => (
+                    <div key={i} style={{
+                      display: 'flex', alignItems: 'baseline', gap: '0.5rem',
+                      padding: '0.3rem 0',
+                      borderBottom: i < group.items.length - 1 ? '1px solid var(--border-light)' : 'none',
+                    }}>
+                      <span style={{ color: group.color, fontSize: '0.75rem', flexShrink: 0 }}>▸</span>
+                      <div>
+                        <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text)' }}>{item.name}</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginLeft: '0.4rem' }}>— {item.desc}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </>
+  );
+}
+
+// ─── STEP 9: FASE DURANT — EXPERIÈNCIA I ACCIÓ ──────────────────────────────
+
+function ReportPhaseDurant() {
+  const dynamics = [
+    {
+      area: 'Aprenentatge actiu',
+      color: '#3498db',
+      items: [
+        { name: 'Tallers participatius i simulacions', desc: 'Viure l\'experiència com a aprenent abans de ser docent' },
+        { name: 'Disseny col·laboratiu de propostes d\'aula', desc: 'Crear junts el que s\'aplicarà a l\'aula' },
+        { name: 'Tertúlies pedagògiques dialògiques', desc: 'Lectura compartida i diàleg sobre recerca educativa' },
+      ]
+    },
+    {
+      area: 'Reflexió durant la pràctica',
+      color: '#e67e22',
+      items: [
+        { name: 'Observació entre iguals a l\'aula', desc: 'Pre-observació → observació → post-reflexió' },
+        { name: 'Lesson Study', desc: 'Disseny col·laboratiu → observar alumnat → revisar → reensenyar' },
+        { name: 'Modelatge d\'experts i codocència', desc: 'Acompanyament in situ, no consells des de fora' },
+      ]
+    },
+    {
+      area: 'Implementació acompanyada',
+      color: '#27ae60',
+      items: [
+        { name: 'Aplicació d\'activitats i materials a l\'aula', desc: 'Experimentar el que s\'ha dissenyat al taller' },
+        { name: 'Mentoria i coaching pedagògic', desc: 'Acompanyament personalitzat en el procés d\'aplicació' },
+        { name: 'Temps i recursos per crear i ajustar materials', desc: 'Protecció institucional del temps de preparació' },
+      ]
+    },
+    {
+      area: 'Cura emocional',
+      color: '#8e44ad',
+      items: [
+        { name: 'Espais de suport emocional', desc: 'Reconèixer la complexitat emocional del canvi' },
+        { name: 'Feedback positiu i orientat al creixement', desc: 'Reconeixement primer, millora després' },
+        { name: 'Examen de consciència sobre la pràctica', desc: 'Rutina reflexiva sobre pensaments, paraules i accions' },
+      ]
+    },
+  ];
+
+  return (
+    <>
+      <div className="panel-left intro-panel" style={{ background: '#0a6b57' }}>
+        <motion.div className="intro-left-content"
+          initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease }}>
+          <div className="mirada-num" style={{ fontSize: '5rem', opacity: 0.45 }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '3rem' }}>DURANT</h1>
+          <p className="mirada-sub" style={{ fontSize: '1.1rem' }}>Reflexió · Acció</p>
+
+          <div style={{ marginTop: '1.2rem', display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+            <p style={{ fontSize: '0.95rem', opacity: 0.95, lineHeight: 1.5 }}>
+              <strong>L'experiència activa no és rebre, és construir.</strong> El docent experimenta, aplica i reflexiona en temps real.
+            </p>
+            <p style={{ fontSize: '0.92rem', opacity: 0.85, lineHeight: 1.5 }}>
+              No sols el que passa al taller, sinó tot el procés d'aplicació a l'aula amb acompanyament.
+            </p>
+          </div>
+
+          <div style={{ marginTop: '1rem', padding: '0.8rem', background: 'rgba(255,255,255,0.1)', borderRadius: 'var(--r)' }}>
+            <p style={{ fontSize: '0.85rem', opacity: 0.9, lineHeight: 1.5 }}>
+              <strong>3 nivells de reflexivitat</strong> (Van Manen): tècnica (procediments) → pràctica (creences) → crítica (propòsit i ètica)
+            </p>
+          </div>
+        </motion.div>
+      </div>
+      <div className="panel-right rpt-right" style={{ padding: '1.5rem 2rem' }}>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
+          <p className="rpt-section-label" style={{ color: COLOR }}>Dinàmiques i dispositius de la fase Durant</p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+            {dynamics.map((group, gi) => (
+              <motion.div key={gi}
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 + gi * 0.1, ease }}
+                style={{ borderRadius: 'var(--r)', border: '1px solid var(--border)', overflow: 'hidden' }}>
+                <div style={{
+                  padding: '0.5rem 0.9rem',
+                  background: `${group.color}10`,
+                  borderBottom: '1px solid var(--border)',
+                  display: 'flex', alignItems: 'center', gap: '0.5rem',
+                }}>
+                  <span style={{ width: 10, height: 10, borderRadius: '50%', background: group.color, flexShrink: 0 }} />
+                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)' }}>{group.area}</span>
+                </div>
+                <div style={{ padding: '0.5rem 0.9rem' }}>
+                  {group.items.map((item, i) => (
+                    <div key={i} style={{
+                      display: 'flex', alignItems: 'baseline', gap: '0.5rem',
+                      padding: '0.3rem 0',
+                      borderBottom: i < group.items.length - 1 ? '1px solid var(--border-light)' : 'none',
+                    }}>
+                      <span style={{ color: group.color, fontSize: '0.75rem', flexShrink: 0 }}>▸</span>
+                      <div>
+                        <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text)' }}>{item.name}</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginLeft: '0.4rem' }}>— {item.desc}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </>
+  );
+}
+
+// ─── STEP 10: FASE DESPRÉS — TRANSFERÈNCIA I AVALUACIÓ ───────────────────────
+
+function ReportPhaseDespres() {
+  const dynamics = [
+    {
+      area: 'Transferència a l\'aula',
+      color: '#e74c3c',
+      items: [
+        { name: 'Implementació real d\'activitats i materials', desc: 'El docent aplica el que ha dissenyat al context propi' },
+        { name: 'Anàlisi de casos reals', desc: 'Relator descriu → facilitador modera → oients extreuen aprenentatges' },
+        { name: 'Incidents crítics', desc: 'Reflexió profunda sobre moments decisius de la pràctica' },
+      ]
+    },
+    {
+      area: 'Seguiment i evidències',
+      color: '#e67e22',
+      items: [
+        { name: 'Portafoli professional docent', desc: 'Registre viu d\'experimentació, reflexió i evolució' },
+        { name: 'Avaluació dinàmica i autorúbriques', desc: 'El docent monitora el seu propi creixement competencial' },
+        { name: 'Recull de mostres de treball de l\'alumnat', desc: 'Evidències quantitatives i qualitatives de millora' },
+      ]
+    },
+    {
+      area: 'Reflexió post-pràctica',
+      color: '#3498db',
+      items: [
+        { name: 'Planificació reflexiva conjunta', desc: 'Què vam planificar, què va passar, què canviem' },
+        { name: 'Investigació a l\'aula', desc: 'Dissenyar, implementar, analitzar i difondre resultats' },
+        { name: 'Feedback 360° i autoavaluació', desc: 'Múltiples perspectives sobre l\'evolució professional' },
+      ]
+    },
+    {
+      area: 'Impacte en l\'alumnat',
+      color: '#27ae60',
+      items: [
+        { name: 'Indicadors d\'aprenentatge i benestar', desc: 'Mesura del canvi real en l\'alumnat' },
+        { name: 'Comunicació de resultats a la comunitat', desc: 'La millora visible, comunicable i transferible' },
+        { name: 'Avaluació del trienni i actualització del pla', desc: 'Cicle complet: avaluar per millorar el pla' },
+      ]
+    },
+  ];
+
+  return (
+    <>
+      <div className="panel-left intro-panel" style={{ background: '#0a6b57' }}>
+        <motion.div className="intro-left-content"
+          initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease }}>
+          <div className="mirada-num" style={{ fontSize: '5rem', opacity: 0.45 }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '3rem' }}>DESPRÉS</h1>
+          <p className="mirada-sub" style={{ fontSize: '1.1rem' }}>Avaluació · Impacte</p>
+
+          <div style={{ marginTop: '1.2rem', display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+            <p style={{ fontSize: '0.95rem', opacity: 0.95, lineHeight: 1.5 }}>
+              <strong>La fase abandonada que hauria de ser la protagonista.</strong> Aquí és on es demostra si la formació ha servit.
+            </p>
+            <p style={{ fontSize: '0.92rem', opacity: 0.85, lineHeight: 1.5 }}>
+              Sense Després, la formació és un acte de fe. Amb Després, és un procés mesurable i millorable.
+            </p>
+          </div>
+
+          <div style={{ marginTop: '1rem', padding: '0.8rem', background: 'rgba(255,255,255,0.1)', borderRadius: 'var(--r)' }}>
+            <p style={{ fontSize: '0.85rem', opacity: 0.9, lineHeight: 1.5 }}>
+              <strong>Recordem:</strong> 50% de les direccions van votar Pilotar — saben que cal prudència i acompanyament, no activació massiva.
+            </p>
+          </div>
+        </motion.div>
+      </div>
+      <div className="panel-right rpt-right" style={{ padding: '1.5rem 2rem' }}>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
+          <p className="rpt-section-label" style={{ color: COLOR }}>Dinàmiques i dispositius de la fase Després</p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+            {dynamics.map((group, gi) => (
+              <motion.div key={gi}
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 + gi * 0.1, ease }}
+                style={{ borderRadius: 'var(--r)', border: '1px solid var(--border)', overflow: 'hidden' }}>
+                <div style={{
+                  padding: '0.5rem 0.9rem',
+                  background: `${group.color}10`,
+                  borderBottom: '1px solid var(--border)',
+                  display: 'flex', alignItems: 'center', gap: '0.5rem',
+                }}>
+                  <span style={{ width: 10, height: 10, borderRadius: '50%', background: group.color, flexShrink: 0 }} />
+                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)' }}>{group.area}</span>
+                </div>
+                <div style={{ padding: '0.5rem 0.9rem' }}>
+                  {group.items.map((item, i) => (
+                    <div key={i} style={{
+                      display: 'flex', alignItems: 'baseline', gap: '0.5rem',
+                      padding: '0.3rem 0',
+                      borderBottom: i < group.items.length - 1 ? '1px solid var(--border-light)' : 'none',
+                    }}>
+                      <span style={{ color: group.color, fontSize: '0.75rem', flexShrink: 0 }}>▸</span>
+                      <div>
+                        <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text)' }}>{item.name}</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginLeft: '0.4rem' }}>— {item.desc}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </>
+  );
+}
+
+// ─── STEP 11: PRIORITATS — EL XOC ENTRE DESIG I SEQÜÈNCIA ──────────────────
+
+const PRIORITY_ANALYSIS = [
+  {
+    status: 'activar',
+    label: 'ACTIVAR JA',
+    color: '#27ae60',
+    desc: 'Sense dependències prèvies — es pot començar demà',
+    proposals: [
+      { name: 'Autonomia de centre', votePct: 47.6, reason: 'Sobirania del centre per reubicar temps i energia' },
+      { name: 'Abans — preparació i compromís', votePct: 42.9, reason: 'Diagnosi, objectius i teoria del canvi' },
+      { name: 'Durant — experiència activa', votePct: 47.6, reason: 'Tallers, simulacions, disseny col·laboratiu' },
+      { name: 'Banc de talents intern', votePct: 35.0, reason: 'Identificar el lideratge intern de la xarxa' },
+    ],
+  },
+  {
+    status: 'preparar',
+    label: 'PREPARAR AMB URGÈNCIA',
+    color: '#c9922a',
+    desc: 'El coll d\'ampolla — sense això, el Després no funciona',
+    proposals: [
+      { name: 'Lideratge per a la transferència', votePct: 40.0, reason: 'Formació intensiva dels responsables pedagògics — 40% voten Preparar, i tenen raó' },
+    ],
+  },
+  {
+    status: 'pilotar',
+    label: 'PILOTAR (Any 2)',
+    color: '#3498db',
+    desc: 'Quan els líders estiguin formats — no abans',
+    proposals: [
+      { name: 'Després — el focus real', votePct: 50.0, reason: '50% voten Pilotar — prudència encertada, cal acompanyament' },
+    ],
+  },
+  {
+    status: 'diferir',
+    label: 'DIFERIR (Any 3)',
+    color: '#8e44ad',
+    desc: 'Malgrat el desig d\'activar — primer cal transferència real',
+    proposals: [
+      { name: 'Més enllà de la satisfacció', votePct: 45.0, reason: '45% volen activar — però no es pot mesurar impacte sense transferència' },
+      { name: 'Avaluació dinàmica', votePct: 31.6, reason: 'S\'integrarà com a eina dins dels pilots del Després' },
+      { name: 'Recull d\'evidències d\'aula', votePct: 36.8, reason: 'Sense pràctica transferida, no hi ha res a recollir' },
+      { name: 'Auditoria d\'impacte', votePct: 42.1, reason: 'Última peça: requereix tot l\'anterior en marxa' },
+    ],
+  },
+];
+
+function ReportPriorities() {
+  return (
+    <>
+      <div className="panel-left intro-panel" style={{ background: '#0a6b57' }}>
+        <motion.div className="intro-left-content"
+          initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease }}>
+          <div className="mirada-num" style={{ fontSize: '5rem', opacity: 0.45 }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '2.8rem' }}>Prioritats</h1>
+          <p className="mirada-sub" style={{ fontSize: '1.1rem' }}>Desig vs seqüència lògica</p>
+
+          <p className="intro-text-compact" style={{ marginTop: '1rem', opacity: 0.95, fontSize: '0.92rem', lineHeight: 1.6 }}>
+            Les votacions expressen <strong>què volen</strong> les direccions. L'anàlisi de dependències revela <strong>què es pot fer</strong> en cada moment.
+          </p>
+
+          <div style={{ marginTop: '1rem', padding: '0.8rem', background: 'rgba(255,255,255,0.1)', borderRadius: 'var(--r)' }}>
+            <p style={{ fontSize: '0.85rem', opacity: 0.9, lineHeight: 1.5 }}>
+              <strong>El 45% que vol activar l'avaluació d'impacte</strong> no diu que es pugui fer demà — diu que vol saber si la formació serveix. Aquesta pregunta només es pot respondre quan hi hagi transferència real.
+            </p>
+          </div>
+
+          <motion.p style={{ marginTop: '0.8rem', fontSize: '0.88rem', opacity: 0.85, lineHeight: 1.5, fontStyle: 'italic' }}
+            initial={{ opacity: 0 }} animate={{ opacity: 0.85 }}
+            transition={{ delay: 0.5 }}>
+            Seqüenciar no és frenar. És construir bé.
+          </motion.p>
+        </motion.div>
+      </div>
+      <div className="panel-right rpt-right" style={{ padding: '1.2rem 1.8rem' }}>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
+          <p className="rpt-section-label" style={{ color: COLOR }}>Seqüència recomanada vs votacions</p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+            {PRIORITY_ANALYSIS.map((phase, pi) => (
+              <motion.div key={pi}
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.08 + pi * 0.1, ease }}
+                style={{ borderRadius: 'var(--r)', border: '1px solid var(--border)', overflow: 'hidden' }}>
+                <div style={{
+                  padding: '0.45rem 0.9rem',
+                  background: `${phase.color}12`,
+                  borderBottom: '1px solid var(--border)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{
+                      fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase' as const,
+                      color: '#fff', background: phase.color,
+                      padding: '2px 8px', borderRadius: 3, letterSpacing: '0.05em',
+                    }}>{phase.label}</span>
+                  </div>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{phase.desc}</span>
+                </div>
+                <div style={{ padding: '0.4rem 0.9rem' }}>
+                  {phase.proposals.map((p, i) => (
+                    <div key={i} style={{
+                      display: 'flex', alignItems: 'baseline', gap: '0.5rem',
+                      padding: '0.3rem 0',
+                      borderBottom: i < phase.proposals.length - 1 ? '1px solid var(--border-light)' : 'none',
+                    }}>
+                      <span style={{
+                        fontSize: '0.7rem', fontWeight: 700, color: phase.color,
+                        flexShrink: 0, width: '38px', textAlign: 'right',
+                      }}>{p.votePct}%</span>
+                      <div style={{ flex: 1 }}>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text)' }}>{p.name}</span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginLeft: '0.3rem' }}>— {p.reason}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </>
+  );
+}
+
 // ─── MAIN EXPORT ───────────────────────────────────────────────────────────────
 
 export function ReportSlide({ step }: { step: number }) {
@@ -677,6 +1389,12 @@ export function ReportSlide({ step }: { step: number }) {
     case 3: return <ReportAllProposals />;
     case 4: return <ReportRoadmap />;
     case 5: return <ReportConclusions />;
+    case 6: return <ReportVision />;
+    case 7: return <ReportDependencies />;
+    case 8: return <ReportPhaseAbans />;
+    case 9: return <ReportPhaseDurant />;
+    case 10: return <ReportPhaseDespres />;
+    case 11: return <ReportPriorities />;
     default: return <ReportExecSummary />;
   }
 }
