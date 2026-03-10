@@ -90,13 +90,13 @@ function ReportExecSummary() {
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
-          <div className="mirada-num" style={{ fontSize: '3rem' }}>★</div>
-          <h1 className="mirada-ttl" style={{ fontSize: '2.5rem' }}>INFORME</h1>
-          <p className="mirada-sub" style={{ fontSize: '1rem' }}>Resultats de la consulta</p>
-          <p className="intro-text-compact" style={{ marginTop: '1rem', opacity: 0.95, fontSize: '0.88rem' }}>
+          <div className="mirada-num" style={{ fontSize: '5rem', opacity: 0.5 }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '4rem' }}>INFORME</h1>
+          <p className="mirada-sub" style={{ fontSize: '1.2rem' }}>Resultats de la consulta</p>
+          <p className="intro-text-compact" style={{ marginTop: '1.2rem', opacity: 0.95, fontSize: '1rem' }}>
             Resum de la consulta a 21 direccions de centres FJE sobre el Pla d'Aprenentatge 2026–2029.
           </p>
-          <p className="intro-text-compact" style={{ marginTop: '0.5rem', opacity: 0.8, fontSize: '0.8rem' }}>
+          <p className="intro-text-compact" style={{ marginTop: '0.6rem', opacity: 0.8, fontSize: '0.92rem' }}>
             8 de març de 2026 · Dades verificades
           </p>
         </motion.div>
@@ -250,9 +250,9 @@ function ReportDistribution() {
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
-          <div className="mirada-num" style={{ fontSize: '3rem' }}>★</div>
-          <h1 className="mirada-ttl" style={{ fontSize: '2.5rem' }}>Distribució</h1>
-          <p className="mirada-sub" style={{ fontSize: '1rem' }}>281 vots · Mirada Endavant</p>
+          <div className="mirada-num" style={{ fontSize: '5rem', opacity: 0.45 }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '3.5rem' }}>Distribució</h1>
+          <p className="mirada-sub" style={{ fontSize: '1.15rem' }}>281 vots · Mirada Endavant</p>
 
           <div style={{ marginTop: '1.5rem' }}>
             {GLOBAL_DIST.map((d, i) => (
@@ -351,9 +351,9 @@ function ReportAllProposals() {
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
-          <div className="mirada-num" style={{ fontSize: '3rem' }}>★</div>
-          <h1 className="mirada-ttl" style={{ fontSize: '2.5rem' }}>14 Propostes</h1>
-          <p className="mirada-sub" style={{ fontSize: '1rem' }}>Mirada Endavant — detall complet</p>
+          <div className="mirada-num" style={{ fontSize: '5rem', opacity: 0.45 }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '3.5rem' }}>14 Propostes</h1>
+          <p className="mirada-sub" style={{ fontSize: '1.15rem' }}>Mirada Endavant — detall complet</p>
 
           <div className="ds-stat-row" style={{ marginTop: '1.2rem' }}>
             <span className="ds-stat-big">281</span>
@@ -448,9 +448,9 @@ function ReportRoadmap() {
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
-          <div className="mirada-num" style={{ fontSize: '3rem' }}>★</div>
-          <h1 className="mirada-ttl" style={{ fontSize: '2.5rem' }}>Full de Ruta</h1>
-          <p className="mirada-sub" style={{ fontSize: '1rem' }}>Del diagnòstic a l'acció</p>
+          <div className="mirada-num" style={{ fontSize: '5rem', opacity: 0.45 }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '3.5rem' }}>Full de Ruta</h1>
+          <p className="mirada-sub" style={{ fontSize: '1.15rem' }}>Del diagnòstic a l'acció</p>
 
           <p className="intro-text-compact" style={{ marginTop: '1.2rem', opacity: 0.95, fontSize: '1rem' }}>
             Tres horitzons seqüencials que respecten les dependències entre propostes:
@@ -572,9 +572,9 @@ function ReportConclusions() {
         <motion.div className="intro-left-content"
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease }}>
-          <div className="mirada-num" style={{ fontSize: '3rem' }}>★</div>
-          <h1 className="mirada-ttl" style={{ fontSize: '2.5rem' }}>Conclusions</h1>
-          <p className="mirada-sub" style={{ fontSize: '1rem' }}>Cadena de dependències</p>
+          <div className="mirada-num" style={{ fontSize: '5rem', opacity: 0.45 }}>★</div>
+          <h1 className="mirada-ttl" style={{ fontSize: '3.5rem' }}>Conclusions</h1>
+          <p className="mirada-sub" style={{ fontSize: '1.15rem' }}>Cadena de dependències</p>
 
           <p className="intro-text-compact" style={{ marginTop: '1rem', opacity: 0.95, fontSize: '1rem' }}>
             Les propostes no són independents. L'ordre d'implementació ve determinat per la seva seqüència lògica.

@@ -2734,14 +2734,14 @@ body {
 .rpt-diag-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.28rem;
 }
 
 .rpt-diag-card {
   display: flex;
   align-items: center;
-  gap: 1.1rem;
-  padding: 0.8rem 1.2rem 0.8rem 1rem;
+  gap: 0.8rem;
+  padding: 0.4rem 0.8rem 0.4rem 0.7rem;
   background: var(--surface);
   border: 1px solid var(--border-light);
   border-left: 5px solid;
@@ -2750,13 +2750,13 @@ body {
 
 .rpt-diag-card-left {
   flex-shrink: 0;
-  width: 40px;
+  width: 34px;
   text-align: center;
 }
 
 .rpt-diag-id {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 700;
 }
 
@@ -2776,7 +2776,7 @@ body {
 }
 
 .rpt-diag-title {
-  font-size: 1.35rem;
+  font-size: 1.05rem;
   font-weight: 500;
   color: var(--text);
   white-space: nowrap;
@@ -2786,13 +2786,13 @@ body {
 
 .rpt-diag-pct {
   font-family: var(--font-display);
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   font-weight: 700;
   flex-shrink: 0;
 }
 
 .rpt-diag-track {
-  height: 13px;
+  height: 8px;
   background: var(--border-light);
   border-radius: 6px;
   overflow: hidden;
@@ -2813,13 +2813,13 @@ body {
 }
 
 .rpt-diag-yes {
-  font-size: 1.1rem;
+  font-size: 0.88rem;
   font-weight: 600;
   color: #27ae60;
 }
 
 .rpt-diag-no {
-  font-size: 1.1rem;
+  font-size: 0.88rem;
   font-weight: 600;
   color: #e74c3c;
 }
@@ -2998,6 +2998,9 @@ body {
   flex: 1;
   color: var(--text);
   min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .rpt-cat-tile-val {
